@@ -209,8 +209,8 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 - **Manual sync button** — calls `POST /admin/ingest`, shows loading spinner + result toast
 - **Dark mode** — respects `prefers-color-scheme`; manual toggle stored in `localStorage`
 - Error boundary + loading skeletons for all async views
-- `npm run dev` in `frontend/` proxies `/api` to `localhost:3000`
-- `npm run build` outputs static assets that NestJS can serve from `/` via `ServeStaticModule`
+- `pnpm run dev` in `frontend/` proxies `/api` to `localhost:3000`
+- `pnpm run build` outputs static assets that NestJS can serve from `/` via `ServeStaticModule`
 
 **Tech choices:**
 | Concern | Library |
@@ -230,10 +230,10 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 ## Done Criteria
 
-- `npm run start` in repo root launches the NestJS API.
-- `npm run dev` in `frontend/` launches the React dev server proxying to the API.
-- `npm run build && npm run start` serves the React app as static files from NestJS.
+- `pnpm run start` in repo root launches the NestJS API.
+- `pnpm run dev` in `frontend/` launches the React dev server proxying to the API.
+- `pnpm run build && pnpm run start` serves the React app as static files from NestJS.
 - `POST /admin/ingest` populates SQLite from all adapters.
 - `GET /jobs` returns deduplicated, fit-scored listings.
 - Changing a job's status in the UI persists across page reloads and cron re-syncs.
-- `npm test` passes (dedupKey, adapter normalize, upsert status-preservation).
+- `pnpm test` passes (dedupKey, adapter normalize, upsert status-preservation).

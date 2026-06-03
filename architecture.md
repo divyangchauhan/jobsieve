@@ -111,10 +111,12 @@ jobsieve/
 ├── test/                         # integration / e2e tests (Jest)
 ├── .env.example
 ├── .gitignore
+├── .npmrc                        # shamefully-hoist=true for NestJS/better-sqlite3
 ├── nest-cli.json
 ├── tsconfig.json
 ├── tsconfig.build.json
-├── package.json
+├── package.json                  # packageManager: pnpm@10.x
+├── pnpm-lock.yaml
 ├── prd.md
 ├── architecture.md
 └── README.md

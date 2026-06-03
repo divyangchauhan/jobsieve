@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -18,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "ingest": "curl -s -X POST http://localhost:3000/admin/ingest | npx --yes json"
+    "ingest": "curl -s -X POST http://localhost:3000/admin/ingest | pnpm dlx json"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
@@ -64,6 +65,9 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3", "@nestjs/core", "unrs-resolver"]
   },
   "jest": {
     "moduleFileExtensions": [

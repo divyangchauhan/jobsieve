@@ -27,7 +27,7 @@ A self-hosted job aggregation service that pulls listings from multiple sources 
 ```bash
 git clone <repo-url> jobsieve
 cd jobsieve
-npm install
+pnpm install
 ```
 
 ### Configure
@@ -57,13 +57,13 @@ mkdir -p data
 
 **Development (with watch):**
 ```bash
-npm run start:dev
+pnpm run start:dev
 ```
 
 **Production:**
 ```bash
-npm run build
-npm run start:prod
+pnpm run build
+pnpm run start:prod
 ```
 
 The API starts on `http://localhost:3000` (or `API_PORT`).
@@ -81,7 +81,7 @@ curl -X POST http://localhost:3000/admin/ingest
 Or via npm script:
 
 ```bash
-npm run ingest
+pnpm run ingest
 ```
 
 ---
@@ -128,8 +128,8 @@ Manually trigger a full ingestion run across all adapters. Returns counts per so
 
 ```bash
 cd frontend
-npm install
-npm run dev   # starts on http://localhost:5173
+pnpm install
+pnpm run dev   # starts on http://localhost:5173
 ```
 
 The dev server proxies `/api` to `http://localhost:3000`.
@@ -137,9 +137,9 @@ The dev server proxies `/api` to `http://localhost:3000`.
 **Production (served by NestJS):**
 
 ```bash
-cd frontend && npm run build
+cd frontend && pnpm run build
 cd ..
-npm run start:prod   # NestJS serves frontend/dist at /
+pnpm run start:prod   # NestJS serves frontend/dist at /
 ```
 
 ---
@@ -197,8 +197,8 @@ Never commit `.env` to version control. In production, source all secrets from a
 ## Development
 
 ```bash
-npm run test        # unit tests
-npm run test:cov    # with coverage
-npm run lint        # eslint
-npm run format      # prettier
+pnpm run test        # unit tests
+pnpm run test:cov    # with coverage
+pnpm run lint        # eslint
+pnpm run format      # prettier
 ```
