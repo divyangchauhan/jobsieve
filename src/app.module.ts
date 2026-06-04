@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { configuration } from './config/configuration.js';
+import { validate } from './config/env.validation.js';
 import { Job } from './jobs/job.entity.js';
 import { JobsModule } from './jobs/jobs.module.js';
 
@@ -12,7 +12,7 @@ import { JobsModule } from './jobs/jobs.module.js';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      validate,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
