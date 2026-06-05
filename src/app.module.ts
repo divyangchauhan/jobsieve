@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AdaptersModule } from './adapters/adapters.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { validate } from './config/env.validation.js';
@@ -24,6 +25,7 @@ import { JobsModule } from './jobs/jobs.module.js';
       }),
     }),
     JobsModule,
+    AdaptersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
