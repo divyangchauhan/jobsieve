@@ -1,22 +1,24 @@
 /*
  * Sample RemoteOK API payload (element 0 is metadata — always dropped):
  * [
- *   { "legal": "..." },
+ *   { "last_updated": 1780635992, "legal": "API Terms of Service: ..." },
  *   {
- *     "id": "remote-typescript-engineer-acme-123456",
- *     "epoch": 1716000000,
- *     "date": "2024-05-18T00:00:00+00:00",
+ *     "slug": "remote-ts-engineer-acme-1132845",
+ *     "id": "1132845",
+ *     "epoch": "1780554702",
+ *     "date": "2026-06-04T06:31:42+00:00",
  *     "company": "Acme Corp",
  *     "position": "Senior TypeScript Engineer",
  *     "tags": ["typescript", "nodejs", "remote"],
  *     "description": "<p>We are looking for...</p>",
  *     "location": "Worldwide",
- *     "salary_min": 100000,
- *     "salary_max": 150000,
- *     "url": "https://remoteok.com/remote-jobs/123456",
- *     "apply_url": "https://acme.com/jobs/apply"
+ *     "salary_min": "100000",
+ *     "salary_max": "150000",
+ *     "apply_url": "https://remoteOK.com/remote-jobs/...",
+ *     "url": "https://remoteOK.com/remote-jobs/remote-ts-engineer-acme-1132845"
  *   }
  * ]
+ * Notes: salary_min/salary_max are strings; "0" means not provided.
  */
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
@@ -36,14 +38,16 @@ export interface RemoteOkEntry {
   readonly tags?: readonly string[];
   readonly date?: string;
   readonly description?: string;
-  readonly salary_min?: number;
-  readonly salary_max?: number;
+  readonly salary_min?: string;
+  readonly salary_max?: string;
   readonly location?: string;
 }
 
-function buildSalary(min?: number, max?: number): string | undefined {
-  if (min != null && max != null) return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
-  if (min != null) return `$${min.toLocaleString()}+`;
+function buildSalary(minStr?: string, maxStr?: string): string | undefined {
+  const min = Number(minStr ?? '0');
+  const max = Number(maxStr ?? '0');
+  if (min > 0 && max > 0) return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
+  if (min > 0) return `$${min.toLocaleString()}+`;
   return undefined;
 }
 

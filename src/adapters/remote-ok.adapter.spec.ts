@@ -8,16 +8,17 @@ describe('RemoteOKAdapter', () => {
   });
 
   describe('normalize', () => {
+    // Fixture matches actual RemoteOK API shape: salary_min/max are strings; "0" = not provided
     const base: RemoteOkEntry = {
-      id: 'remote-ts-engineer-acme-123456',
+      id: '1132845',
       position: 'Senior TypeScript Engineer',
       company: 'Acme Corp',
-      url: 'https://remoteok.com/remote-jobs/123456',
+      url: 'https://remoteOK.com/remote-jobs/remote-ts-engineer-acme-1132845',
       tags: ['typescript', 'nodejs'],
-      date: '2024-05-18T00:00:00+00:00',
+      date: '2026-06-04T06:31:42+00:00',
       description: '<p>Join us</p>',
-      salary_min: 100_000,
-      salary_max: 150_000,
+      salary_min: '100000',
+      salary_max: '150000',
       location: 'Worldwide',
     };
 
@@ -26,15 +27,15 @@ describe('RemoteOKAdapter', () => {
 
       expect(job).not.toBeNull();
       expect(job?.source).toBe('remoteok');
-      expect(job?.sourceJobId).toBe('remote-ts-engineer-acme-123456');
+      expect(job?.sourceJobId).toBe('1132845');
       expect(job?.title).toBe('Senior TypeScript Engineer');
       expect(job?.company).toBe('Acme Corp');
-      expect(job?.url).toBe('https://remoteok.com/remote-jobs/123456');
+      expect(job?.url).toBe('https://remoteOK.com/remote-jobs/remote-ts-engineer-acme-1132845');
       expect(job?.tags).toEqual(['typescript', 'nodejs']);
       expect(job?.remote).toBe(true);
       expect(job?.salary).toBe('$100,000–$150,000');
       expect(job?.description).toBe('<p>Join us</p>');
-      expect(job?.postedAt).toEqual(new Date('2024-05-18T00:00:00+00:00'));
+      expect(job?.postedAt).toEqual(new Date('2026-06-04T06:31:42+00:00'));
     });
 
     it('returns null when position is missing', () => {
@@ -50,11 +51,17 @@ describe('RemoteOKAdapter', () => {
     });
 
     it('formats salary with only salary_min as "N+"', () => {
-      const job = adapter.normalize({ ...base, salary_max: undefined });
+      const job = adapter.normalize({ ...base, salary_max: '0' });
       expect(job?.salary).toBe('$100,000+');
     });
 
-    it('omits salary when neither salary_min nor salary_max is set', () => {
+    it('omits salary when both are "0"', () => {
+      const job = adapter.normalize({ ...base, salary_min: '0', salary_max: '0' });
+      expect(job).not.toBeNull();
+      expect('salary' in (job ?? {})).toBe(false);
+    });
+
+    it('omits salary when fields are absent', () => {
       const job = adapter.normalize({ ...base, salary_min: undefined, salary_max: undefined });
       expect(job).not.toBeNull();
       expect('salary' in (job ?? {})).toBe(false);
@@ -73,7 +80,7 @@ describe('RemoteOKAdapter', () => {
     });
 
     it('marks remote=false for an office-only location', () => {
-      expect(adapter.normalize({ ...base, location: 'New York, NY' })?.remote).toBe(false);
+      expect(adapter.normalize({ ...base, location: 'Melbourne, Victoria, Australia' })?.remote).toBe(false);
     });
 
     it('omits postedAt when date is missing', () => {
