@@ -17,7 +17,11 @@ export const ADAPTER_PROVIDERS = 'ADAPTER_PROVIDERS';
         remoteOK: RemoteOKAdapter,
         web3career: Web3CareerAdapter,
         hireWeb3: HireWeb3Adapter,
-      ) => [remoteOK, web3career, hireWeb3],
+      ): [RemoteOKAdapter, Web3CareerAdapter, HireWeb3Adapter] => [
+        remoteOK,
+        web3career,
+        hireWeb3,
+      ],
       inject: [RemoteOKAdapter, Web3CareerAdapter, HireWeb3Adapter],
     },
   ],
