@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AdminModule } from './admin/admin.module.js';
 import { AdaptersModule } from './adapters/adapters.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
@@ -29,6 +30,7 @@ import { JobsModule } from './jobs/jobs.module.js';
       }),
     }),
     JobsModule,
+    AdminModule,
     AdaptersModule,
     IngestionModule,
     CronModule,
