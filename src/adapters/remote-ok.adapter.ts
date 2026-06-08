@@ -46,7 +46,8 @@ export interface RemoteOkEntry {
 function buildSalary(minStr?: string, maxStr?: string): string | undefined {
   const min = Number(minStr ?? '0');
   const max = Number(maxStr ?? '0');
-  if (min > 0 && max > 0) return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
+  if (min > 0 && max > 0)
+    return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
   if (min > 0) return `$${min.toLocaleString()}+`;
   return undefined;
 }
@@ -77,7 +78,9 @@ export class RemoteOKAdapter implements SourceAdapter {
     if (!entry.position || !entry.company || !entry.url) return null;
 
     const location = (entry.location ?? '').toLowerCase().trim();
-    const remote = REMOTE_LOCATIONS.some((loc) => location === loc || location.includes('remote'));
+    const remote = REMOTE_LOCATIONS.some(
+      (loc) => location === loc || location.includes('remote'),
+    );
     const salary = buildSalary(entry.salary_min, entry.salary_max);
 
     return {
@@ -90,7 +93,9 @@ export class RemoteOKAdapter implements SourceAdapter {
       tags: entry.tags ? [...entry.tags] : [],
       remote,
       ...(salary !== undefined ? { salary } : {}),
-      ...(entry.description !== undefined ? { description: entry.description } : {}),
+      ...(entry.description !== undefined
+        ? { description: entry.description }
+        : {}),
     };
   }
 }

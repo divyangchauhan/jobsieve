@@ -30,7 +30,9 @@ describe('RemoteOKAdapter', () => {
       expect(job?.sourceJobId).toBe('1132845');
       expect(job?.title).toBe('Senior TypeScript Engineer');
       expect(job?.company).toBe('Acme Corp');
-      expect(job?.url).toBe('https://remoteOK.com/remote-jobs/remote-ts-engineer-acme-1132845');
+      expect(job?.url).toBe(
+        'https://remoteOK.com/remote-jobs/remote-ts-engineer-acme-1132845',
+      );
       expect(job?.tags).toEqual(['typescript', 'nodejs']);
       expect(job?.remote).toBe(true);
       expect(job?.salary).toBe('$100,000–$150,000');
@@ -56,19 +58,29 @@ describe('RemoteOKAdapter', () => {
     });
 
     it('omits salary when both are "0"', () => {
-      const job = adapter.normalize({ ...base, salary_min: '0', salary_max: '0' });
+      const job = adapter.normalize({
+        ...base,
+        salary_min: '0',
+        salary_max: '0',
+      });
       expect(job).not.toBeNull();
       expect('salary' in (job ?? {})).toBe(false);
     });
 
     it('omits salary when fields are absent', () => {
-      const job = adapter.normalize({ ...base, salary_min: undefined, salary_max: undefined });
+      const job = adapter.normalize({
+        ...base,
+        salary_min: undefined,
+        salary_max: undefined,
+      });
       expect(job).not.toBeNull();
       expect('salary' in (job ?? {})).toBe(false);
     });
 
     it('marks remote=true for "Worldwide" location', () => {
-      expect(adapter.normalize({ ...base, location: 'Worldwide' })?.remote).toBe(true);
+      expect(
+        adapter.normalize({ ...base, location: 'Worldwide' })?.remote,
+      ).toBe(true);
     });
 
     it('marks remote=true for empty location', () => {
@@ -76,11 +88,18 @@ describe('RemoteOKAdapter', () => {
     });
 
     it('marks remote=true when location contains "remote"', () => {
-      expect(adapter.normalize({ ...base, location: 'Remote (US)' })?.remote).toBe(true);
+      expect(
+        adapter.normalize({ ...base, location: 'Remote (US)' })?.remote,
+      ).toBe(true);
     });
 
     it('marks remote=false for an office-only location', () => {
-      expect(adapter.normalize({ ...base, location: 'Melbourne, Victoria, Australia' })?.remote).toBe(false);
+      expect(
+        adapter.normalize({
+          ...base,
+          location: 'Melbourne, Victoria, Australia',
+        })?.remote,
+      ).toBe(false);
     });
 
     it('omits postedAt when date is missing', () => {

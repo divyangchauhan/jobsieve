@@ -35,12 +35,16 @@ describe('FitScoringService', () => {
 
     it('adds +2 per matching stack keyword found in title', () => {
       const svc = makeService('typescript,nestjs', '');
-      expect(svc.score(makeJob({ title: 'TypeScript NestJS Engineer' }))).toBe(4);
+      expect(svc.score(makeJob({ title: 'TypeScript NestJS Engineer' }))).toBe(
+        4,
+      );
     });
 
     it('adds +2 for stack keywords found in description', () => {
       const svc = makeService('typescript', '');
-      expect(svc.score(makeJob({ description: 'Must know TypeScript well' }))).toBe(2);
+      expect(
+        svc.score(makeJob({ description: 'Must know TypeScript well' })),
+      ).toBe(2);
     });
 
     it('adds +3 per matching seniority keyword', () => {
@@ -55,24 +59,33 @@ describe('FitScoringService', () => {
 
     it('combines stack, seniority, and remote scores', () => {
       const svc = makeService('typescript', 'senior');
-      const job = makeJob({ title: 'Senior TypeScript Engineer', remote: true });
+      const job = makeJob({
+        title: 'Senior TypeScript Engineer',
+        remote: true,
+      });
       // 3 (senior) + 2 (typescript) + 2 (remote)
       expect(svc.score(job)).toBe(7);
     });
 
     it('is case-insensitive for both keywords and job text', () => {
       const svc = makeService('TYPESCRIPT', 'SENIOR');
-      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(5);
+      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(
+        5,
+      );
     });
 
     it('does not score a keyword twice if it appears multiple times', () => {
       const svc = makeService('typescript', '');
-      expect(svc.score(makeJob({ title: 'TypeScript TypeScript Dev' }))).toBe(2);
+      expect(svc.score(makeJob({ title: 'TypeScript TypeScript Dev' }))).toBe(
+        2,
+      );
     });
 
     it('returns 0 for empty keyword lists', () => {
       const svc = makeService('', '');
-      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(0);
+      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(
+        0,
+      );
     });
   });
 });

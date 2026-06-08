@@ -8,8 +8,7 @@ export function dedupKey(job: NormalizedJob): string {
 
   const parsed = new URL(job.url);
   const normalizedUrl =
-    parsed.host.toLowerCase() +
-    parsed.pathname.replace(/\/+$/, '');
+    parsed.host.toLowerCase() + parsed.pathname.replace(/\/+$/, '');
 
   return createHash('sha1').update(normalizedUrl).digest('hex');
 }
