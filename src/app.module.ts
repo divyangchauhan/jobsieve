@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdaptersModule } from './adapters/adapters.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { validate } from './config/env.validation.js';
+import { CronModule } from './cron/cron.module.js';
+import { IngestionModule } from './ingestion/ingestion.module.js';
 import { Job } from './jobs/job.entity.js';
 import { JobsModule } from './jobs/jobs.module.js';
 
@@ -15,6 +18,7 @@ import { JobsModule } from './jobs/jobs.module.js';
       isGlobal: true,
       validate,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'better-sqlite3' as const,
@@ -26,6 +30,8 @@ import { JobsModule } from './jobs/jobs.module.js';
     }),
     JobsModule,
     AdaptersModule,
+    IngestionModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],

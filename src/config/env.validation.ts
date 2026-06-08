@@ -15,8 +15,8 @@ class EnvironmentVariables {
   DATABASE_PATH!: string;
 
   @IsString()
-  @IsNotEmpty()
-  CRON_SCHEDULE!: string;
+  @IsOptional()
+  CRON_SCHEDULE?: string;
 
   @IsString()
   @IsNotEmpty()
