@@ -41,7 +41,8 @@ type RssItem = {
 function buildSalary(minStr?: string, maxStr?: string): string | undefined {
   const min = Number(minStr ?? '0');
   const max = Number(maxStr ?? '0');
-  if (min > 0 && max > 0) return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
+  if (min > 0 && max > 0)
+    return `$${min.toLocaleString()}–$${max.toLocaleString()}`;
   if (min > 0) return `$${min.toLocaleString()}+`;
   return undefined;
 }

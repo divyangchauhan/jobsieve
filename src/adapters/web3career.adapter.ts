@@ -64,7 +64,8 @@ function buildSalary(
 ): string | undefined {
   if (min === null && max === null) return undefined;
   const sym = currency ?? 'USD';
-  if (min !== null && max !== null) return `${sym} ${min.toLocaleString()}–${max.toLocaleString()}`;
+  if (min !== null && max !== null)
+    return `${sym} ${min.toLocaleString()}–${max.toLocaleString()}`;
   if (min !== null) return `${sym} ${min.toLocaleString()}+`;
   return undefined;
 }
@@ -79,7 +80,9 @@ export class Web3CareerAdapter implements SourceAdapter {
   async fetchJobs(): Promise<NormalizedJob[]> {
     const token = this.config.get<string>('WEB3CAREER_TOKEN');
     if (!token) {
-      this.logger.warn('WEB3CAREER_TOKEN not set — skipping web3career adapter');
+      this.logger.warn(
+        'WEB3CAREER_TOKEN not set — skipping web3career adapter',
+      );
       return [];
     }
 
@@ -103,7 +106,11 @@ export class Web3CareerAdapter implements SourceAdapter {
   normalize(entry: Web3CareerEntry): NormalizedJob | null {
     if (!entry.title || !entry.company || !entry.apply_url) return null;
 
-    const salary = buildSalary(entry.salary_min_value, entry.salary_max_value, entry.salary_currency);
+    const salary = buildSalary(
+      entry.salary_min_value,
+      entry.salary_max_value,
+      entry.salary_currency,
+    );
 
     return {
       source: this.name,
@@ -115,7 +122,9 @@ export class Web3CareerAdapter implements SourceAdapter {
       tags: entry.tags ? [...entry.tags] : [],
       remote: entry.is_remote,
       ...(salary !== undefined ? { salary } : {}),
-      ...(entry.description !== undefined ? { description: entry.description } : {}),
+      ...(entry.description !== undefined
+        ? { description: entry.description }
+        : {}),
     };
   }
 }
