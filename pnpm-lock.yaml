@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  api:
     dependencies:
       '@nestjs/axios':
         specifier: ^4.0.1

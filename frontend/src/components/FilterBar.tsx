@@ -35,7 +35,7 @@ export function FilterBar({ query, onChange, onReset }: Props) {
   }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
       <div className="relative min-w-48 flex-1">
         <Search
           size={14}
@@ -59,11 +59,11 @@ export function FilterBar({ query, onChange, onReset }: Props) {
           onChange(patch);
         }
         }
-        className="rounded-md border border-gray-300 bg-transparent py-1.5 pl-2 pr-6 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:text-white"
+        className="rounded-md border border-gray-300 bg-white py-1.5 pl-2 pr-6 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
       >
-        <option value="">All statuses</option>
+        <option value="" className="bg-white dark:bg-gray-800">All statuses</option>
         {JOB_STATUSES.map((s) => (
-          <option key={s} value={s}>
+          <option key={s} value={s} className="bg-white dark:bg-gray-800">
             {s}
           </option>
         ))}
