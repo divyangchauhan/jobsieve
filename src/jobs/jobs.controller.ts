@@ -23,6 +23,11 @@ export class JobsController {
     return this.jobsService.findAll(query);
   }
 
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<JobResponseDto> {
+    return this.jobsService.findOne(id);
+  }
+
   @Patch(':id')
   updateStatus(
     @Param('id', ParseIntPipe) id: number,

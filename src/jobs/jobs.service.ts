@@ -58,6 +58,14 @@ export class JobsService {
     return { data, total, page, limit };
   }
 
+  async findOne(id: number): Promise<Job> {
+    const job = await this.jobRepo.findOneBy({ id });
+    if (job === null) {
+      throw new NotFoundException(`Job ${id} not found`);
+    }
+    return job;
+  }
+
   async updateStatus(id: number, status: JobStatus): Promise<Job> {
     const job = await this.jobRepo.findOneBy({ id });
     if (job === null) {
