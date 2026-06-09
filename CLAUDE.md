@@ -20,17 +20,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This project uses **pnpm** exclusively. Never use `npm` or `yarn`.
 
 ```bash
-pnpm install          # install deps
-pnpm run build        # compile TypeScript via nest build → dist/
-pnpm run start:dev    # watch mode (backend)
-pnpm run start:prod   # run compiled dist/main.js
-pnpm run lint         # eslint --fix across src/ and test/
-pnpm run format       # prettier --write
-pnpm test             # jest unit tests (src/**/*.spec.ts)
-pnpm run test:watch   # jest in watch mode
-pnpm run test:cov     # jest with coverage
-pnpm run test:e2e     # jest e2e (test/**/*.e2e-spec.ts)
-pnpm run ingest       # POST /admin/ingest against a running server (manual trigger)
+pnpm install           # install all workspace deps (backend + frontend)
+
+# Development
+pnpm run dev:api       # NestJS in watch mode (backend only)
+pnpm run dev:ui        # Vite dev server — proxies /api → localhost:3000 (frontend only)
+
+# Build
+pnpm run build         # build frontend then backend (production-ready)
+pnpm run build:api     # compile NestJS only → dist/
+pnpm run build:ui      # compile React only → frontend/dist/
+
+# Run
+pnpm run start         # run compiled dist/main.js (serves API + static frontend)
+
+# Test
+pnpm test              # jest unit tests (src/**/*.spec.ts)
+pnpm run test:watch    # jest in watch mode
+pnpm run test:cov      # jest with coverage
+pnpm run test:e2e      # jest e2e (test/**/*.e2e-spec.ts)
+
+# Utilities
+pnpm run lint          # eslint --fix across src/ and test/
+pnpm run format        # prettier --write
+pnpm run ingest        # POST /api/admin/ingest against a running server
 ```
 
 Run a single test file:
@@ -87,7 +100,7 @@ This is a NestJS monorepo with a `frontend/` React app alongside the backend.
 
 **Upsert invariant**: `ON CONFLICT(dedup_key) DO UPDATE` only touches `title`, `company`, `url`, `tags`, `salary`, `last_seen_at`. It **never** overwrites `status`, `notion_page_id`, or `first_seen_at`.
 
-**Frontend** lives in `frontend/` (Vite + React 18 + TanStack Query v5 + Tailwind CSS). Its dev server proxies `/api` → `localhost:3000`. Production: `pnpm run build` in `frontend/` then NestJS `ServeStaticModule` serves `frontend/dist` at `/`.
+**Frontend** lives in `frontend/` (Vite + React 18 + TanStack Query v5 + Tailwind CSS). Its dev server proxies `/api` → `localhost:3000`. Production: `pnpm run build` builds both; NestJS serves `frontend/dist` as static assets at `/` and all API routes under `/api`.
 
 ## Environment
 
@@ -101,4 +114,4 @@ Required vars: `DATABASE_PATH`, `CRON_SCHEDULE`, `WEB3CAREER_TOKEN`, `MIN_FIT_SC
 
 ## pnpm quirks
 
-`.npmrc` sets `shamefully-hoist=true` — required for NestJS decorator metadata and `better-sqlite3` native bindings to resolve. `pnpm.onlyBuiltDependencies` in `package.json` approves native build scripts non-interactively for `better-sqlite3`, `@nestjs/core`, and `unrs-resolver`.
+`.npmrc` sets `shamefully-hoist=true` — required for NestJS decorator metadata and `better-sqlite3` native bindings to resolve. `pnpm.onlyBuiltDependencies` in `package.json` approves native build scripts non-interactively for `better-sqlite3`, `@nestjs/core`, `unrs-resolver`, and `esbuild` (used by Vite).

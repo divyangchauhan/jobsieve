@@ -7,22 +7,24 @@
   "license": "UNLICENSED",
   "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
+    "dev:api": "nest start --watch",
+    "dev:ui": "pnpm --filter jobsieve-frontend dev",
+
+    "build:api": "nest build",
+    "build:ui": "pnpm --filter jobsieve-frontend build",
+    "build": "pnpm run build:ui && pnpm run build:api",
+
+    "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "ingest": "curl -s -X POST http://localhost:3000/api/admin/ingest | pnpm dlx json",
-    "dev:frontend": "pnpm --filter jobsieve-frontend dev",
-    "build:frontend": "pnpm --filter jobsieve-frontend build",
-    "build:all": "pnpm --filter jobsieve-frontend build && pnpm run build"
+
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "ingest": "curl -s -X POST http://localhost:3000/api/admin/ingest | pnpm dlx json"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
