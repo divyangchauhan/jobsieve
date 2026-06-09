@@ -17,6 +17,7 @@ import { JobsModule } from './jobs/jobs.module.js';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '../.env',
       validate,
     }),
     ScheduleModule.forRoot(),
