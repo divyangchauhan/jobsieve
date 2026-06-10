@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdaptersModule } from '../adapters/adapters.module.js';
 import { IngestionModule } from '../ingestion/ingestion.module.js';
 import { Job } from '../jobs/job.entity.js';
+import { NotionModule } from '../notion/notion.module.js';
 import { ScoringModule } from '../scoring/scoring.module.js';
 import { CronOrchestratorService } from './cron-orchestrator.service.js';
 
@@ -13,6 +14,7 @@ import { CronOrchestratorService } from './cron-orchestrator.service.js';
     AdaptersModule,
     IngestionModule,
     ScoringModule,
+    NotionModule,
   ],
   providers: [CronOrchestratorService],
   exports: [CronOrchestratorService],
