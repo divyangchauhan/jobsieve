@@ -48,6 +48,38 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   NOTION_DATABASE_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_TITLE?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_COMPANY?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_STATUS?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_FIT_SCORE?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_SOURCE?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_POSTED_AT?: string;
+
+  @IsString()
+  @IsOptional()
+  NOTION_COL_TAGS?: string;
 }
 
 export function validate(

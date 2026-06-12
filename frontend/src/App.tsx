@@ -20,7 +20,21 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Toaster position="bottom-right" />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            error: {
+              style: {
+                background: '#fef2f2',
+                color: '#b91c1c',
+                border: '1px solid #fecaca',
+                borderRadius: '0.5rem',
+                fontSize: '0.875rem',
+              },
+              iconTheme: { primary: '#dc2626', secondary: '#fef2f2' },
+            },
+          }}
+        />
         <Layout>
           <ErrorBoundary>
             <Routes>

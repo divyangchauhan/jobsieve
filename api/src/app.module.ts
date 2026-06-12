@@ -12,6 +12,7 @@ import { CronModule } from './cron/cron.module.js';
 import { IngestionModule } from './ingestion/ingestion.module.js';
 import { Job } from './jobs/job.entity.js';
 import { JobsModule } from './jobs/jobs.module.js';
+import { NotionModule } from './notion/notion.module.js';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { JobsModule } from './jobs/jobs.module.js';
     AdaptersModule,
     IngestionModule,
     CronModule,
+    NotionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

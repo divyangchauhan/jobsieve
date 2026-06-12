@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { NotionSyncService } from '../notion/notion-sync.service.js';
 import { GetJobsQueryDto } from './dto/get-jobs-query.dto.js';
 import { PaginatedJobsResponseDto } from './dto/paginated-jobs-response.dto.js';
 import { JobStatus } from './dto/update-job-status.dto.js';
@@ -17,6 +18,7 @@ export class JobsService {
     @InjectRepository(Job)
     private readonly jobRepo: Repository<Job>,
     private readonly config: ConfigService,
+    private readonly notionSync: NotionSyncService,
   ) {}
 
   async findAll(query: GetJobsQueryDto): Promise<PaginatedJobsResponseDto> {
@@ -73,5 +75,14 @@ export class JobsService {
     }
     await this.jobRepo.update(id, { status });
     return { ...job, status };
+  }
+
+  async syncToNotion(id: number): Promise<Job> {
+    const job = await this.jobRepo.findOneBy({ id });
+    if (job === null) {
+      throw new NotFoundException(`Job ${id} not found`);
+    }
+    await this.notionSync.pushJob(job);
+    return this.jobRepo.findOneByOrFail({ id });
   }
 }

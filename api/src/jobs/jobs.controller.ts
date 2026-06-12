@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 
@@ -34,5 +35,12 @@ export class JobsController {
     @Body() dto: UpdateJobStatusDto,
   ): Promise<JobResponseDto> {
     return this.jobsService.updateStatus(id, dto.status);
+  }
+
+  @Post(':id/notion-sync')
+  syncToNotion(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<JobResponseDto> {
+    return this.jobsService.syncToNotion(id);
   }
 }
