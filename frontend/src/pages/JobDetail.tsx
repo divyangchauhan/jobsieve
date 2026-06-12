@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+import parse from 'html-react-parser';
 import { ArrowLeft, ExternalLink, Loader2, MapPin } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -164,8 +166,8 @@ export function JobDetail() {
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
             Description
           </h2>
-          <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
-            {job.description}
+          <div className="prose prose-sm max-w-none text-sm text-gray-700 dark:text-gray-300">
+            {parse(DOMPurify.sanitize(job.description))}
           </div>
         </div>
       )}
