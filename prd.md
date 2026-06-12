@@ -34,18 +34,18 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 ## Environment Variables (.env.example)
 
-| Variable | Required | Description |
-|---|---|---|
-| `DATABASE_PATH` | Yes | Path to the SQLite file, e.g. `./data/jobsieve.sqlite` |
-| `CRON_SCHEDULE` | Yes | Cron expression for ingestion, e.g. `0 */4 * * *` (every 4h) |
-| `WEB3CAREER_TOKEN` | Yes (for web3.career adapter) | Free API token from web3.career |
-| `MIN_FIT_SCORE` | Yes | Integer; jobs below this score are stored but hidden from default view |
-| `STACK_KEYWORDS` | Yes | Comma-separated list, e.g. `typescript,nestjs,node,python,aws,kafka,web3,solidity` |
-| `SENIORITY_KEYWORDS` | Yes | Comma-separated list, e.g. `senior,lead,staff,principal` |
-| `NOTION_TOKEN` | Optional | Notion integration token; Notion sync only activates if both Notion vars are set |
-| `NOTION_DATABASE_ID` | Optional | ID of the target Notion database |
-| `API_PORT` | Optional | Port for the NestJS HTTP server, default `3000` |
-| `FRONTEND_PORT` | Optional | Port for the Vite dev server, default `5173` |
+| Variable             | Required                      | Description                                                                        |
+| -------------------- | ----------------------------- | ---------------------------------------------------------------------------------- |
+| `DATABASE_PATH`      | Yes                           | Path to the SQLite file, e.g. `./data/jobsieve.sqlite`                             |
+| `CRON_SCHEDULE`      | Yes                           | Cron expression for ingestion, e.g. `0 */4 * * *` (every 4h)                       |
+| `WEB3CAREER_TOKEN`   | Yes (for web3.career adapter) | Free API token from web3.career                                                    |
+| `MIN_FIT_SCORE`      | Yes                           | Integer; jobs below this score are stored but hidden from default view             |
+| `STACK_KEYWORDS`     | Yes                           | Comma-separated list, e.g. `typescript,nestjs,node,python,aws,kafka,web3,solidity` |
+| `SENIORITY_KEYWORDS` | Yes                           | Comma-separated list, e.g. `senior,lead,staff,principal`                           |
+| `NOTION_TOKEN`       | Optional                      | Notion integration token; Notion sync only activates if both Notion vars are set   |
+| `NOTION_DATABASE_ID` | Optional                      | ID of the target Notion database                                                   |
+| `API_PORT`           | Optional                      | Port for the NestJS HTTP server, default `3000`                                    |
+| `FRONTEND_PORT`      | Optional                      | Port for the Vite dev server, default `5173`                                       |
 
 > **Production note:** Source all secrets from a secrets manager (AWS Secrets Manager, Vault, etc.). Never commit `.env` to version control.
 
@@ -54,9 +54,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ## Milestones
 
 ### Milestone 1 — Project + git setup
+
 **Goal:** A clean, runnable NestJS skeleton with all tooling in place.
 
 **Deliverables:**
+
 - `git init` in `jobsieve/`; `package.json` name = `"jobsieve"`
 - NestJS scaffold via CLI; TypeScript `strict: true`
 - ESLint (flat config) + Prettier configured
@@ -69,9 +71,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 2 — Data model
+
 **Goal:** A stable, indexed SQLite schema via TypeORM.
 
 **Deliverables:**
+
 - `Job` TypeORM entity with all columns:
   - `id` (PK, auto-increment)
   - `dedup_key` (unique, indexed)
@@ -94,9 +98,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 3 — Core normalization + dedup
+
 **Goal:** A shared DTO + interface contract all adapters must satisfy, and a tested dedup key function.
 
 **Deliverables:**
+
 - `NormalizedJob` interface (no `any`)
 - `SourceAdapter` interface: `{ name: string; fetchJobs(): Promise<NormalizedJob[]> }`
 - `dedupKey(job: NormalizedJob): string`:
@@ -109,9 +115,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 4 — Source adapters (v1)
+
 **Goal:** Three isolated, failure-safe source adapters producing `NormalizedJob[]`.
 
 **Deliverables:**
+
 - `RemoteOKAdapter`: GET `https://remoteok.com/api`; drop element 0; set `User-Agent`
 - `Web3CareerAdapter`: web3.career API (env-gated on `WEB3CAREER_TOKEN`)
 - `HireWeb3Adapter`: RSS at `https://hireweb3.io/job/rss` via `rss-parser`
@@ -124,9 +132,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 5 — Upsert with status preservation
+
 **Goal:** An ingestion service that safely upserts jobs without overwriting user-owned state.
 
 **Deliverables:**
+
 - `IngestionService.upsert(jobs: NormalizedJob[]): Promise<Job[]>` (returns new rows only)
 - INSERT sets `status='New'`, `first_seen_at=now`, `last_seen_at=now`
 - `ON CONFLICT(dedup_key) DO UPDATE` updates only: `title`, `company`, `url`, `tags`, `salary`, `last_seen_at`
@@ -141,9 +151,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 6 — Cron orchestrator + fit scoring
+
 **Goal:** A scheduled orchestrator that drives all adapters and scores results.
 
 **Deliverables:**
+
 - `FitScoringService.score(job: NormalizedJob): number`:
   - +2 per matching `STACK_KEYWORDS` term (in title + description)
   - +3 per matching `SENIORITY_KEYWORDS` term
@@ -160,9 +172,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 7 — REST API
+
 **Goal:** A minimal, filterable HTTP interface for browsing jobs and tracking status.
 
 **Deliverables:**
+
 - `GET /jobs` — query params:
   - `status` (filter by status value)
   - `source` (filter by adapter name)
@@ -180,9 +194,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 8 — OPTIONAL Notion sync module
+
 **Goal:** Push new jobs to Notion after each cron run; keep in sync on re-runs.
 
 **Deliverables:**
+
 - `NotionSyncModule`: only loads if `NOTION_TOKEN` + `NOTION_DATABASE_ID` are both set
 - After each cron run: push newly-inserted `Job[]` to Notion database
 - Store returned `notion_page_id` on each job; re-runs call `pages.update` instead of creating duplicates
@@ -194,9 +210,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 ---
 
 ### Milestone 9 — React frontend
+
 **Goal:** A focused, single-page UI for browsing, filtering, and triaging job listings.
 
 **Deliverables:**
+
 - Vite + React 18 + TypeScript (`strict: true`) in `packages/frontend/` (monorepo-style or `frontend/` subdir)
 - TanStack Query v5 for server state; Axios for HTTP calls to the NestJS API
 - Tailwind CSS for styling; minimal custom CSS

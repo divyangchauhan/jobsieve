@@ -1,6 +1,7 @@
-import { ExternalLink, MapPin } from 'lucide-react';
+import { ExternalLink, Loader2, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import { useNotionSync } from '../hooks/useNotionSync';
 import type { Job, JobStatus } from '../types/job';
 import { FitScoreBar } from './FitScoreBar';
 import { StatusBadge } from './StatusBadge';
@@ -11,9 +12,16 @@ interface Props {
 }
 
 export function JobCard({ job, onStatusChange }: Props) {
+  const { mutate: syncToNotion, isPending: syncing } = useNotionSync();
   const postedDate = job.posted_at
     ? new Date(job.posted_at).toLocaleDateString()
     : null;
+
+  function handleNotionSync(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    syncToNotion(job.id);
+  }
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
@@ -55,16 +63,36 @@ export function JobCard({ job, onStatusChange }: Props) {
 
         {postedDate && <span>{postedDate}</span>}
 
-        <a
-          href={job.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto flex items-center gap-1 text-blue-500 hover:text-blue-700 dark:text-blue-400"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ExternalLink size={12} />
-          Apply
-        </a>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={handleNotionSync}
+            disabled={syncing}
+            title={job.notion_page_id ? 'Re-sync to Notion' : 'Add to Notion'}
+            className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium transition-colors disabled:opacity-50 ${
+              job.notion_page_id
+                ? 'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-300 dark:hover:bg-green-900/40'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            }`}
+          >
+            {syncing ? (
+              <Loader2 size={10} className="animate-spin" />
+            ) : (
+              <span className="font-bold">N</span>
+            )}
+            {job.notion_page_id ? 'Synced' : 'Notion'}
+          </button>
+
+          <a
+            href={job.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-blue-500 hover:text-blue-700 dark:text-blue-400"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExternalLink size={12} />
+            Apply
+          </a>
+        </div>
       </div>
 
       {job.tags.length > 0 && (

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CronJob } from 'cron';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { ADAPTER_PROVIDERS } from '../adapters/adapters.module.js';
 import { dedupKey } from '../ingestion/dedup-key.js';
@@ -11,7 +11,6 @@ import { IngestionService } from '../ingestion/ingestion.service.js';
 import { NormalizedJob } from '../ingestion/normalized-job.interface.js';
 import { SourceAdapter } from '../ingestion/source-adapter.interface.js';
 import { Job } from '../jobs/job.entity.js';
-import { NotionSyncService } from '../notion/notion-sync.service.js';
 import { FitScoringService } from '../scoring/fit-scoring.service.js';
 
 const DEFAULT_CRON = '0 */4 * * *';
@@ -27,7 +26,6 @@ export class CronOrchestratorService implements OnModuleInit {
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
     private readonly config: ConfigService,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly notionSync: NotionSyncService,
   ) {}
 
   onModuleInit(): void {
@@ -56,13 +54,6 @@ export class CronOrchestratorService implements OnModuleInit {
               fit_score: this.scoring.score(normalized),
             });
           }
-        }
-
-        if (newJobs.length > 0) {
-          const scoredJobs = await this.jobRepo.findBy({
-            id: In(newJobs.map((j) => j.id)),
-          });
-          await this.notionSync.pushJobs(scoredJobs);
         }
 
         this.logger.log(

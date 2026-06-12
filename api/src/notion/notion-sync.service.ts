@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from '@notionhq/client';
@@ -37,15 +37,23 @@ export class NotionSyncService {
     });
     this.databaseId = dbId;
     this.columns = {
-      title: this.config.get('NOTION_COL_TITLE', DEFAULT_COLUMN_MAP.title),
-      company: this.config.get('NOTION_COL_COMPANY', DEFAULT_COLUMN_MAP.company),
-      url: this.config.get('NOTION_COL_URL', DEFAULT_COLUMN_MAP.url),
-      status: this.config.get('NOTION_COL_STATUS', DEFAULT_COLUMN_MAP.status),
-      fitScore: this.config.get('NOTION_COL_FIT_SCORE', DEFAULT_COLUMN_MAP.fitScore),
-      source: this.config.get('NOTION_COL_SOURCE', DEFAULT_COLUMN_MAP.source),
-      postedAt: this.config.get('NOTION_COL_POSTED_AT', DEFAULT_COLUMN_MAP.postedAt),
-      tags: this.config.get('NOTION_COL_TAGS', DEFAULT_COLUMN_MAP.tags),
+      name: this.config.get('NOTION_COL_NAME', DEFAULT_COLUMN_MAP.name),
+      position: this.config.get('NOTION_COL_POSITION', DEFAULT_COLUMN_MAP.position),
+      link: this.config.get('NOTION_COL_LINK', DEFAULT_COLUMN_MAP.link),
+      stage: this.config.get('NOTION_COL_STAGE', DEFAULT_COLUMN_MAP.stage),
     };
+  }
+
+  async pushJob(job: Job): Promise<void> {
+    if (!this.client) {
+      throw new BadGatewayException('Notion is not configured');
+    }
+    try {
+      await this.syncJob(job);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Notion API error';
+      throw new BadGatewayException(message);
+    }
   }
 
   async pushJobs(jobs: Job[]): Promise<void> {
@@ -63,37 +71,32 @@ export class NotionSyncService {
     // client is checked by the caller (pushJobs)
     const client = this.client!;
     await this.acquireToken();
-    const properties = this.buildProperties(job);
 
     if (job.notion_page_id) {
-      await client.pages.update({ page_id: job.notion_page_id, properties });
+      await client.pages.update({
+        page_id: job.notion_page_id,
+        properties: this.buildCoreProperties(job),
+      });
       return;
     }
 
     const page = await client.pages.create({
       parent: { database_id: this.databaseId },
-      properties,
+      properties: {
+        ...this.buildCoreProperties(job),
+        [this.columns.stage]: { status: { name: 'To apply' } },
+      },
     });
     await this.jobRepo.update(job.id, { notion_page_id: page.id });
   }
 
-  private buildProperties(job: Job): Record<string, PageProperty> {
+  private buildCoreProperties(job: Job): Record<string, PageProperty> {
     const cols = this.columns;
-    const props: Record<string, PageProperty> = {
-      [cols.title]: { title: [{ text: { content: job.title } }] },
-      [cols.company]: { rich_text: [{ text: { content: job.company } }] },
-      [cols.url]: { url: job.url },
-      [cols.status]: { select: { name: job.status } },
-      [cols.fitScore]: { number: job.fit_score ?? 0 },
-      [cols.source]: { select: { name: job.source } },
-      [cols.tags]: { multi_select: job.tags.map((t) => ({ name: t })) },
+    return {
+      [cols.name]: { title: [{ text: { content: job.company } }] },
+      [cols.position]: { rich_text: [{ text: { content: job.title } }] },
+      [cols.link]: { url: job.url },
     };
-
-    if (job.posted_at) {
-      props[cols.postedAt] = { date: { start: job.posted_at.toISOString() } };
-    }
-
-    return props;
   }
 
   private async acquireToken(): Promise<void> {

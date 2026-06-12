@@ -1,10 +1,11 @@
-import { ArrowLeft, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Loader2, MapPin } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FitScoreBar } from '../components/FitScoreBar';
 import { DetailSkeleton } from '../components/LoadingSkeleton';
 import { StatusBadge } from '../components/StatusBadge';
 import { useJob } from '../hooks/useJob';
+import { useNotionSync } from '../hooks/useNotionSync';
 import { useUpdateStatus } from '../hooks/useUpdateStatus';
 import type { JobStatus } from '../types/job';
 import { JOB_STATUSES } from '../types/job';
@@ -15,6 +16,7 @@ export function JobDetail() {
   const jobId = Number(id);
   const { data: job, isLoading, isError } = useJob(jobId);
   const { mutate: updateStatus, isPending } = useUpdateStatus();
+  const { mutate: syncToNotion, isPending: syncing } = useNotionSync();
 
   if (isLoading) {
     return <DetailSkeleton />;
@@ -59,15 +61,35 @@ export function JobDetail() {
               {job.company}
             </p>
           </div>
-          <a
-            href={job.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex shrink-0 items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            <ExternalLink size={14} />
-            Apply
-          </a>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              onClick={() => syncToNotion(job.id)}
+              disabled={syncing}
+              title={job.notion_page_id ? 'Re-sync to Notion' : 'Add to Notion'}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50 ${
+                job.notion_page_id
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              {syncing ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <span className="font-bold">N</span>
+              )}
+              {job.notion_page_id ? 'Synced' : 'Notion'}
+            </button>
+
+            <a
+              href={job.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              <ExternalLink size={14} />
+              Apply
+            </a>
+          </div>
         </div>
 
         <div className="mb-4">

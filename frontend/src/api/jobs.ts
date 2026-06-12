@@ -25,3 +25,8 @@ export async function triggerIngest(): Promise<{ ok: boolean }> {
   const { data } = await apiClient.post<{ ok: boolean }>('/admin/ingest');
   return data;
 }
+
+export async function syncJobToNotion(id: number): Promise<Job> {
+  const { data } = await apiClient.post<Job>(`/jobs/${id}/notion-sync`);
+  return data;
+}
