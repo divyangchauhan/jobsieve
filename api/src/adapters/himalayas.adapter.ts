@@ -1,9 +1,15 @@
 /*
  * Himalayas API — no auth required.
- * GET https://himalayas.app/jobs/api?skills=TypeScript,Python,Go&limit=100
- * Response: { jobs: [{ title, companyName, locationRestrictions, employmentType,
- *                      minSalary, maxSalary, currency, categories, description,
- *                      pubDate (unix seconds), applicationLink, guid }] }
+ * GET https://himalayas.app/jobs/api?skills=TypeScript,Python,Go&limit=100&offset=N
+ * Response: { jobs: [...], totalCount: 96000+, offset: N, limit: N }
+ *
+ * Note: the server ignores the `limit` param and always returns 20 jobs per page.
+ * Offset-based pagination works: offset=0, 20, 40, ... returns different batches.
+ * We fetch up to MAX_PAGES pages and stop early if a page returns < PAGE_SIZE.
+ *
+ * Each job: { title, companyName, locationRestrictions, employmentType,
+ *             minSalary, maxSalary, currency, categories, description,
+ *             pubDate (unix seconds), applicationLink, guid }
  * guid is the canonical URL and serves as a stable dedup key.
  */
 import { Injectable, Logger } from '@nestjs/common';
@@ -14,9 +20,11 @@ import { SourceAdapter } from '../ingestion/source-adapter.interface.js';
 import { passesTitleFilter } from './title-filter.js';
 
 const TIMEOUT_MS = 10_000;
+const POLITENESS_MS = 500;
 const API_URL = 'https://himalayas.app/jobs/api';
 const SKILLS = 'TypeScript,Python,Go,NestJS,Node.js';
-const LIMIT = 100;
+const PAGE_SIZE = 20; // server-enforced; limit param is ignored
+const MAX_PAGES = 15; // safety cap: 15 × 20 = 300 jobs maximum
 
 interface HimalayasJob {
   readonly title: string;
@@ -49,26 +57,45 @@ function buildSalary(
   return undefined;
 }
 
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 @Injectable()
 export class HimalayasAdapter implements SourceAdapter {
   readonly name = 'himalayas';
   private readonly logger = new Logger(HimalayasAdapter.name);
 
   async fetchJobs(): Promise<NormalizedJob[]> {
-    try {
-      const { data } = await axios.get<HimalayasResponse>(API_URL, {
-        timeout: TIMEOUT_MS,
-        params: { skills: SKILLS, limit: LIMIT },
-        headers: { 'User-Agent': 'jobsieve/1.0' },
-      });
-      return (data.jobs ?? []).flatMap((job) => {
-        const normalized = this.normalize(job);
-        return normalized !== null ? [normalized] : [];
-      });
-    } catch (err) {
-      this.logger.error(`himalayas fetch failed: ${String(err)}`);
-      return [];
+    const seen = new Map<string, NormalizedJob>();
+
+    for (let page = 0; page < MAX_PAGES; page++) {
+      const offset = page * PAGE_SIZE;
+      if (page > 0) await delay(POLITENESS_MS);
+
+      try {
+        const { data } = await axios.get<HimalayasResponse>(API_URL, {
+          timeout: TIMEOUT_MS,
+          params: { skills: SKILLS, limit: PAGE_SIZE, offset },
+          headers: { 'User-Agent': 'jobsieve/1.0' },
+        });
+
+        const jobs = data.jobs ?? [];
+        for (const job of jobs) {
+          if (seen.has(job.guid)) continue;
+          const normalized = this.normalize(job);
+          if (normalized !== null) seen.set(job.guid, normalized);
+        }
+
+        if (jobs.length < PAGE_SIZE) break; // last page
+      } catch (err) {
+        this.logger.error(`himalayas fetch failed at offset=${offset}: ${String(err)}`);
+        break; // return what was collected so far
+      }
     }
+
+    this.logger.log(`himalayas fetched ${seen.size} unique jobs`);
+    return [...seen.values()];
   }
 
   normalize(job: HimalayasJob): NormalizedJob | null {
