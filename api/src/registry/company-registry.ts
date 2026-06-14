@@ -25,6 +25,8 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   // ── Greenhouse ───────────────────────────────────────────────────────────────
   // slug was layerzero → layerzerolabs
   { name: 'LayerZero Labs', ats: 'greenhouse', slug: 'layerzerolabs', tier: 1, domain: 'web3-bridge' },
+  { name: 'Bybit', ats: 'greenhouse', slug: 'bybit', tier: 2, domain: 'web3-exchange' },
+  { name: 'OKX', ats: 'greenhouse', slug: 'okx', tier: 2, domain: 'web3-exchange' },
   { name: 'Fireblocks', ats: 'greenhouse', slug: 'fireblocks', tier: 1, domain: 'web3-fintech' },
   { name: 'BitGo', ats: 'greenhouse', slug: 'bitgo', tier: 2, domain: 'web3-fintech' },
   { name: 'Gemini', ats: 'greenhouse', slug: 'gemini', tier: 2, domain: 'web3-exchange' },
@@ -51,9 +53,14 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   { name: 'Dagger.io', ats: 'greenhouse', slug: 'dagger', tier: 1, domain: 'backend-saas' },
   // moved from ashby/zora → greenhouse/zora
   { name: 'Zora', ats: 'greenhouse', slug: 'zora', tier: 2, domain: 'web3-nft' },
+  // 1 job "Wildcard" as of 2026-06-14; board confirmed live
+  { name: 'Socket', ats: 'greenhouse', slug: 'socket', tier: 1, domain: 'web3-bridge' },
 
   // ── Ashby ─────────────────────────────────────────────────────────────────────
   { name: 'Goldsky', ats: 'ashby', slug: 'goldsky', tier: 1, domain: 'web3-infra' },
+  { name: 'Pyth Network', ats: 'ashby', slug: 'pythnetwork', tier: 1, domain: 'web3-oracle' },
+  { name: 'ENS Labs', ats: 'ashby', slug: 'ens-labs', tier: 1, domain: 'web3-naming' },
+  { name: 'Trigger.dev', ats: 'ashby', slug: 'triggerdev', tier: 1, domain: 'backend-saas' },
   { name: 'Helius (Solana RPC)', ats: 'ashby', slug: 'helius', tier: 1, domain: 'web3-infra' },
   { name: 'Dynamic', ats: 'ashby', slug: 'dynamic', tier: 1, domain: 'web3-auth' },
   { name: 'Exa AI', ats: 'ashby', slug: 'exa', tier: 1, domain: 'ai-infra' },

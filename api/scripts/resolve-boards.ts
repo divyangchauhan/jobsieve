@@ -89,15 +89,19 @@ async function probeAshby(slug: string): Promise<number | null> {
 
 // ─── Token extraction ─────────────────────────────────────────────────────────
 
+// Generic path segments that appear at the end of career URLs but are not ATS board slugs.
+const URL_STOPWORDS = new Set(['jobs', 'job', 'careers', 'career', 'openings', 'positions', 'board', 'boards', 'en']);
+
 function extractCareerUrlTokens(careerUrl: string | null): string[] {
   if (!careerUrl) return [];
   try {
     const u = new URL(careerUrl);
     // boards.greenhouse.io/SLUG or jobs.lever.co/SLUG or jobs.ashbyhq.com/SLUG
     const segments = u.pathname.split('/').filter(Boolean);
-    if (segments.length > 0) {
-      const last = segments[segments.length - 1];
-      if (last) return [last];
+    // Walk from the end, skipping generic stopword segments
+    for (let i = segments.length - 1; i >= 0; i--) {
+      const seg = segments[i];
+      if (seg && !URL_STOPWORDS.has(seg.toLowerCase())) return [seg];
     }
   } catch {
     // ignore malformed URLs
@@ -215,8 +219,8 @@ async function resolveCompany(company: SourcesCompany): Promise<ProbeResult> {
 }
 
 async function main(): Promise<void> {
-  const sourcesPath = path.resolve(__dirname, '../../api/src/registry/jobsieve-sources.json');
-  const reportPath = path.resolve(__dirname, '../../resolve-report.md');
+  const sourcesPath = path.resolve(__dirname, '../../src/registry/jobsieve-sources.json');
+  const reportPath = path.resolve(__dirname, '../../../resolve-report.md');
 
   const raw = fs.readFileSync(sourcesPath, 'utf-8');
   const sources = JSON.parse(raw) as SourcesJson;
