@@ -27,6 +27,8 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   { name: 'LayerZero Labs', ats: 'greenhouse', slug: 'layerzerolabs', tier: 1, domain: 'web3-bridge' },
   { name: 'Bybit', ats: 'greenhouse', slug: 'bybit', tier: 2, domain: 'web3-exchange' },
   { name: 'OKX', ats: 'greenhouse', slug: 'okx', tier: 2, domain: 'web3-exchange' },
+  // confirmed live greenhouse/consensys 12 jobs; was omitted from initial registry build
+  { name: 'Infura / ConsenSys', ats: 'greenhouse', slug: 'consensys', tier: 1, domain: 'web3-infra' },
   { name: 'Fireblocks', ats: 'greenhouse', slug: 'fireblocks', tier: 1, domain: 'web3-fintech' },
   { name: 'BitGo', ats: 'greenhouse', slug: 'bitgo', tier: 2, domain: 'web3-fintech' },
   { name: 'Gemini', ats: 'greenhouse', slug: 'gemini', tier: 2, domain: 'web3-exchange' },

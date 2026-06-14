@@ -3,10 +3,36 @@
     "generated": "2026-06-12",
     "profile": {
       "name": "Divyang Chauhan",
-      "stack": ["TypeScript", "NestJS", "Python", "Django", "AWS", "Terraform", "MongoDB", "PostgreSQL", "Kafka", "Solidity", "Viem", "Go"],
-      "roles": ["Senior Backend Engineer", "Technical Lead", "Senior IC"],
-      "preferences": ["fully-remote", "universe-2-comp", "ownership-autonomy"],
-      "domains": ["web3", "backend-saas", "ai-infra", "security"]
+      "stack": [
+        "TypeScript",
+        "NestJS",
+        "Python",
+        "Django",
+        "AWS",
+        "Terraform",
+        "MongoDB",
+        "PostgreSQL",
+        "Kafka",
+        "Solidity",
+        "Viem",
+        "Go"
+      ],
+      "roles": [
+        "Senior Backend Engineer",
+        "Technical Lead",
+        "Senior IC"
+      ],
+      "preferences": [
+        "fully-remote",
+        "universe-2-comp",
+        "ownership-autonomy"
+      ],
+      "domains": [
+        "web3",
+        "backend-saas",
+        "ai-infra",
+        "security"
+      ]
     },
     "ats_api_patterns": {
       "greenhouse": "https://boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true",
@@ -17,30 +43,78 @@
       "smartrecruiters": "scrape"
     },
     "scoring_keywords": {
-      "high": ["backend", "senior", "infrastructure", "platform", "protocol", "blockchain", "ethereum", "evm", "typescript", "nestjs", "python", "golang", "remote", "distributed systems", "kafka", "event-driven", "api", "microservices"],
-      "medium": ["full-stack", "devops", "cloud", "aws", "web3", "solidity", "smart contract", "lead", "principal"],
-      "low": ["frontend", "mobile", "data science", "machine learning engineer", "android", "ios"],
-      "dealbreakers": ["on-site", "in-office", "no remote", "local only"]
+      "high": [
+        "backend",
+        "senior",
+        "infrastructure",
+        "platform",
+        "protocol",
+        "blockchain",
+        "ethereum",
+        "evm",
+        "typescript",
+        "nestjs",
+        "python",
+        "golang",
+        "remote",
+        "distributed systems",
+        "kafka",
+        "event-driven",
+        "api",
+        "microservices"
+      ],
+      "medium": [
+        "full-stack",
+        "devops",
+        "cloud",
+        "aws",
+        "web3",
+        "solidity",
+        "smart contract",
+        "lead",
+        "principal"
+      ],
+      "low": [
+        "frontend",
+        "mobile",
+        "data science",
+        "machine learning engineer",
+        "android",
+        "ios"
+      ],
+      "dealbreakers": [
+        "on-site",
+        "in-office",
+        "no remote",
+        "local only"
+      ]
     }
   },
-
   "jobBoards": [
     {
       "id": "weworkremotely-backend",
-      "name": "We Work Remotely — Back-end",
+      "name": "We Work Remotely \u2014 Back-end",
       "url": "https://weworkremotely.com/categories/remote-back-end-programming-jobs",
       "feedUrl": "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
       "type": "rss",
-      "tags": ["remote", "backend", "general"],
+      "tags": [
+        "remote",
+        "backend",
+        "general"
+      ],
       "active": true
     },
     {
       "id": "weworkremotely-devops",
-      "name": "We Work Remotely — DevOps / Sysadmin",
+      "name": "We Work Remotely \u2014 DevOps / Sysadmin",
       "url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs",
       "feedUrl": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
       "type": "rss",
-      "tags": ["remote", "devops", "infra"],
+      "tags": [
+        "remote",
+        "devops",
+        "infra"
+      ],
       "active": true
     },
     {
@@ -49,7 +123,10 @@
       "url": "https://remoteok.com",
       "feedUrl": "https://remoteok.com/api",
       "type": "json",
-      "tags": ["remote", "general"],
+      "tags": [
+        "remote",
+        "general"
+      ],
       "notes": "Returns array; first item is metadata object, skip it. Filter by tags.",
       "active": true
     },
@@ -59,7 +136,10 @@
       "url": "https://remotive.com",
       "feedUrl": "https://remotive.com/api/remote-jobs?category=software-dev&limit=100",
       "type": "json",
-      "tags": ["remote", "software"],
+      "tags": [
+        "remote",
+        "software"
+      ],
       "notes": "Also try category=devops",
       "active": true
     },
@@ -69,7 +149,10 @@
       "url": "https://himalayas.app/jobs",
       "feedUrl": "https://himalayas.app/jobs/api?skills=TypeScript,Python,Go&limit=100",
       "type": "json",
-      "tags": ["remote", "general"],
+      "tags": [
+        "remote",
+        "general"
+      ],
       "active": true
     },
     {
@@ -78,7 +161,10 @@
       "url": "https://crypto.jobs",
       "feedUrl": "https://crypto.jobs/feed",
       "type": "rss",
-      "tags": ["web3", "crypto"],
+      "tags": [
+        "web3",
+        "crypto"
+      ],
       "active": true
     },
     {
@@ -87,7 +173,10 @@
       "url": "https://web3.career",
       "feedUrl": "https://web3.career/rss.xml",
       "type": "rss",
-      "tags": ["web3", "crypto"],
+      "tags": [
+        "web3",
+        "crypto"
+      ],
       "notes": "Also has tag filters via URL params",
       "active": true
     },
@@ -97,7 +186,10 @@
       "url": "https://cryptocurrencyjobs.co",
       "feedUrl": "https://cryptocurrencyjobs.co/feed/",
       "type": "rss",
-      "tags": ["web3", "crypto"],
+      "tags": [
+        "web3",
+        "crypto"
+      ],
       "active": true
     },
     {
@@ -106,7 +198,10 @@
       "url": "https://cryptojobslist.com",
       "feedUrl": "https://cryptojobslist.com/rss",
       "type": "rss",
-      "tags": ["web3", "crypto"],
+      "tags": [
+        "web3",
+        "crypto"
+      ],
       "active": true
     },
     {
@@ -115,7 +210,10 @@
       "url": "https://remote3.co",
       "feedUrl": "https://remote3.co/web3-jobs.rss",
       "type": "rss",
-      "tags": ["web3", "remote"],
+      "tags": [
+        "web3",
+        "remote"
+      ],
       "active": true
     },
     {
@@ -124,7 +222,10 @@
       "url": "https://www.useweb3.xyz/jobs",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "developer"],
+      "tags": [
+        "web3",
+        "developer"
+      ],
       "notes": "No public API; playwright scrape or check for unofficial API",
       "active": true
     },
@@ -134,7 +235,10 @@
       "url": "https://jobs.bankless.com",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "defi"],
+      "tags": [
+        "web3",
+        "defi"
+      ],
       "active": true
     },
     {
@@ -143,7 +247,10 @@
       "url": "https://defillama.com/jobs",
       "feedUrl": "https://defillama.com/jobs/feed",
       "type": "rss",
-      "tags": ["web3", "defi"],
+      "tags": [
+        "web3",
+        "defi"
+      ],
       "active": true
     },
     {
@@ -152,7 +259,11 @@
       "url": "https://news.ycombinator.com",
       "feedUrl": "https://hn.algolia.com/api/v1/search?query=Ask+HN+Who+is+hiring&tags=ask_hn&hitsPerPage=1",
       "type": "json",
-      "tags": ["remote", "developer", "general"],
+      "tags": [
+        "remote",
+        "developer",
+        "general"
+      ],
       "notes": "Monthly thread; parse top result, then fetch comments from HN API. Pattern: https://hn.algolia.com/api/v1/items/{story_id}",
       "active": true
     },
@@ -162,7 +273,11 @@
       "url": "https://wellfound.com/jobs",
       "feedUrl": null,
       "type": "manual",
-      "tags": ["startup", "remote", "general"],
+      "tags": [
+        "startup",
+        "remote",
+        "general"
+      ],
       "notes": "No public API. Check manually or via saved search emails. Profile already set up.",
       "active": true
     },
@@ -172,7 +287,9 @@
       "url": "https://www.linkedin.com/jobs",
       "feedUrl": null,
       "type": "manual",
-      "tags": ["general"],
+      "tags": [
+        "general"
+      ],
       "notes": "No public API. Set up job alerts for: 'Senior Backend Engineer remote', 'Blockchain Engineer remote', 'Backend Lead remote'",
       "active": true
     },
@@ -182,7 +299,11 @@
       "url": "https://www.workatastartup.com",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["startup", "yc", "general"],
+      "tags": [
+        "startup",
+        "yc",
+        "general"
+      ],
       "notes": "YC companies; filter by role and remote. Worth a weekly manual pass.",
       "active": true
     },
@@ -192,7 +313,10 @@
       "url": "https://arc.dev/remote-jobs",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["remote", "developer"],
+      "tags": [
+        "remote",
+        "developer"
+      ],
       "active": false
     },
     {
@@ -201,7 +325,10 @@
       "url": "https://froog.co",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "remote"],
+      "tags": [
+        "web3",
+        "remote"
+      ],
       "active": true
     },
     {
@@ -210,7 +337,9 @@
       "url": "https://jobsinweb3.com",
       "feedUrl": "https://jobsinweb3.com/rss",
       "type": "rss",
-      "tags": ["web3"],
+      "tags": [
+        "web3"
+      ],
       "active": true
     },
     {
@@ -219,7 +348,10 @@
       "url": "https://talent.xyz",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "remote"],
+      "tags": [
+        "web3",
+        "remote"
+      ],
       "active": true
     },
     {
@@ -228,7 +360,10 @@
       "url": "https://jobs.buidlbox.io",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "developer"],
+      "tags": [
+        "web3",
+        "developer"
+      ],
       "active": false
     },
     {
@@ -237,112 +372,167 @@
       "url": "https://pallet.xyz",
       "feedUrl": null,
       "type": "scrape",
-      "tags": ["web3", "crypto", "curated"],
+      "tags": [
+        "web3",
+        "crypto",
+        "curated"
+      ],
       "notes": "Many crypto teams run Pallet boards. Scrape individual boards or use their public listing.",
       "active": false
     },
     {
       "id": "greenhouse-direct",
-      "name": "Greenhouse (direct API — per company)",
+      "name": "Greenhouse (direct API \u2014 per company)",
       "url": "https://boards.greenhouse.io",
       "feedUrl": "https://boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true",
       "type": "json",
-      "tags": ["ats", "meta"],
+      "tags": [
+        "ats",
+        "meta"
+      ],
       "notes": "Public API, no auth. Returns full JD content. Used for companies in the watchlist.",
       "active": true
     },
     {
       "id": "lever-direct",
-      "name": "Lever (direct API — per company)",
+      "name": "Lever (direct API \u2014 per company)",
       "url": "https://jobs.lever.co",
       "feedUrl": "https://api.lever.co/v0/postings/{slug}?mode=json",
       "type": "json",
-      "tags": ["ats", "meta"],
+      "tags": [
+        "ats",
+        "meta"
+      ],
       "notes": "Public API, no auth. Returns structured posting JSON.",
       "active": true
     },
     {
       "id": "ashby-direct",
-      "name": "Ashby (direct API — per company)",
+      "name": "Ashby (direct API \u2014 per company)",
       "url": "https://jobs.ashbyhq.com",
       "feedUrl": "https://api.ashbyhq.com/posting-api/job-board/{slug}/jobs",
       "type": "json",
-      "tags": ["ats", "meta"],
+      "tags": [
+        "ats",
+        "meta"
+      ],
       "notes": "Public API, no auth.",
       "active": true
     }
   ],
-
   "companies": [
-
     {
       "name": "LI.FI",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "li.fi",
-      "careerUrl": "https://li.fi/jobs",
-      "tags": ["bridge", "cross-chain", "evm", "typescript", "backend"],
-      "notes": "Warm referral — Julian. Already applied (rejected on Perps role). Keep watching."
+      "careerUrl": "https://jobs.ashbyhq.com/li.fi",
+      "tags": [
+        "bridge",
+        "cross-chain",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Warm referral \u2014 Julian. Already applied (rejected on Perps role). Keep watching."
     },
     {
       "name": "Wormhole Labs",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "wormhole-labs",
-      "careerUrl": "https://jobs.lever.co/wormhole-labs",
-      "tags": ["bridge", "cross-chain", "evm", "solana", "rust", "typescript"],
+      "ats": "ashby",
+      "atsSlug": "wormholelabs",
+      "careerUrl": "https://jobs.ashbyhq.com/wormholelabs",
+      "tags": [
+        "bridge",
+        "cross-chain",
+        "evm",
+        "solana",
+        "rust",
+        "typescript"
+      ],
       "notes": "Top fit. Already reviewed; best single-requirement fit of crypto-infra cluster."
     },
     {
       "name": "Risk Labs (UMA Protocol)",
       "domain": "web3-oracle",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "risk-labs",
-      "careerUrl": "https://jobs.lever.co/risk-labs",
-      "tags": ["oracle", "optimistic", "evm", "backend", "typescript"],
+      "ats": "ashby",
+      "atsSlug": "risklabs",
+      "careerUrl": "https://jobs.ashbyhq.com/risklabs",
+      "tags": [
+        "oracle",
+        "optimistic",
+        "evm",
+        "backend",
+        "typescript"
+      ],
       "notes": "Strong fit identified in sprint."
     },
     {
       "name": "Pyth Network",
       "domain": "web3-oracle",
       "tier": 1,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://pythnetwork.notion.site/Pyth-Network-Jobs-Board-7a1e3e4b1b8b4b6b8b6b4b6b4b6b4b6b",
-      "tags": ["oracle", "cross-chain", "rust", "backend"],
+      "ats": "ashby",
+      "atsSlug": "pythnetwork",
+      "careerUrl": "https://jobs.ashbyhq.com/pythnetwork",
+      "tags": [
+        "oracle",
+        "cross-chain",
+        "rust",
+        "backend"
+      ],
       "notes": "Previously reviewed. Watch for backend roles."
     },
     {
       "name": "Uniswap Labs",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "uniswaplabs",
-      "careerUrl": "https://boards.greenhouse.io/uniswaplabs",
-      "tags": ["defi", "amm", "evm", "typescript", "solidity", "backend"],
+      "ats": "ashby",
+      "atsSlug": "uniswap",
+      "careerUrl": "https://jobs.ashbyhq.com/uniswap",
+      "tags": [
+        "defi",
+        "amm",
+        "evm",
+        "typescript",
+        "solidity",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "OP Labs (Optimism)",
       "domain": "web3-l2",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "oplabs",
-      "careerUrl": "https://boards.greenhouse.io/oplabs",
-      "tags": ["l2", "evm", "golang", "typescript", "infra", "backend"],
+      "careerUrl": "https://jobs.ashbyhq.com/oplabs",
+      "tags": [
+        "l2",
+        "evm",
+        "golang",
+        "typescript",
+        "infra",
+        "backend"
+      ],
       "notes": "Strong backend infra team. Go is the main language."
     },
     {
       "name": "Arbitrum Foundation",
       "domain": "web3-l2",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "lever",
       "atsSlug": "arbitrumfoundation",
-      "careerUrl": "https://boards.greenhouse.io/arbitrumfoundation",
-      "tags": ["l2", "evm", "golang", "typescript", "infra"],
+      "careerUrl": "https://jobs.lever.co/arbitrumfoundation",
+      "tags": [
+        "l2",
+        "evm",
+        "golang",
+        "typescript",
+        "infra"
+      ],
       "notes": ""
     },
     {
@@ -352,8 +542,14 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://tether.to/en/careers",
-      "tags": ["stablecoin", "backend", "golang", "bitcoin", "evm"],
-      "notes": "Applied — Backend Engineer Wallets. Track status."
+      "tags": [
+        "stablecoin",
+        "backend",
+        "golang",
+        "bitcoin",
+        "evm"
+      ],
+      "notes": "Applied \u2014 Backend Engineer Wallets. Track status."
     },
     {
       "name": "Xapo Bank",
@@ -362,7 +558,13 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.xapo.com/careers",
-      "tags": ["crypto-bank", "backend", "python", "golang", "bitcoin"],
+      "tags": [
+        "crypto-bank",
+        "backend",
+        "python",
+        "golang",
+        "bitcoin"
+      ],
       "notes": "Already reviewed. Flagged reach vs attainable roles."
     },
     {
@@ -370,129 +572,206 @@
       "domain": "web3-bridge",
       "tier": 1,
       "ats": "greenhouse",
-      "atsSlug": "layerzero",
-      "careerUrl": "https://boards.greenhouse.io/layerzero",
-      "tags": ["bridge", "omnichain", "evm", "backend", "typescript"],
+      "atsSlug": "layerzerolabs",
+      "careerUrl": "https://boards.greenhouse.io/layerzerolabs",
+      "tags": [
+        "bridge",
+        "omnichain",
+        "evm",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
       "name": "Axelar Network",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "axelar",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/axelar",
-      "tags": ["bridge", "cosmos", "evm", "golang", "backend"],
-      "notes": ""
+      "tags": [
+        "bridge",
+        "cosmos",
+        "evm",
+        "golang",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 greenhouse/axelar 404 as of 2026-06-14. Roles arrive via web3.career feed."
     },
     {
       "name": "Across Protocol",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "across-protocol",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/across-protocol",
-      "tags": ["bridge", "evm", "typescript", "backend"],
-      "notes": ""
+      "tags": [
+        "bridge",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 lever/across-protocol 404 as of 2026-06-14. Roles arrive via web3.career feed."
     },
     {
       "name": "Hyperlane",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "hyperlane",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/hyperlane",
-      "tags": ["interop", "evm", "typescript", "rust", "backend"],
-      "notes": ""
+      "tags": [
+        "interop",
+        "evm",
+        "typescript",
+        "rust",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 lever/hyperlane 404 as of 2026-06-14. Roles arrive via web3.career feed."
     },
     {
       "name": "Socket Protocol",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://socket.tech/careers",
-      "tags": ["bridge", "evm", "typescript", "backend"],
-      "notes": ""
+      "ats": "greenhouse",
+      "atsSlug": "socket",
+      "careerUrl": "https://boards.greenhouse.io/socket",
+      "tags": [
+        "bridge",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "1 job confirmed live 2026-06-14 (greenhouse/socket)."
     },
     {
       "name": "Connext / Everclear",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://www.everclear.org/careers",
-      "tags": ["bridge", "evm", "typescript", "backend"],
+      "ats": "lever",
+      "atsSlug": "connext-network",
+      "careerUrl": "https://jobs.lever.co/connext-network",
+      "tags": [
+        "bridge",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Biconomy",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "biconomy",
-      "careerUrl": "https://jobs.lever.co/biconomy",
-      "tags": ["account-abstraction", "relayer", "evm", "typescript", "backend"],
+      "careerUrl": "https://jobs.ashbyhq.com/biconomy",
+      "tags": [
+        "account-abstraction",
+        "relayer",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Gelato Network",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "gelato-network",
-      "careerUrl": "https://jobs.lever.co/gelato-network",
-      "tags": ["automation", "keeper", "evm", "typescript", "backend"],
-      "notes": "Strong fit — on-chain automation bots is your Kleros speciality."
+      "ats": "ashby",
+      "atsSlug": "gelato",
+      "careerUrl": "https://jobs.ashbyhq.com/gelato",
+      "tags": [
+        "automation",
+        "keeper",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Strong fit \u2014 on-chain automation bots is your Kleros speciality."
     },
     {
       "name": "Flashbots",
       "domain": "web3-mev",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "flashbots",
-      "careerUrl": "https://jobs.lever.co/flashbots",
-      "tags": ["mev", "evm", "golang", "rust", "backend", "infra"],
+      "ats": "ashby",
+      "atsSlug": "flashbots.net",
+      "careerUrl": "https://jobs.ashbyhq.com/flashbots.net",
+      "tags": [
+        "mev",
+        "evm",
+        "golang",
+        "rust",
+        "backend",
+        "infra"
+      ],
       "notes": "Deep protocol work. Go dominant."
     },
     {
       "name": "Chainlink Labs",
       "domain": "web3-oracle",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "chainlink",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/chainlink",
-      "tags": ["oracle", "evm", "golang", "typescript", "backend"],
-      "notes": ""
+      "tags": [
+        "oracle",
+        "evm",
+        "golang",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 greenhouse/chainlink and ashby/chainlink-labs both 404 as of 2026-06-14. Roles arrive via cryptocurrencyjobs feed."
     },
     {
       "name": "The Graph Protocol",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "thegraphfoundation",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/thegraphfoundation",
-      "tags": ["indexing", "graphql", "evm", "rust", "backend"],
-      "notes": "GraphQL/indexing expertise relevant."
+      "tags": [
+        "indexing",
+        "graphql",
+        "evm",
+        "rust",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 greenhouse/thegraphfoundation 404 as of 2026-06-14."
     },
     {
       "name": "Alchemy",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "alchemy-2",
-      "careerUrl": "https://boards.greenhouse.io/alchemy-2",
-      "tags": ["rpc", "node-infra", "evm", "backend", "typescript", "python"],
+      "ats": "ashby",
+      "atsSlug": "alchemy",
+      "careerUrl": "https://jobs.ashbyhq.com/alchemy",
+      "tags": [
+        "rpc",
+        "node-infra",
+        "evm",
+        "backend",
+        "typescript",
+        "python"
+      ],
       "notes": "One of the strongest infra plays. Multiple slugs possible."
     },
     {
       "name": "QuickNode",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "quicknode",
-      "careerUrl": "https://jobs.lever.co/quicknode",
-      "tags": ["rpc", "node-infra", "evm", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/quicknode",
+      "tags": [
+        "rpc",
+        "node-infra",
+        "evm",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -502,8 +781,13 @@
       "ats": "greenhouse",
       "atsSlug": "consensys",
       "careerUrl": "https://boards.greenhouse.io/consensys",
-      "tags": ["rpc", "node-infra", "evm", "backend"],
-      "notes": ""
+      "tags": [
+        "rpc",
+        "node-infra",
+        "evm",
+        "backend"
+      ],
+      "notes": "Confirmed live: greenhouse/consensys, 12 jobs as of 2026-06-14."
     },
     {
       "name": "Goldsky",
@@ -512,8 +796,15 @@
       "ats": "ashby",
       "atsSlug": "goldsky",
       "careerUrl": "https://jobs.ashbyhq.com/goldsky",
-      "tags": ["indexing", "data", "evm", "backend", "typescript", "golang"],
-      "notes": "Indexing infra — strong fit."
+      "tags": [
+        "indexing",
+        "data",
+        "evm",
+        "backend",
+        "typescript",
+        "golang"
+      ],
+      "notes": "Indexing infra \u2014 strong fit."
     },
     {
       "name": "Helius (Solana RPC)",
@@ -522,18 +813,29 @@
       "ats": "ashby",
       "atsSlug": "helius",
       "careerUrl": "https://jobs.ashbyhq.com/helius",
-      "tags": ["rpc", "solana", "rust", "backend"],
+      "tags": [
+        "rpc",
+        "solana",
+        "rust",
+        "backend"
+      ],
       "notes": "Solana exposure not deep but transferable."
     },
     {
       "name": "Privy",
       "domain": "web3-auth",
       "tier": 1,
-      "ats": "ashby",
-      "atsSlug": "privy",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.ashbyhq.com/privy",
-      "tags": ["auth", "wallet", "evm", "typescript", "backend"],
-      "notes": ""
+      "tags": [
+        "auth",
+        "wallet",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Public posting API (ashby/privy) returns 404 as of 2026-06-14; hosted board at jobs.ashbyhq.com/privy exists but disables API ingestion. Bucket C \u2014 roles arrive via web3.career feed."
     },
     {
       "name": "Dynamic",
@@ -542,48 +844,77 @@
       "ats": "ashby",
       "atsSlug": "dynamic",
       "careerUrl": "https://jobs.ashbyhq.com/dynamic",
-      "tags": ["auth", "wallet", "evm", "typescript", "backend"],
+      "tags": [
+        "auth",
+        "wallet",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "WalletConnect",
       "domain": "web3-auth",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "walletconnect",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/walletconnect",
-      "tags": ["wallet", "protocol", "typescript", "backend"],
-      "notes": ""
+      "tags": [
+        "wallet",
+        "protocol",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 greenhouse/walletconnect 404 as of 2026-06-14."
     },
     {
       "name": "Safe (Gnosis Safe)",
       "domain": "web3-wallet",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "safe-global",
-      "careerUrl": "https://boards.greenhouse.io/safe-global",
-      "tags": ["multisig", "wallet", "evm", "typescript", "backend"],
-      "notes": "Multi-sig infra — strong overlap with your event-driven Kleros work."
+      "ats": "ashby",
+      "atsSlug": "safe",
+      "careerUrl": "https://jobs.ashbyhq.com/safe",
+      "tags": [
+        "multisig",
+        "wallet",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Multi-sig infra \u2014 strong overlap with your event-driven Kleros work."
     },
     {
       "name": "Gnosis",
       "domain": "web3-infra",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "gnosis",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/gnosis",
-      "tags": ["dao", "evm", "backend", "golang", "typescript"],
-      "notes": ""
+      "tags": [
+        "dao",
+        "evm",
+        "backend",
+        "golang",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/gnosis 404 as of 2026-06-14."
     },
     {
       "name": "Aave",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "aave-companies",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/aave-companies",
-      "tags": ["lending", "defi", "evm", "typescript", "solidity"],
-      "notes": ""
+      "tags": [
+        "lending",
+        "defi",
+        "evm",
+        "typescript",
+        "solidity"
+      ],
+      "notes": "Board gone \u2014 greenhouse/aave-companies and lever/aavelabs both 404 as of 2026-06-14. Roles arrive via web3.career/cryptocurrencyjobs feeds."
     },
     {
       "name": "Compound Finance",
@@ -592,17 +923,28 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://compound.finance/governance/comp",
-      "tags": ["lending", "defi", "evm", "solidity"],
+      "tags": [
+        "lending",
+        "defi",
+        "evm",
+        "solidity"
+      ],
       "notes": "Small team, rare openings."
     },
     {
       "name": "Lido Finance",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "lidofinance",
-      "careerUrl": "https://boards.greenhouse.io/lidofinance",
-      "tags": ["staking", "defi", "evm", "typescript", "backend"],
+      "ats": "ashby",
+      "atsSlug": "Lido.fi",
+      "careerUrl": "https://jobs.ashbyhq.com/Lido.fi",
+      "tags": [
+        "staking",
+        "defi",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -612,28 +954,44 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.pendle.finance/careers",
-      "tags": ["yield", "defi", "evm", "backend"],
+      "tags": [
+        "yield",
+        "defi",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Ethena Labs",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "ashby",
-      "atsSlug": "ethena-labs",
-      "careerUrl": "https://jobs.ashbyhq.com/ethena-labs",
-      "tags": ["synthetic-usd", "defi", "evm", "backend"],
+      "ats": "lever",
+      "atsSlug": "ethena",
+      "careerUrl": "https://jobs.lever.co/ethena",
+      "tags": [
+        "synthetic-usd",
+        "defi",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Ondo Finance",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "ondofinance",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/ondofinance",
-      "tags": ["rwa", "defi", "evm", "backend", "typescript"],
-      "notes": "RWA tokenization — niche growing fast."
+      "tags": [
+        "rwa",
+        "defi",
+        "evm",
+        "backend",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/ondofinance 404 as of 2026-06-14. May use Workday."
     },
     {
       "name": "Maple Finance",
@@ -642,7 +1000,12 @@
       "ats": "lever",
       "atsSlug": "maple-finance",
       "careerUrl": "https://jobs.lever.co/maple-finance",
-      "tags": ["lending", "institutional", "evm", "backend"],
+      "tags": [
+        "lending",
+        "institutional",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -652,7 +1015,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://makerdao.com/en/careers",
-      "tags": ["stablecoin", "defi", "evm", "backend"],
+      "tags": [
+        "stablecoin",
+        "defi",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -662,18 +1030,29 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://frax.finance",
-      "tags": ["stablecoin", "defi", "evm"],
+      "tags": [
+        "stablecoin",
+        "defi",
+        "evm"
+      ],
       "notes": "Small team; infrequent openings."
     },
     {
       "name": "dYdX",
       "domain": "web3-defi",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "dydx",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/dydx",
-      "tags": ["perps", "defi", "cosmos", "backend", "golang", "typescript"],
-      "notes": "Moved to Cosmos. Go/Python backend stack."
+      "tags": [
+        "perps",
+        "defi",
+        "cosmos",
+        "backend",
+        "golang",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/dydx 404 as of 2026-06-14. May use Workday or private ATS."
     },
     {
       "name": "Vertex Protocol",
@@ -682,7 +1061,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://vertexprotocol.com/careers",
-      "tags": ["perps", "defi", "evm", "backend"],
+      "tags": [
+        "perps",
+        "defi",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -692,38 +1076,60 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.aevo.xyz/careers",
-      "tags": ["options", "perps", "defi", "evm", "backend"],
+      "tags": [
+        "options",
+        "perps",
+        "defi",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Circle",
       "domain": "web3-fintech",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "circle",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/circle",
-      "tags": ["stablecoin", "usdc", "backend", "golang", "typescript"],
-      "notes": ""
+      "tags": [
+        "stablecoin",
+        "usdc",
+        "backend",
+        "golang",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/circle 404 as of 2026-06-14. May use Workday."
     },
     {
       "name": "Paxos",
       "domain": "web3-fintech",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "paxos",
-      "careerUrl": "https://boards.greenhouse.io/paxos",
-      "tags": ["stablecoin", "settlement", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/paxos",
+      "tags": [
+        "stablecoin",
+        "settlement",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
       "name": "Anchorage Digital",
       "domain": "web3-fintech",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "anchoragebitcoin",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/anchoragebitcoin",
-      "tags": ["custody", "institutional", "backend", "golang"],
-      "notes": "Golang-heavy."
+      "tags": [
+        "custody",
+        "institutional",
+        "backend",
+        "golang"
+      ],
+      "notes": "Board gone \u2014 greenhouse/anchoragebitcoin 404 as of 2026-06-14."
     },
     {
       "name": "Fireblocks",
@@ -732,17 +1138,27 @@
       "ats": "greenhouse",
       "atsSlug": "fireblocks",
       "careerUrl": "https://boards.greenhouse.io/fireblocks",
-      "tags": ["custody", "mpc", "backend", "typescript", "nodejs"],
-      "notes": "Node/TypeScript backend — strong fit."
+      "tags": [
+        "custody",
+        "mpc",
+        "backend",
+        "typescript",
+        "nodejs"
+      ],
+      "notes": "Node/TypeScript backend \u2014 strong fit."
     },
     {
       "name": "Copper",
       "domain": "web3-fintech",
       "tier": 2,
       "ats": "greenhouse",
-      "atsSlug": "copper",
-      "careerUrl": "https://boards.greenhouse.io/copper",
-      "tags": ["custody", "institutional", "backend"],
+      "atsSlug": "copperco",
+      "careerUrl": "https://boards.greenhouse.io/copperco",
+      "tags": [
+        "custody",
+        "institutional",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -752,7 +1168,12 @@
       "ats": "greenhouse",
       "atsSlug": "bitgo",
       "careerUrl": "https://boards.greenhouse.io/bitgo",
-      "tags": ["custody", "institutional", "backend", "typescript"],
+      "tags": [
+        "custody",
+        "institutional",
+        "backend",
+        "typescript"
+      ],
       "notes": "TypeScript-heavy backend stack."
     },
     {
@@ -762,7 +1183,13 @@
       "ats": "greenhouse",
       "atsSlug": "coinbase",
       "careerUrl": "https://boards.greenhouse.io/coinbase",
-      "tags": ["exchange", "backend", "golang", "python", "evm"],
+      "tags": [
+        "exchange",
+        "backend",
+        "golang",
+        "python",
+        "evm"
+      ],
       "notes": "Large corp. Watch for infrastructure/protocol engineering roles specifically."
     },
     {
@@ -772,27 +1199,42 @@
       "ats": "lever",
       "atsSlug": "kraken",
       "careerUrl": "https://jobs.lever.co/kraken",
-      "tags": ["exchange", "backend", "python", "golang"],
+      "tags": [
+        "exchange",
+        "backend",
+        "python",
+        "golang"
+      ],
       "notes": ""
     },
     {
       "name": "Bybit",
       "domain": "web3-exchange",
       "tier": 2,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://www.bybit.com/en/careers",
-      "tags": ["exchange", "backend", "golang", "java"],
+      "ats": "greenhouse",
+      "atsSlug": "bybit",
+      "careerUrl": "https://boards.greenhouse.io/bybit",
+      "tags": [
+        "exchange",
+        "backend",
+        "golang",
+        "java"
+      ],
       "notes": ""
     },
     {
       "name": "OKX",
       "domain": "web3-exchange",
       "tier": 2,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://www.okx.com/careers",
-      "tags": ["exchange", "backend", "golang", "java"],
+      "ats": "greenhouse",
+      "atsSlug": "okx",
+      "careerUrl": "https://boards.greenhouse.io/okx",
+      "tags": [
+        "exchange",
+        "backend",
+        "golang",
+        "java"
+      ],
       "notes": ""
     },
     {
@@ -802,38 +1244,61 @@
       "ats": "greenhouse",
       "atsSlug": "gemini",
       "careerUrl": "https://boards.greenhouse.io/gemini",
-      "tags": ["exchange", "backend", "scala", "typescript"],
+      "tags": [
+        "exchange",
+        "backend",
+        "scala",
+        "typescript"
+      ],
       "notes": ""
     },
     {
       "name": "zkSync / Matter Labs",
       "domain": "web3-l2",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "matterlabs",
-      "careerUrl": "https://boards.greenhouse.io/matterlabs",
-      "tags": ["zk", "l2", "rust", "backend", "evm"],
+      "ats": "ashby",
+      "atsSlug": "matter-labs",
+      "careerUrl": "https://jobs.ashbyhq.com/matter-labs",
+      "tags": [
+        "zk",
+        "l2",
+        "rust",
+        "backend",
+        "evm"
+      ],
       "notes": "Rust-heavy. Worth watching for TypeScript-adjacent infra roles."
     },
     {
       "name": "Polygon Labs",
       "domain": "web3-l2",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "polygon",
-      "careerUrl": "https://boards.greenhouse.io/polygon",
-      "tags": ["l2", "zk", "golang", "backend", "evm"],
+      "ats": "ashby",
+      "atsSlug": "polygon-labs",
+      "careerUrl": "https://jobs.ashbyhq.com/polygon-labs",
+      "tags": [
+        "l2",
+        "zk",
+        "golang",
+        "backend",
+        "evm"
+      ],
       "notes": ""
     },
     {
       "name": "Starkware / StarkNet",
       "domain": "web3-l2",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "starkware",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/starkware",
-      "tags": ["zk", "l2", "rust", "cairo", "backend"],
-      "notes": "Rust/Cairo dominant. Watch for non-core-prover roles."
+      "tags": [
+        "zk",
+        "l2",
+        "rust",
+        "cairo",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 greenhouse/starkware 404 as of 2026-06-14."
     },
     {
       "name": "Scroll",
@@ -842,7 +1307,13 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://scroll.io/career",
-      "tags": ["zk", "l2", "golang", "rust", "backend"],
+      "tags": [
+        "zk",
+        "l2",
+        "golang",
+        "rust",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -852,7 +1323,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://taiko.xyz/careers",
-      "tags": ["zk", "l2", "golang", "backend"],
+      "tags": [
+        "zk",
+        "l2",
+        "golang",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -862,18 +1338,29 @@
       "ats": "lever",
       "atsSlug": "celestia",
       "careerUrl": "https://jobs.lever.co/celestia",
-      "tags": ["modular", "da-layer", "golang", "rust", "backend"],
+      "tags": [
+        "modular",
+        "da-layer",
+        "golang",
+        "rust",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "EigenLayer / Eigen Labs",
       "domain": "web3-l1-infra",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "eigenlabs",
-      "careerUrl": "https://boards.greenhouse.io/eigenlabs",
-      "tags": ["restaking", "avs", "golang", "backend"],
-      "notes": "Previously reviewed — substance gap in agent runtime. Backend infra roles may be better fit."
+      "ats": "ashby",
+      "atsSlug": "eigen-labs",
+      "careerUrl": "https://jobs.ashbyhq.com/eigen-labs",
+      "tags": [
+        "restaking",
+        "avs",
+        "golang",
+        "backend"
+      ],
+      "notes": "Previously reviewed \u2014 substance gap in agent runtime. Backend infra roles may be better fit."
     },
     {
       "name": "Immutable X",
@@ -882,57 +1369,92 @@
       "ats": "greenhouse",
       "atsSlug": "immutable",
       "careerUrl": "https://boards.greenhouse.io/immutable",
-      "tags": ["gaming", "nft", "evm", "typescript", "backend"],
+      "tags": [
+        "gaming",
+        "nft",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "OpenSea",
       "domain": "web3-nft",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "opensea",
-      "careerUrl": "https://boards.greenhouse.io/opensea",
-      "tags": ["nft", "marketplace", "evm", "python", "backend"],
+      "careerUrl": "https://jobs.ashbyhq.com/opensea",
+      "tags": [
+        "nft",
+        "marketplace",
+        "evm",
+        "python",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Reservoir",
       "domain": "web3-nft",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "reservoir",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/reservoir",
-      "tags": ["nft", "api", "evm", "typescript", "backend"],
-      "notes": "NFT infra/APIs — backend-heavy, strong fit."
+      "tags": [
+        "nft",
+        "api",
+        "evm",
+        "typescript",
+        "backend"
+      ],
+      "notes": "Board gone \u2014 lever/reservoir 404 as of 2026-06-14. Roles arrive via web3.career feed."
     },
     {
       "name": "Magic Eden",
       "domain": "web3-nft",
       "tier": 2,
-      "ats": "lever",
-      "atsSlug": "magic-eden",
-      "careerUrl": "https://jobs.lever.co/magic-eden",
-      "tags": ["nft", "marketplace", "solana", "evm", "backend"],
+      "ats": "ashby",
+      "atsSlug": "magiceden",
+      "careerUrl": "https://jobs.ashbyhq.com/magiceden",
+      "tags": [
+        "nft",
+        "marketplace",
+        "solana",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Zora",
       "domain": "web3-nft",
       "tier": 2,
-      "ats": "ashby",
+      "ats": "greenhouse",
       "atsSlug": "zora",
-      "careerUrl": "https://jobs.ashbyhq.com/zora",
-      "tags": ["nft", "onchain", "evm", "typescript", "backend"],
+      "careerUrl": "https://boards.greenhouse.io/zora",
+      "tags": [
+        "nft",
+        "onchain",
+        "evm",
+        "typescript",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "ENS Labs",
       "domain": "web3-infra",
       "tier": 2,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://ens.domains/careers",
-      "tags": ["naming", "protocol", "evm", "backend"],
+      "ats": "ashby",
+      "atsSlug": "ens-labs",
+      "careerUrl": "https://jobs.ashbyhq.com/ens-labs",
+      "tags": [
+        "naming",
+        "protocol",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -940,20 +1462,33 @@
       "domain": "web3-mev",
       "tier": 1,
       "ats": "lever",
-      "atsSlug": "jito-labs",
-      "careerUrl": "https://jobs.lever.co/jito-labs",
-      "tags": ["mev", "solana", "rust", "golang", "backend"],
+      "atsSlug": "jito",
+      "careerUrl": "https://jobs.lever.co/jito",
+      "tags": [
+        "mev",
+        "solana",
+        "rust",
+        "golang",
+        "backend"
+      ],
       "notes": "MEV on Solana. Rust/Go dominant."
     },
     {
       "name": "Trail of Bits",
       "domain": "security",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "trail-of-bits",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/trail-of-bits",
-      "tags": ["audit", "security", "backend", "evm", "solidity", "oscp"],
-      "notes": "OSCP + Kleros audit experience directly relevant."
+      "tags": [
+        "audit",
+        "security",
+        "backend",
+        "evm",
+        "solidity",
+        "oscp"
+      ],
+      "notes": "Board gone \u2014 lever/trail-of-bits 404 as of 2026-06-14. OSCP + audit experience relevant; check site manually."
     },
     {
       "name": "OpenZeppelin",
@@ -962,18 +1497,30 @@
       "ats": "greenhouse",
       "atsSlug": "openzeppelin",
       "careerUrl": "https://boards.greenhouse.io/openzeppelin",
-      "tags": ["audit", "security", "evm", "solidity", "backend"],
-      "notes": "Strong fit — OSCP + formal verification."
+      "tags": [
+        "audit",
+        "security",
+        "evm",
+        "solidity",
+        "backend"
+      ],
+      "notes": "Strong fit \u2014 OSCP + formal verification."
     },
     {
       "name": "Halborn Security",
       "domain": "security",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "halborn",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/halborn",
-      "tags": ["audit", "security", "blockchain", "evm", "oscp"],
-      "notes": ""
+      "tags": [
+        "audit",
+        "security",
+        "blockchain",
+        "evm",
+        "oscp"
+      ],
+      "notes": "Board gone \u2014 lever/halborn 404 as of 2026-06-14."
     },
     {
       "name": "Cyfrin",
@@ -982,7 +1529,13 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.cyfrin.io/careers",
-      "tags": ["audit", "security", "evm", "solidity", "backend"],
+      "tags": [
+        "audit",
+        "security",
+        "evm",
+        "solidity",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -992,7 +1545,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://spearbit.com/apply",
-      "tags": ["audit", "security", "evm", "solidity"],
+      "tags": [
+        "audit",
+        "security",
+        "evm",
+        "solidity"
+      ],
       "notes": "Contractor model; apply as associate auditor."
     },
     {
@@ -1002,7 +1560,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.zellic.io/careers",
-      "tags": ["audit", "security", "evm", "backend"],
+      "tags": [
+        "audit",
+        "security",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -1012,17 +1575,28 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://sigmaprime.io/careers",
-      "tags": ["audit", "security", "ethereum", "backend", "rust"],
+      "tags": [
+        "audit",
+        "security",
+        "ethereum",
+        "backend",
+        "rust"
+      ],
       "notes": "Ethereum consensus layer focus."
     },
     {
       "name": "Immunefi",
       "domain": "security",
       "tier": 2,
-      "ats": "lever",
+      "ats": "greenhouse",
       "atsSlug": "immunefi",
-      "careerUrl": "https://jobs.lever.co/immunefi",
-      "tags": ["bug-bounty", "security", "backend", "evm"],
+      "careerUrl": "https://boards.greenhouse.io/immunefi",
+      "tags": [
+        "bug-bounty",
+        "security",
+        "backend",
+        "evm"
+      ],
       "notes": ""
     },
     {
@@ -1032,47 +1606,77 @@
       "ats": "greenhouse",
       "atsSlug": "perplexity",
       "careerUrl": "https://boards.greenhouse.io/perplexity",
-      "tags": ["search", "ai", "backend", "python", "typescript", "infra"],
+      "tags": [
+        "search",
+        "ai",
+        "backend",
+        "python",
+        "typescript",
+        "infra"
+      ],
       "notes": "Strong fit identified. API platform team."
     },
     {
       "name": "AssemblyAI",
       "domain": "ai-infra",
       "tier": 1,
-      "ats": "lever",
+      "ats": "greenhouse",
       "atsSlug": "assemblyai",
-      "careerUrl": "https://jobs.lever.co/assemblyai",
-      "tags": ["speech-ai", "api", "backend", "python", "typescript"],
+      "careerUrl": "https://boards.greenhouse.io/assemblyai",
+      "tags": [
+        "speech-ai",
+        "api",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": "Strong fit. Backend/API platform roles."
     },
     {
       "name": "ElevenLabs",
       "domain": "ai-infra",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "elevenlabs",
-      "careerUrl": "https://boards.greenhouse.io/elevenlabs",
-      "tags": ["tts", "voice-ai", "backend", "python", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/elevenlabs",
+      "tags": [
+        "tts",
+        "voice-ai",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": "In tracker. Verify India eligibility."
     },
     {
       "name": "Deepgram",
       "domain": "ai-infra",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "deepgram",
-      "careerUrl": "https://boards.greenhouse.io/deepgram",
-      "tags": ["speech-ai", "api", "backend", "python", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/deepgram",
+      "tags": [
+        "speech-ai",
+        "api",
+        "backend",
+        "python",
+        "golang"
+      ],
       "notes": ""
     },
     {
       "name": "Cohere",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "cohere",
-      "careerUrl": "https://boards.greenhouse.io/cohere",
-      "tags": ["llm", "api", "backend", "python"],
+      "careerUrl": "https://jobs.ashbyhq.com/cohere",
+      "tags": [
+        "llm",
+        "api",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
@@ -1082,7 +1686,13 @@
       "ats": "greenhouse",
       "atsSlug": "togetherai",
       "careerUrl": "https://boards.greenhouse.io/togetherai",
-      "tags": ["llm", "infra", "backend", "python", "golang"],
+      "tags": [
+        "llm",
+        "infra",
+        "backend",
+        "python",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1092,58 +1702,90 @@
       "ats": "greenhouse",
       "atsSlug": "fireworks-ai",
       "careerUrl": "https://boards.greenhouse.io/fireworks-ai",
-      "tags": ["llm", "infra", "backend", "python"],
+      "tags": [
+        "llm",
+        "infra",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
       "name": "Groq",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "lever",
-      "atsSlug": "groq",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/groq",
-      "tags": ["llm", "inference", "backend", "golang", "python"],
-      "notes": ""
+      "tags": [
+        "llm",
+        "inference",
+        "backend",
+        "golang",
+        "python"
+      ],
+      "notes": "Board gone \u2014 lever/groq 404 as of 2026-06-14. May use Workday or private ATS."
     },
     {
       "name": "Modal",
       "domain": "ai-infra",
       "tier": 1,
       "ats": "ashby",
-      "atsSlug": "modal-labs",
-      "careerUrl": "https://jobs.ashbyhq.com/modal-labs",
-      "tags": ["cloud", "serverless", "backend", "python", "golang"],
+      "atsSlug": "modal",
+      "careerUrl": "https://jobs.ashbyhq.com/modal",
+      "tags": [
+        "cloud",
+        "serverless",
+        "backend",
+        "python",
+        "golang"
+      ],
       "notes": "Small, elite team. Python/Go. Strong infra fit."
     },
     {
       "name": "Replicate",
       "domain": "ai-infra",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "replicate",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/replicate",
-      "tags": ["model-hosting", "api", "backend", "golang"],
-      "notes": "Go-heavy backend. Small team."
+      "tags": [
+        "model-hosting",
+        "api",
+        "backend",
+        "golang"
+      ],
+      "notes": "Board gone \u2014 lever/replicate 404 as of 2026-06-14."
     },
     {
       "name": "Weights & Biases",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "wandb",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/wandb",
-      "tags": ["mlops", "backend", "python", "typescript"],
-      "notes": ""
+      "tags": [
+        "mlops",
+        "backend",
+        "python",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/wandb 404 as of 2026-06-14."
     },
     {
       "name": "Hugging Face",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "huggingface",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/huggingface",
-      "tags": ["ml", "api", "backend", "python"],
-      "notes": ""
+      "tags": [
+        "ml",
+        "api",
+        "backend",
+        "python"
+      ],
+      "notes": "Board gone \u2014 greenhouse/huggingface 404 as of 2026-06-14. May use Lever or private ATS; check site."
     },
     {
       "name": "Exa AI",
@@ -1152,8 +1794,14 @@
       "ats": "ashby",
       "atsSlug": "exa",
       "careerUrl": "https://jobs.ashbyhq.com/exa",
-      "tags": ["search", "api", "backend", "python", "typescript"],
-      "notes": "Small team, backend API focus — good fit."
+      "tags": [
+        "search",
+        "api",
+        "backend",
+        "python",
+        "typescript"
+      ],
+      "notes": "Small team, backend API focus \u2014 good fit."
     },
     {
       "name": "Jina AI",
@@ -1162,17 +1810,26 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://jina.ai/careers",
-      "tags": ["search", "embeddings", "backend", "python"],
+      "tags": [
+        "search",
+        "embeddings",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
       "name": "Weaviate",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "weaviate",
-      "careerUrl": "https://boards.greenhouse.io/weaviate",
-      "tags": ["vector-db", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/weaviate",
+      "tags": [
+        "vector-db",
+        "backend",
+        "golang"
+      ],
       "notes": "Go-heavy. Vector DB backend."
     },
     {
@@ -1182,17 +1839,25 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://qdrant.tech/careers",
-      "tags": ["vector-db", "backend", "rust"],
+      "tags": [
+        "vector-db",
+        "backend",
+        "rust"
+      ],
       "notes": "Rust-heavy."
     },
     {
       "name": "Pinecone",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "pinecone",
-      "careerUrl": "https://boards.greenhouse.io/pinecone",
-      "tags": ["vector-db", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/pinecone",
+      "tags": [
+        "vector-db",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1200,9 +1865,14 @@
       "domain": "ai-infra",
       "tier": 1,
       "ats": "ashby",
-      "atsSlug": "braintrustdata",
-      "careerUrl": "https://jobs.ashbyhq.com/braintrustdata",
-      "tags": ["llm-eval", "api", "backend", "typescript"],
+      "atsSlug": "braintrust",
+      "careerUrl": "https://jobs.ashbyhq.com/braintrust",
+      "tags": [
+        "llm-eval",
+        "api",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1212,7 +1882,13 @@
       "ats": "ashby",
       "atsSlug": "langchain",
       "careerUrl": "https://jobs.ashbyhq.com/langchain",
-      "tags": ["llm", "agents", "backend", "python", "typescript"],
+      "tags": [
+        "llm",
+        "agents",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1222,7 +1898,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.helicone.ai/careers",
-      "tags": ["llm-observability", "backend", "typescript", "clickhouse"],
+      "tags": [
+        "llm-observability",
+        "backend",
+        "typescript",
+        "clickhouse"
+      ],
       "notes": "TypeScript backend, small team. Strong fit."
     },
     {
@@ -1232,7 +1913,14 @@
       "ats": "greenhouse",
       "atsSlug": "vercel",
       "careerUrl": "https://boards.greenhouse.io/vercel",
-      "tags": ["hosting", "edge", "infra", "backend", "typescript", "golang"],
+      "tags": [
+        "hosting",
+        "edge",
+        "infra",
+        "backend",
+        "typescript",
+        "golang"
+      ],
       "notes": "Strong fit identified. Infrastructure/platform eng roles."
     },
     {
@@ -1242,7 +1930,13 @@
       "ats": "ashby",
       "atsSlug": "supabase",
       "careerUrl": "https://jobs.ashbyhq.com/supabase",
-      "tags": ["database", "backend", "typescript", "golang", "postgres"],
+      "tags": [
+        "database",
+        "backend",
+        "typescript",
+        "golang",
+        "postgres"
+      ],
       "notes": ""
     },
     {
@@ -1252,7 +1946,12 @@
       "ats": "ashby",
       "atsSlug": "neon",
       "careerUrl": "https://jobs.ashbyhq.com/neon",
-      "tags": ["serverless-postgres", "backend", "rust", "golang"],
+      "tags": [
+        "serverless-postgres",
+        "backend",
+        "rust",
+        "golang"
+      ],
       "notes": "Rust/Go. Postgres-native serverless."
     },
     {
@@ -1262,7 +1961,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://turso.tech/careers",
-      "tags": ["database", "libsql", "backend", "rust"],
+      "tags": [
+        "database",
+        "libsql",
+        "backend",
+        "rust"
+      ],
       "notes": ""
     },
     {
@@ -1272,7 +1976,12 @@
       "ats": "greenhouse",
       "atsSlug": "planetscale",
       "careerUrl": "https://boards.greenhouse.io/planetscale",
-      "tags": ["database", "mysql", "backend", "golang"],
+      "tags": [
+        "database",
+        "mysql",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1282,7 +1991,12 @@
       "ats": "greenhouse",
       "atsSlug": "cockroachlabs",
       "careerUrl": "https://boards.greenhouse.io/cockroachlabs",
-      "tags": ["database", "distributed", "backend", "golang"],
+      "tags": [
+        "database",
+        "distributed",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1292,7 +2006,13 @@
       "ats": "greenhouse",
       "atsSlug": "redpandadata",
       "careerUrl": "https://boards.greenhouse.io/redpandadata",
-      "tags": ["streaming", "kafka-compatible", "backend", "cpp", "golang"],
+      "tags": [
+        "streaming",
+        "kafka-compatible",
+        "backend",
+        "cpp",
+        "golang"
+      ],
       "notes": "Kafka expertise maps perfectly. Watch for non-C++ roles."
     },
     {
@@ -1302,27 +2022,44 @@
       "ats": "greenhouse",
       "atsSlug": "temporaltechnologies",
       "careerUrl": "https://boards.greenhouse.io/temporaltechnologies",
-      "tags": ["workflow", "distributed", "backend", "golang", "typescript"],
-      "notes": "Go-heavy. Event-driven workflow engine — strong conceptual fit."
+      "tags": [
+        "workflow",
+        "distributed",
+        "backend",
+        "golang",
+        "typescript"
+      ],
+      "notes": "Go-heavy. Event-driven workflow engine \u2014 strong conceptual fit."
     },
     {
       "name": "Trigger.dev",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": null,
-      "atsSlug": null,
-      "careerUrl": "https://trigger.dev/careers",
-      "tags": ["workflow", "backend", "typescript", "nestjs"],
+      "ats": "ashby",
+      "atsSlug": "triggerdev",
+      "careerUrl": "https://jobs.ashbyhq.com/triggerdev",
+      "tags": [
+        "workflow",
+        "backend",
+        "typescript",
+        "nestjs"
+      ],
       "notes": "TypeScript/NestJS. Small team. Very strong stack fit."
     },
     {
       "name": "Inngest",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "inngest",
-      "careerUrl": "https://jobs.lever.co/inngest",
-      "tags": ["workflow", "background-jobs", "backend", "golang", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/inngest",
+      "tags": [
+        "workflow",
+        "background-jobs",
+        "backend",
+        "golang",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1332,37 +2069,58 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://upstash.com/careers",
-      "tags": ["redis", "kafka-serverless", "backend"],
+      "tags": [
+        "redis",
+        "kafka-serverless",
+        "backend"
+      ],
       "notes": ""
     },
     {
       "name": "Novu",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "novu",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/novu",
-      "tags": ["notifications", "backend", "typescript", "nestjs", "mongodb"],
-      "notes": "NestJS + MongoDB — exact stack match."
+      "tags": [
+        "notifications",
+        "backend",
+        "typescript",
+        "nestjs",
+        "mongodb"
+      ],
+      "notes": "Board gone \u2014 greenhouse/novu 404 as of 2026-06-14. NestJS+MongoDB stack match."
     },
     {
       "name": "PostHog",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "posthog",
-      "careerUrl": "https://boards.greenhouse.io/posthog",
-      "tags": ["analytics", "backend", "python", "typescript", "clickhouse"],
+      "careerUrl": "https://jobs.ashbyhq.com/posthog",
+      "tags": [
+        "analytics",
+        "backend",
+        "python",
+        "typescript",
+        "clickhouse"
+      ],
       "notes": "Fully remote, strong eng culture."
     },
     {
       "name": "Sentry",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "sentry",
-      "careerUrl": "https://boards.greenhouse.io/sentry",
-      "tags": ["observability", "backend", "python", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/sentry",
+      "tags": [
+        "observability",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1370,9 +2128,14 @@
       "domain": "backend-saas",
       "tier": 2,
       "ats": "greenhouse",
-      "atsSlug": "grafana",
-      "careerUrl": "https://boards.greenhouse.io/grafana",
-      "tags": ["observability", "backend", "golang", "typescript"],
+      "atsSlug": "grafanalabs",
+      "careerUrl": "https://boards.greenhouse.io/grafanalabs",
+      "tags": [
+        "observability",
+        "backend",
+        "golang",
+        "typescript"
+      ],
       "notes": "Go-heavy. Very remote-first."
     },
     {
@@ -1382,18 +2145,30 @@
       "ats": "ashby",
       "atsSlug": "axiom",
       "careerUrl": "https://jobs.ashbyhq.com/axiom",
-      "tags": ["logging", "observability", "backend", "golang"],
+      "tags": [
+        "logging",
+        "observability",
+        "backend",
+        "golang"
+      ],
       "notes": "Go + distributed systems."
     },
     {
       "name": "Fly.io",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "lever",
-      "atsSlug": "fly",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.lever.co/fly",
-      "tags": ["hosting", "edge", "infra", "backend", "golang", "rust"],
-      "notes": "Very engineering-driven culture."
+      "tags": [
+        "hosting",
+        "edge",
+        "infra",
+        "backend",
+        "golang",
+        "rust"
+      ],
+      "notes": "Board gone \u2014 lever/fly 404 as of 2026-06-14. Strong fit; check site manually."
     },
     {
       "name": "Railway",
@@ -1402,17 +2177,28 @@
       "ats": "ashby",
       "atsSlug": "railway",
       "careerUrl": "https://jobs.ashbyhq.com/railway",
-      "tags": ["hosting", "platform", "backend", "typescript", "golang"],
+      "tags": [
+        "hosting",
+        "platform",
+        "backend",
+        "typescript",
+        "golang"
+      ],
       "notes": ""
     },
     {
       "name": "Render",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "render",
-      "careerUrl": "https://jobs.lever.co/render",
-      "tags": ["hosting", "platform", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/render",
+      "tags": [
+        "hosting",
+        "platform",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1422,38 +2208,61 @@
       "ats": "greenhouse",
       "atsSlug": "cloudflare",
       "careerUrl": "https://boards.greenhouse.io/cloudflare",
-      "tags": ["edge", "cdn", "infra", "backend", "golang", "rust"],
+      "tags": [
+        "edge",
+        "cdn",
+        "infra",
+        "backend",
+        "golang",
+        "rust"
+      ],
       "notes": "Large corp. Watch for Workers Platform / D1 team roles."
     },
     {
       "name": "WorkOS",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "workos",
-      "careerUrl": "https://jobs.lever.co/workos",
-      "tags": ["auth", "sso", "backend", "typescript", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/workos",
+      "tags": [
+        "auth",
+        "sso",
+        "backend",
+        "typescript",
+        "golang"
+      ],
       "notes": "Backend auth infra. Remote-first."
     },
     {
       "name": "Stytch",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "stytch",
-      "careerUrl": "https://boards.greenhouse.io/stytch",
-      "tags": ["auth", "backend", "golang", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/stytch",
+      "tags": [
+        "auth",
+        "backend",
+        "golang",
+        "typescript"
+      ],
       "notes": "Auth API infrastructure."
     },
     {
       "name": "Permit.io",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "greenhouse",
-      "atsSlug": "permitio",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/permitio",
-      "tags": ["authorization", "backend", "python", "typescript"],
-      "notes": "Authorization-as-a-service. Security background relevant."
+      "tags": [
+        "authorization",
+        "backend",
+        "python",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/permitio 404 as of 2026-06-14."
     },
     {
       "name": "Ory",
@@ -1462,17 +2271,27 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.ory.sh/careers",
-      "tags": ["auth", "open-source", "backend", "golang"],
+      "tags": [
+        "auth",
+        "open-source",
+        "backend",
+        "golang"
+      ],
       "notes": "Open-source auth stack. Go."
     },
     {
       "name": "Dagger.io",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "lever",
+      "ats": "greenhouse",
       "atsSlug": "dagger",
-      "careerUrl": "https://jobs.lever.co/dagger",
-      "tags": ["cicd", "devtools", "backend", "golang"],
+      "careerUrl": "https://boards.greenhouse.io/dagger",
+      "tags": [
+        "cicd",
+        "devtools",
+        "backend",
+        "golang"
+      ],
       "notes": "Founded by Docker creator. Go."
     },
     {
@@ -1482,58 +2301,86 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://tigerbeetle.com/careers",
-      "tags": ["database", "financial", "backend", "zig"],
+      "tags": [
+        "database",
+        "financial",
+        "backend",
+        "zig"
+      ],
       "notes": "Zig-based. Rare openings, extraordinary engineering standards."
     },
     {
       "name": "Kong (API Gateway)",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "kong",
-      "careerUrl": "https://boards.greenhouse.io/kong",
-      "tags": ["api-gateway", "backend", "lua", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/kong",
+      "tags": [
+        "api-gateway",
+        "backend",
+        "lua",
+        "golang"
+      ],
       "notes": ""
     },
     {
       "name": "Zuplo",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "ashby",
-      "atsSlug": "zuplo",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://jobs.ashbyhq.com/zuplo",
-      "tags": ["api-gateway", "backend", "typescript"],
-      "notes": "TypeScript-first API platform. Small team."
+      "tags": [
+        "api-gateway",
+        "backend",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 ashby/zuplo 404 as of 2026-06-14."
     },
     {
       "name": "Merge API",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "mergeapi",
-      "careerUrl": "https://boards.greenhouse.io/mergeapi",
-      "tags": ["integration", "api", "backend", "python"],
+      "ats": "ashby",
+      "atsSlug": "merge",
+      "careerUrl": "https://jobs.ashbyhq.com/merge",
+      "tags": [
+        "integration",
+        "api",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
       "name": "Airbyte",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "airbyte",
-      "careerUrl": "https://boards.greenhouse.io/airbyte",
-      "tags": ["data-integration", "backend", "python", "java"],
+      "careerUrl": "https://jobs.ashbyhq.com/airbyte",
+      "tags": [
+        "data-integration",
+        "backend",
+        "python",
+        "java"
+      ],
       "notes": ""
     },
     {
       "name": "dbt Labs",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "dbtlabs",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/dbtlabs",
-      "tags": ["data", "backend", "python"],
-      "notes": ""
+      "tags": [
+        "data",
+        "backend",
+        "python"
+      ],
+      "notes": "Board gone \u2014 greenhouse/dbtlabs 404 as of 2026-06-14."
     },
     {
       "name": "Encore.dev",
@@ -1542,7 +2389,11 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://encore.dev/careers",
-      "tags": ["backend-framework", "golang", "devtools"],
+      "tags": [
+        "backend-framework",
+        "golang",
+        "devtools"
+      ],
       "notes": "Go-based backend framework. Small team."
     },
     {
@@ -1552,17 +2403,27 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://sst.dev/careers",
-      "tags": ["iac", "serverless", "backend", "typescript"],
+      "tags": [
+        "iac",
+        "serverless",
+        "backend",
+        "typescript"
+      ],
       "notes": "Very small team; rare openings."
     },
     {
       "name": "Materialize",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "materialize",
-      "careerUrl": "https://boards.greenhouse.io/materialize",
-      "tags": ["streaming", "sql", "backend", "rust"],
+      "careerUrl": "https://jobs.ashbyhq.com/materialize",
+      "tags": [
+        "streaming",
+        "sql",
+        "backend",
+        "rust"
+      ],
       "notes": ""
     },
     {
@@ -1572,27 +2433,41 @@
       "ats": "ashby",
       "atsSlug": "linear",
       "careerUrl": "https://jobs.ashbyhq.com/linear",
-      "tags": ["project-management", "backend", "typescript", "graphql"],
+      "tags": [
+        "project-management",
+        "backend",
+        "typescript",
+        "graphql"
+      ],
       "notes": "Very selective; strong eng culture."
     },
     {
       "name": "Retool",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "retool",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/retool",
-      "tags": ["internal-tools", "backend", "typescript"],
-      "notes": ""
+      "tags": [
+        "internal-tools",
+        "backend",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/retool 404 as of 2026-06-14."
     },
     {
       "name": "PostHog",
       "domain": "backend-saas",
       "tier": 1,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "posthog",
-      "careerUrl": "https://boards.greenhouse.io/posthog",
-      "tags": ["analytics", "backend", "python", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/posthog",
+      "tags": [
+        "analytics",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": "Fully remote. Strong values alignment."
     },
     {
@@ -1602,17 +2477,28 @@
       "ats": "greenhouse",
       "atsSlug": "stripe",
       "careerUrl": "https://boards.greenhouse.io/stripe",
-      "tags": ["payments", "backend", "python", "ruby", "golang"],
+      "tags": [
+        "payments",
+        "backend",
+        "python",
+        "ruby",
+        "golang"
+      ],
       "notes": "Very competitive. Watch for India-eligible remote roles."
     },
     {
       "name": "Plaid",
       "domain": "fintech",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "plaid",
-      "careerUrl": "https://boards.greenhouse.io/plaid",
-      "tags": ["fintech", "api", "backend", "golang"],
+      "careerUrl": "https://jobs.ashbyhq.com/plaid",
+      "tags": [
+        "fintech",
+        "api",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1622,7 +2508,12 @@
       "ats": "greenhouse",
       "atsSlug": "brex",
       "careerUrl": "https://boards.greenhouse.io/brex",
-      "tags": ["fintech", "backend", "elixir", "typescript"],
+      "tags": [
+        "fintech",
+        "backend",
+        "elixir",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1632,7 +2523,12 @@
       "ats": "greenhouse",
       "atsSlug": "datadog",
       "careerUrl": "https://boards.greenhouse.io/datadog",
-      "tags": ["observability", "backend", "golang", "python"],
+      "tags": [
+        "observability",
+        "backend",
+        "golang",
+        "python"
+      ],
       "notes": "Large corp. Watch for SRE/infra eng roles."
     },
     {
@@ -1642,7 +2538,13 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://chainstack.com/careers",
-      "tags": ["node-infra", "rpc", "evm", "backend", "golang"],
+      "tags": [
+        "node-infra",
+        "rpc",
+        "evm",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1652,7 +2554,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://moralis.io/careers",
-      "tags": ["web3-api", "evm", "backend", "typescript"],
+      "tags": [
+        "web3-api",
+        "evm",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1662,7 +2569,13 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://subquery.network/careers",
-      "tags": ["indexing", "graphql", "evm", "polkadot", "typescript"],
+      "tags": [
+        "indexing",
+        "graphql",
+        "evm",
+        "polkadot",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1672,7 +2585,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://api3.org/jobs",
-      "tags": ["oracle", "evm", "backend", "typescript"],
+      "tags": [
+        "oracle",
+        "evm",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1682,7 +2600,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://redstone.finance",
-      "tags": ["oracle", "evm", "backend", "typescript"],
+      "tags": [
+        "oracle",
+        "evm",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1692,7 +2615,11 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://chroniclelabs.org/careers",
-      "tags": ["oracle", "evm", "backend"],
+      "tags": [
+        "oracle",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -1702,18 +2629,29 @@
       "ats": "ashby",
       "atsSlug": "turnkey",
       "careerUrl": "https://jobs.ashbyhq.com/turnkey",
-      "tags": ["wallet-infra", "mpc", "backend", "golang", "typescript"],
+      "tags": [
+        "wallet-infra",
+        "mpc",
+        "backend",
+        "golang",
+        "typescript"
+      ],
       "notes": "Infrastructure for wallets. Backend-heavy."
     },
     {
       "name": "Unstoppable Domains",
       "domain": "web3-infra",
       "tier": 2,
-      "ats": "greenhouse",
-      "atsSlug": "unstoppabledomains",
+      "ats": null,
+      "atsSlug": null,
       "careerUrl": "https://boards.greenhouse.io/unstoppabledomains",
-      "tags": ["naming", "identity", "backend", "typescript"],
-      "notes": ""
+      "tags": [
+        "naming",
+        "identity",
+        "backend",
+        "typescript"
+      ],
+      "notes": "Board gone \u2014 greenhouse/unstoppabledomains 404 as of 2026-06-14."
     },
     {
       "name": "Lit Protocol",
@@ -1722,7 +2660,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://litprotocol.com/careers",
-      "tags": ["mpc", "access-control", "evm", "backend"],
+      "tags": [
+        "mpc",
+        "access-control",
+        "evm",
+        "backend"
+      ],
       "notes": ""
     },
     {
@@ -1732,7 +2675,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.gladia.io/careers",
-      "tags": ["speech-ai", "api", "backend", "python"],
+      "tags": [
+        "speech-ai",
+        "api",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
@@ -1742,17 +2690,27 @@
       "ats": "ashby",
       "atsSlug": "cartesia",
       "careerUrl": "https://jobs.ashbyhq.com/cartesia",
-      "tags": ["tts", "voice-ai", "backend", "python"],
+      "tags": [
+        "tts",
+        "voice-ai",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
       "name": "Anyscale",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "greenhouse",
+      "ats": "ashby",
       "atsSlug": "anyscale",
-      "careerUrl": "https://boards.greenhouse.io/anyscale",
-      "tags": ["distributed-ml", "ray", "backend", "python"],
+      "careerUrl": "https://jobs.ashbyhq.com/anyscale",
+      "tags": [
+        "distributed-ml",
+        "ray",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
@@ -1762,7 +2720,12 @@
       "ats": "ashby",
       "atsSlug": "llamaindex",
       "careerUrl": "https://jobs.ashbyhq.com/llamaindex",
-      "tags": ["llm", "rag", "backend", "python"],
+      "tags": [
+        "llm",
+        "rag",
+        "backend",
+        "python"
+      ],
       "notes": ""
     },
     {
@@ -1772,17 +2735,27 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://portkey.ai/careers",
-      "tags": ["llm-gateway", "backend", "typescript", "python"],
+      "tags": [
+        "llm-gateway",
+        "backend",
+        "typescript",
+        "python"
+      ],
       "notes": "India-based, strong fit for remote roles."
     },
     {
       "name": "Vellum AI",
       "domain": "ai-infra",
       "tier": 2,
-      "ats": "lever",
-      "atsSlug": "vellum-ai",
-      "careerUrl": "https://jobs.lever.co/vellum-ai",
-      "tags": ["llm-ops", "backend", "python", "typescript"],
+      "ats": "ashby",
+      "atsSlug": "vellum",
+      "careerUrl": "https://jobs.ashbyhq.com/vellum",
+      "tags": [
+        "llm-ops",
+        "backend",
+        "python",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1792,7 +2765,12 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://www.koyeb.com/careers",
-      "tags": ["hosting", "edge", "backend", "golang"],
+      "tags": [
+        "hosting",
+        "edge",
+        "backend",
+        "golang"
+      ],
       "notes": ""
     },
     {
@@ -1802,7 +2780,12 @@
       "ats": "ashby",
       "atsSlug": "depot",
       "careerUrl": "https://jobs.ashbyhq.com/depot",
-      "tags": ["cicd", "docker", "backend", "golang"],
+      "tags": [
+        "cicd",
+        "docker",
+        "backend",
+        "golang"
+      ],
       "notes": "Small team, Go-heavy."
     },
     {
@@ -1812,7 +2795,13 @@
       "ats": "ashby",
       "atsSlug": "speakeasy",
       "careerUrl": "https://jobs.ashbyhq.com/speakeasy",
-      "tags": ["sdk-generation", "api", "backend", "golang", "typescript"],
+      "tags": [
+        "sdk-generation",
+        "api",
+        "backend",
+        "golang",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1822,7 +2811,11 @@
       "ats": null,
       "atsSlug": null,
       "careerUrl": "https://scalar.com/jobs",
-      "tags": ["api-docs", "backend", "typescript"],
+      "tags": [
+        "api-docs",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
@@ -1830,29 +2823,45 @@
       "domain": "backend-saas",
       "tier": 2,
       "ats": "ashby",
-      "atsSlug": "fern",
-      "careerUrl": "https://jobs.ashbyhq.com/fern",
-      "tags": ["sdk-generation", "api", "backend", "typescript"],
+      "atsSlug": "buildwithfern",
+      "careerUrl": "https://jobs.ashbyhq.com/buildwithfern",
+      "tags": [
+        "sdk-generation",
+        "api",
+        "backend",
+        "typescript"
+      ],
       "notes": ""
     },
     {
       "name": "Lago (Open Metering)",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "lago",
-      "careerUrl": "https://jobs.lever.co/lago",
-      "tags": ["billing", "metering", "backend", "ruby", "typescript"],
+      "careerUrl": "https://jobs.ashbyhq.com/lago",
+      "tags": [
+        "billing",
+        "metering",
+        "backend",
+        "ruby",
+        "typescript"
+      ],
       "notes": ""
     },
     {
       "name": "Orb",
       "domain": "backend-saas",
       "tier": 2,
-      "ats": "lever",
+      "ats": "ashby",
       "atsSlug": "orb",
-      "careerUrl": "https://jobs.lever.co/orb",
-      "tags": ["billing", "metering", "backend", "python"],
+      "careerUrl": "https://jobs.ashbyhq.com/orb",
+      "tags": [
+        "billing",
+        "metering",
+        "backend",
+        "python"
+      ],
       "notes": ""
     }
   ]
