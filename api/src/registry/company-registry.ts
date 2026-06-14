@@ -139,4 +139,9 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   // confirmed via live probe 2026-06-14
   { name: 'Lido Finance', ats: 'ashby', slug: 'Lido.fi', tier: 1, domain: 'web3-defi' },
   { name: 'Flashbots', ats: 'ashby', slug: 'flashbots.net', tier: 1, domain: 'web3-mev' },
+
+  // ── ATS-discovery write-back 2026-06-14 ──────────────────────────────────────────
+  // discovered via ats-discovery 2026-06-14 (3 jobs)
+  { name: 'Across Protocol', ats: 'ashby', slug: 'risklabs', tier: 1, domain: 'web3-bridge' },
+
 ] as const;

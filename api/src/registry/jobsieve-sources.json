@@ -603,8 +603,8 @@
       "name": "Across Protocol",
       "domain": "web3-bridge",
       "tier": 1,
-      "ats": null,
-      "atsSlug": null,
+      "ats": "ashby",
+      "atsSlug": "risklabs",
       "careerUrl": "https://jobs.lever.co/across-protocol",
       "tags": [
         "bridge",
@@ -612,7 +612,7 @@
         "typescript",
         "backend"
       ],
-      "notes": "Board gone \u2014 lever/across-protocol 404 as of 2026-06-14. Roles arrive via web3.career feed."
+      "notes": "Board gone \u2014 lever/across-protocol 404 as of 2026-06-14. Roles arrive via web3.career feed. Discovered ashby/risklabs (3 jobs) via ats-discovery 2026-06-14."
     },
     {
       "name": "Hyperlane",
