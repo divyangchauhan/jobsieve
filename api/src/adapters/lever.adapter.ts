@@ -7,6 +7,8 @@
  *      descriptionPlain, workplaceType }]
  * Returns [] when the board exists but has no active postings.
  * Returns { ok: false, error: "Document not found" } for unknown slugs.
+ * 404 → board gone / slug changed (logged at debug).
+ * 429 / 5xx → transient; retried with backoff (logged at warn after max retries).
  */
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
@@ -15,6 +17,7 @@ import { NormalizedJob } from '../ingestion/normalized-job.interface.js';
 import { SourceAdapter } from '../ingestion/source-adapter.interface.js';
 import { COMPANIES } from '../registry/company-registry.js';
 import { runBatched } from './concurrency.js';
+import { withRetry } from './retry.js';
 import { passesTitleFilter } from './title-filter.js';
 
 const TIMEOUT_MS = 10_000;
@@ -48,16 +51,18 @@ export class LeverAdapter implements SourceAdapter {
     const companies = COMPANIES.filter((c) => c.ats === 'lever');
     const tasks = companies.map((company) => async (): Promise<NormalizedJob[]> => {
       try {
-        const { data } = await axios.get<LeverResponse>(
-          `${API_BASE}/${company.slug}`,
-          {
-            timeout: TIMEOUT_MS,
-            params: { mode: 'json' },
-            headers: { 'User-Agent': 'jobsieve/1.0' },
-          },
+        const { data } = await withRetry(() =>
+          axios.get<LeverResponse>(
+            `${API_BASE}/${company.slug}`,
+            {
+              timeout: TIMEOUT_MS,
+              params: { mode: 'json' },
+              headers: { 'User-Agent': 'jobsieve/1.0' },
+            },
+          ),
         );
         if (!Array.isArray(data)) {
-          this.logger.warn(`lever/${company.slug} not found — slug may have changed`);
+          this.logger.debug(`lever/${company.slug} not found — slug may have changed`);
           return [];
         }
         return (data as LeverPosting[]).flatMap((posting) => {
@@ -65,7 +70,11 @@ export class LeverAdapter implements SourceAdapter {
           return job !== null ? [job] : [];
         });
       } catch (err) {
-        this.logger.warn(`lever/${company.slug} fetch failed: ${String(err)}`);
+        if (axios.isAxiosError(err) && err.response?.status === 404) {
+          this.logger.debug(`lever/${company.slug} not found — slug may have changed`);
+        } else {
+          this.logger.warn(`lever/${company.slug} fetch failed: ${String(err)}`);
+        }
         return [];
       }
     });
