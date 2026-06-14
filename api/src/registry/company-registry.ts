@@ -1,6 +1,8 @@
+export type AtsType = 'greenhouse' | 'lever' | 'ashby' | 'workday' | 'getro' | null;
+
 export interface WatchlistCompany {
   readonly name: string;
-  readonly ats: 'greenhouse' | 'lever' | 'ashby';
+  readonly ats: AtsType;
   readonly slug: string;
   readonly tier: 1 | 2 | 3;
   readonly domain: string;
@@ -8,7 +10,6 @@ export interface WatchlistCompany {
 
 export const COMPANIES: readonly WatchlistCompany[] = [
   // ── Lever ────────────────────────────────────────────────────────────────────
-  // celestia, maple-finance, kraken confirmed working; jito slug corrected
   { name: 'Celestia', ats: 'lever', slug: 'celestia', tier: 1, domain: 'web3-l1-infra' },
   { name: 'Maple Finance', ats: 'lever', slug: 'maple-finance', tier: 2, domain: 'web3-defi' },
   { name: 'Kraken', ats: 'lever', slug: 'kraken', tier: 2, domain: 'web3-exchange' },
@@ -18,6 +19,8 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   { name: 'Jito Labs', ats: 'lever', slug: 'jito', tier: 1, domain: 'web3-mev' },
   // moved from ashby/ethena-labs → lever/ethena (6 jobs)
   { name: 'Ethena Labs', ats: 'lever', slug: 'ethena', tier: 1, domain: 'web3-defi' },
+  // bridge
+  { name: 'Connext / Everclear', ats: 'lever', slug: 'connext-network', tier: 1, domain: 'web3-bridge' },
 
   // ── Greenhouse ───────────────────────────────────────────────────────────────
   // slug was layerzero → layerzerolabs
@@ -50,7 +53,6 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   { name: 'Zora', ats: 'greenhouse', slug: 'zora', tier: 2, domain: 'web3-nft' },
 
   // ── Ashby ─────────────────────────────────────────────────────────────────────
-  // Originally on Ashby — confirmed working
   { name: 'Goldsky', ats: 'ashby', slug: 'goldsky', tier: 1, domain: 'web3-infra' },
   { name: 'Helius (Solana RPC)', ats: 'ashby', slug: 'helius', tier: 1, domain: 'web3-infra' },
   { name: 'Dynamic', ats: 'ashby', slug: 'dynamic', tier: 1, domain: 'web3-auth' },
@@ -125,4 +127,7 @@ export const COMPANIES: readonly WatchlistCompany[] = [
   { name: 'Magic Eden', ats: 'ashby', slug: 'magiceden', tier: 2, domain: 'web3-nft' },
   // slug corrected: wormhole-labs → wormholelabs
   { name: 'Wormhole Labs', ats: 'ashby', slug: 'wormholelabs', tier: 1, domain: 'web3-bridge' },
+  // confirmed via live probe 2026-06-14
+  { name: 'Lido Finance', ats: 'ashby', slug: 'Lido.fi', tier: 1, domain: 'web3-defi' },
+  { name: 'Flashbots', ats: 'ashby', slug: 'flashbots.net', tier: 1, domain: 'web3-mev' },
 ] as const;
