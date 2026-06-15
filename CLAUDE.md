@@ -91,7 +91,8 @@ This is a pnpm monorepo with two workspace packages:
 | `TypeOrmModule` (global) | SQLite via `better-sqlite3`; entity: `Job`                                       |
 | `AdaptersModule`         | Registers `ADAPTER_PROVIDERS` token — array of `SourceAdapter` implementations   |
 | `IngestionModule`        | `IngestionService.upsert()` — status-preserving SQLite upsert                    |
-| `ScoringModule`          | `FitScoringService.score()` — keyword-based fit scoring                          |
+| `ScoringModule`          | `FitScoringService.score(job, profile)` — pure, profile-driven fit scoring       |
+| `ProfileModule`          | `ProfileService` — singleton relevance profile (get/update + rescore-all)        |
 | `CronModule`             | `CronOrchestratorService` — drives adapters on schedule                          |
 | `JobsModule`             | REST API: `GET /jobs`, `PATCH /jobs/:id`                                         |
 | `AdminModule`            | `POST /admin/ingest` — manual trigger                                            |
@@ -125,7 +126,9 @@ cp .env.example .env && mkdir -p data
 
 `DATABASE_PATH` in `.env` is relative to `api/` (where NestJS runs), so the default `../data/jobsieve.sqlite` puts the database at `data/jobsieve.sqlite` in the repo root.
 
-Required vars: `DATABASE_PATH`, `CRON_SCHEDULE`, `WEB3CAREER_TOKEN`, `MIN_FIT_SCORE`, `STACK_KEYWORDS`, `SENIORITY_KEYWORDS`. Notion sync is opt-in and only activates when both `NOTION_TOKEN` and `NOTION_DATABASE_ID` are present.
+Required vars: `DATABASE_PATH`, `CRON_SCHEDULE`, `WEB3CAREER_TOKEN`, `MIN_FIT_SCORE`. Notion sync is opt-in and only activates when both `NOTION_TOKEN` and `NOTION_DATABASE_ID` are present.
+
+**Scoring & filtering** are driven by an editable singleton **relevance profile** (`Profile` entity, edited via the `/settings` page → `PUT /api/profile`), not by env keys. The taxonomy of role families, seniorities, default stack/excludes, locations, and regions lives in `api/src/scoring/taxonomy.ts` — extend it there. `STACK_KEYWORDS`/`SENIORITY_KEYWORDS` are **retired** (kept optional in env validation for backwards compatibility). The jobs query applies the profile's exclude/location/region/freshness as SQL hard filters, then scores survivors at read time; `fit_score` is also kept truthful via a rescore-all on every profile save and at ingest.
 
 ## pnpm quirks
 
