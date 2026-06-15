@@ -1,7 +1,8 @@
-import { ConfigService } from '@nestjs/config';
-
 import { NormalizedJob } from '../ingestion/normalized-job.interface.js';
-import { FitScoringService } from './fit-scoring.service.js';
+import {
+  FitScoringService,
+  ScoringProfile,
+} from './fit-scoring.service.js';
 
 function makeJob(overrides: Partial<NormalizedJob> = {}): NormalizedJob {
   return {
@@ -15,77 +16,107 @@ function makeJob(overrides: Partial<NormalizedJob> = {}): NormalizedJob {
   };
 }
 
-function makeService(stack: string, seniority: string): FitScoringService {
-  const config = {
-    get: (key: string, def = '') => {
-      if (key === 'STACK_KEYWORDS') return stack;
-      if (key === 'SENIORITY_KEYWORDS') return seniority;
-      return def;
-    },
-  } as unknown as ConfigService;
-  return new FitScoringService(config);
+function makeProfile(overrides: Partial<ScoringProfile> = {}): ScoringProfile {
+  return {
+    roleFamilies: ['Backend'],
+    seniorities: ['Senior', 'Staff', 'Lead'],
+    stack: ['Rust', 'TypeScript', 'Go'],
+    locationTypes: ['remote'],
+    ...overrides,
+  };
 }
 
 describe('FitScoringService', () => {
-  describe('score', () => {
-    it('returns 0 for a job with no keyword matches', () => {
-      const svc = makeService('typescript,nestjs', 'senior,lead');
-      expect(svc.score(makeJob({ title: 'Ruby Developer' }))).toBe(0);
+  const svc = new FitScoringService();
+
+  describe('role family gate', () => {
+    it('scores ~0 for "Senior Talent Partner, Engineering" (no role match)', () => {
+      const job = makeJob({ title: 'Senior Talent Partner, Engineering' });
+      expect(svc.score(job, makeProfile())).toBe(0);
     });
 
-    it('adds +2 per matching stack keyword found in title', () => {
-      const svc = makeService('typescript,nestjs', '');
-      expect(svc.score(makeJob({ title: 'TypeScript NestJS Engineer' }))).toBe(
-        4,
-      );
-    });
-
-    it('adds +2 for stack keywords found in description', () => {
-      const svc = makeService('typescript', '');
-      expect(
-        svc.score(makeJob({ description: 'Must know TypeScript well' })),
-      ).toBe(2);
-    });
-
-    it('adds +3 per matching seniority keyword', () => {
-      const svc = makeService('', 'senior,lead');
-      expect(svc.score(makeJob({ title: 'Senior Lead Engineer' }))).toBe(6);
-    });
-
-    it('adds +2 when remote is true', () => {
-      const svc = makeService('', '');
-      expect(svc.score(makeJob({ remote: true }))).toBe(2);
-    });
-
-    it('combines stack, seniority, and remote scores', () => {
-      const svc = makeService('typescript', 'senior');
+    it('scores ~0 for "Sales Development Representative @ LangChain"', () => {
       const job = makeJob({
-        title: 'Senior TypeScript Engineer',
+        title: 'Sales Development Representative @ LangChain',
+      });
+      expect(svc.score(job, makeProfile())).toBe(0);
+    });
+
+    it('seniority alone does not count without a role match', () => {
+      const job = makeJob({ title: 'Senior Sales Manager' });
+      expect(svc.score(job, makeProfile())).toBe(0);
+    });
+
+    it('gives less for a description-only role match than a title match', () => {
+      const titleMatch = svc.score(
+        makeJob({ title: 'Backend Engineer' }),
+        makeProfile({ seniorities: [], stack: [] }),
+      );
+      const descMatch = svc.score(
+        makeJob({ title: 'Engineer', description: 'Backend role' }),
+        makeProfile({ seniorities: [], stack: [] }),
+      );
+      expect(titleMatch).toBeGreaterThan(descMatch);
+      expect(descMatch).toBeGreaterThan(0);
+    });
+  });
+
+  describe('relevant roles', () => {
+    it('scores "Senior Backend Engineer (Rust)" high', () => {
+      const job = makeJob({
+        title: 'Senior Backend Engineer (Rust)',
         remote: true,
       });
-      // 3 (senior) + 2 (typescript) + 2 (remote)
-      expect(svc.score(job)).toBe(7);
+      // role title 5 + seniority title 3 + stack(rust) 2 + remote 1
+      expect(svc.score(job, makeProfile())).toBe(11);
     });
 
-    it('is case-insensitive for both keywords and job text', () => {
-      const svc = makeService('TYPESCRIPT', 'SENIOR');
-      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(
-        5,
-      );
+    it('scores plain "Backend Engineer" (no seniority) moderate', () => {
+      const job = makeJob({ title: 'Backend Engineer' });
+      // role title 5, no seniority, no stack, not remote
+      expect(svc.score(job, makeProfile())).toBe(5);
+    });
+  });
+
+  describe('word-boundary matching', () => {
+    it('does not match "Go" inside "Golang"', () => {
+      const job = makeJob({ title: 'Golang Developer' });
+      expect(svc.score(job, makeProfile({ roleFamilies: [] }))).toBe(0);
     });
 
-    it('does not score a keyword twice if it appears multiple times', () => {
-      const svc = makeService('typescript', '');
-      expect(svc.score(makeJob({ title: 'TypeScript TypeScript Dev' }))).toBe(
-        2,
+    it('matches "Go" as a standalone word', () => {
+      const job = makeJob({ title: 'Go Developer' });
+      expect(svc.score(job, makeProfile({ roleFamilies: [] }))).toBe(2);
+    });
+  });
+
+  describe('graceful degradation', () => {
+    it('with no role families, ranks by stack instead of hiding everything', () => {
+      const job = makeJob({ title: 'Rust Engineer' });
+      expect(svc.score(job, makeProfile({ roleFamilies: [] }))).toBe(2);
+    });
+  });
+
+  describe('location boost', () => {
+    it('adds a small boost when remote matches the profile', () => {
+      const withRemote = svc.score(
+        makeJob({ title: 'Backend Engineer', remote: true }),
+        makeProfile({ seniorities: [], stack: [] }),
       );
+      const withoutRemote = svc.score(
+        makeJob({ title: 'Backend Engineer', remote: false }),
+        makeProfile({ seniorities: [], stack: [] }),
+      );
+      expect(withRemote - withoutRemote).toBe(1);
     });
 
-    it('returns 0 for empty keyword lists', () => {
-      const svc = makeService('', '');
-      expect(svc.score(makeJob({ title: 'Senior TypeScript Engineer' }))).toBe(
-        0,
+    it('no boost when remote not in profile location types', () => {
+      const job = makeJob({ title: 'Backend Engineer', remote: true });
+      const score = svc.score(
+        job,
+        makeProfile({ seniorities: [], stack: [], locationTypes: ['onsite'] }),
       );
+      expect(score).toBe(5);
     });
   });
 });
