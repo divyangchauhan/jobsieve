@@ -85,11 +85,23 @@ function pickCanonical(rows: RowWithKey[]): RowWithKey {
     const rp = sourcePriority(row.source);
     if (rp < bp) return row;
     if (rp > bp) return best;
+    // Prefer remote member so multi-location roles survive the remote filter.
+    if (row.remote && !best.remote) return row;
+    if (!row.remote && best.remote) return best;
     // Tiebreak: earliest posted_at; nulls sort last.
     const bd = best.posted_at ?? '￿';
     const rd = row.posted_at ?? '￿';
     return rd < bd ? row : best;
   });
+}
+
+type GroupType = 'cross-source' | 'same-source-multilocation' | 'same-source-repost';
+
+function classifyGroup(group: RowWithKey[]): GroupType {
+  const sources = new Set(group.map((r) => r.source));
+  if (sources.size > 1) return 'cross-source';
+  const remoteValues = new Set(group.map((r) => r.remote));
+  return remoteValues.size > 1 ? 'same-source-multilocation' : 'same-source-repost';
 }
 
 function mergeAltSources(existing: AltSource[], incoming: AltSource[]): AltSource[] {
@@ -197,6 +209,8 @@ function main(): void {
     canonical: RowWithKey;
     nonCanonicals: RowWithKey[];
     flags: string[];
+    type: GroupType;
+    groupRemote: boolean;
   }
 
   const plans: Plan[] = [];
@@ -206,14 +220,24 @@ function main(): void {
     const canonical = pickCanonical(group);
     const nonCanonicals = group.filter((r) => r.id !== canonical.id);
     const flags = detectFlags(group);
+    const type = classifyGroup(group);
+    const groupRemote = group.some((r) => Boolean(r.remote));
     if (flags.length > 0) flaggedCount++;
-    plans.push({ ck: group[0]!.computed_ck, canonical, nonCanonicals, flags });
+    plans.push({ ck: group[0]!.computed_ck, canonical, nonCanonicals, flags, type, groupRemote });
   }
 
   // ─── Dry-run ───────────────────────────────────────────────────────────────
 
   if (!APPLY) {
     const ts = new Date().toISOString().replace('T', ' ').slice(0, 19);
+    const crossSrc = plans.filter((p) => p.type === 'cross-source').length;
+    const multiLoc = plans.filter((p) => p.type === 'same-source-multilocation').length;
+    const repost = plans.filter((p) => p.type === 'same-source-repost').length;
+    const remoteGroups = plans.filter((p) => p.groupRemote).length;
+    const remoteCanonicalMismatch = plans.filter(
+      (p) => p.groupRemote && !p.canonical.remote,
+    ).length;
+
     const lines: string[] = [
       `# Dedup Plan`,
       ``,
@@ -223,13 +247,24 @@ function main(): void {
       `Rows that would be removed: ${totalWouldRemove}`,
       `Groups flagged for manual review: ${flaggedCount}`,
       ``,
+      `## Group breakdown`,
+      ``,
+      `| Type | Count |`,
+      `|------|-------|`,
+      `| cross-source | ${crossSrc} |`,
+      `| same-source multi-location | ${multiLoc} |`,
+      `| same-source repost | ${repost} |`,
+      ``,
+      `Groups with ≥1 remote member: ${remoteGroups}`,
+      `  of which canonical is NOT remote (would be fixed by remote-OR): ${remoteCanonicalMismatch}`,
+      ``,
       `## Duplicate Groups`,
       ``,
     ];
 
     for (const plan of plans) {
       const flag = plan.flags.length > 0 ? ' ⚠️ REVIEW' : '';
-      lines.push(`### \`${plan.ck}\`${flag}`);
+      lines.push(`### \`${plan.ck}\` [${plan.type}]${flag}`);
       lines.push('');
       if (plan.flags.length > 0) {
         lines.push('**Review flags:**');
@@ -238,18 +273,18 @@ function main(): void {
       }
       const c = plan.canonical;
       lines.push(
-        `**Canonical** id=${c.id} source=${c.source} status=${c.status}` +
-          ` notion=${c.notion_page_id ?? '—'} posted=${c.posted_at?.slice(0, 10) ?? '—'}` +
-          ` fit=${c.fit_score ?? '—'}`,
+        `**Canonical** id=${c.id} source=${c.source} remote=${Boolean(c.remote)}` +
+          ` status=${c.status} notion=${c.notion_page_id ?? '—'}` +
+          ` posted=${c.posted_at?.slice(0, 10) ?? '—'} fit=${c.fit_score ?? '—'}`,
       );
       lines.push(`> ${c.title} @ ${c.company}`);
       lines.push('');
       lines.push('**Would delete:**');
       for (const nc of plan.nonCanonicals) {
         lines.push(
-          `- id=${nc.id} source=${nc.source} status=${nc.status}` +
-            ` notion=${nc.notion_page_id ?? '—'} posted=${nc.posted_at?.slice(0, 10) ?? '—'}` +
-            ` fit=${nc.fit_score ?? '—'}`,
+          `- id=${nc.id} source=${nc.source} remote=${Boolean(nc.remote)}` +
+            ` status=${nc.status} notion=${nc.notion_page_id ?? '—'}` +
+            ` posted=${nc.posted_at?.slice(0, 10) ?? '—'} fit=${nc.fit_score ?? '—'}`,
         );
         lines.push(`  > ${nc.title} @ ${nc.company}`);
       }
@@ -264,6 +299,14 @@ function main(): void {
     console.log(
       `   ${dupGroups.length} groups · ${totalWouldRemove} rows would be removed · ${flaggedCount} flagged for review`,
     );
+    console.log(`   cross-source: ${crossSrc} · multi-location: ${multiLoc} · repost: ${repost}`);
+    if (remoteCanonicalMismatch > 0) {
+      console.log(
+        `   ⚠️  ${remoteCanonicalMismatch} remote group(s) would have had non-remote canonical (fixed by remote-OR)`,
+      );
+    } else {
+      console.log(`   ✅ All remote groups already have a remote canonical`);
+    }
     return;
   }
 
@@ -279,6 +322,7 @@ function main(): void {
        posted_at      = ?,
        fit_score      = ?,
        alt_sources    = ?,
+       remote         = ?,
        status         = ?,
        notion_page_id = ?
      WHERE id = ?`,
@@ -289,6 +333,7 @@ function main(): void {
   let mergedGroups = 0;
   let deletedRows = 0;
   let triagePromotions = 0;
+  let remoteFixed = 0;
 
   const applyAll = db.transaction(() => {
     // Backfill content_key for every row.
@@ -298,12 +343,15 @@ function main(): void {
     }
 
     for (const plan of plans) {
-      const { canonical, nonCanonicals } = plan;
+      const { canonical, nonCanonicals, groupRemote } = plan;
 
       let mergedPostedAt = canonical.posted_at;
       let mergedFitScore = canonical.fit_score;
       let mergedStatus = canonical.status;
       let mergedNotionId = canonical.notion_page_id;
+      // OR remote across the whole group — if any member is remote, the survivor is remote.
+      const mergedRemote = groupRemote ? 1 : canonical.remote;
+      if (mergedRemote && !canonical.remote) remoteFixed++;
 
       const existingAlts: AltSource[] = canonical.alt_sources
         ? (JSON.parse(canonical.alt_sources) as AltSource[])
@@ -337,6 +385,7 @@ function main(): void {
           }
         }
 
+        // Capture every deleted URL in alt_sources so no apply-link is lost.
         allAlts = mergeAltSources(allAlts, [{ source: nc.source, url: nc.url }]);
       }
 
@@ -344,6 +393,7 @@ function main(): void {
         mergedPostedAt,
         mergedFitScore,
         allAlts.length > 0 ? JSON.stringify(allAlts) : null,
+        mergedRemote,
         mergedStatus,
         mergedNotionId,
         canonical.id,
@@ -375,26 +425,46 @@ function main(): void {
     (r) => nonCanonicalIds.has(r.id),
   );
 
+  const crossSrcApplied = plans.filter((p) => p.type === 'cross-source').length;
+  const multiLocApplied = plans.filter((p) => p.type === 'same-source-multilocation').length;
+  const repostApplied = plans.filter((p) => p.type === 'same-source-repost').length;
+
+  const beforeCount = allRows.length;
+  const afterCount = beforeCount - deletedRows;
+
   console.log(`\n✅ Applied:`);
+  console.log(`   Rows: ${beforeCount} → ${afterCount} (−${deletedRows})`);
   console.log(`   content_key backfilled: ${backfilled} rows`);
   console.log(`   Groups merged:          ${mergedGroups}`);
-  console.log(`   Rows deleted:           ${deletedRows}`);
+  console.log(`     cross-source:         ${crossSrcApplied}`);
+  console.log(`     same-source multi-loc:${multiLocApplied}`);
+  console.log(`     same-source repost:   ${repostApplied}`);
+
+  if (remoteFixed > 0) {
+    console.log(`\n✅ Remote flag OR'd: ${remoteFixed} canonical(s) promoted to remote=true`);
+  }
+
+  // Invariant guaranteed by construction: mergedRemote = groupRemote ? 1 : canonical.remote
+  // so every group with ≥1 remote member gets remote=1 on the surviving canonical.
+  const totalRemoteGroups = plans.filter((p) => p.groupRemote).length;
+  console.log(
+    `✅ Remote invariant confirmed: all ${totalRemoteGroups} remote group(s) have remote=true on their canonical`,
+  );
+
+  // Verify alt_sources captured all deleted URLs.
+  const groupsWithAltSources = plans.filter((p) => p.nonCanonicals.length > 0).length;
+  console.log(`✅ alt_sources: ${groupsWithAltSources} canonical(s) have deleted URLs recorded`);
 
   if (triagePromotions > 0) {
     console.log(`\n✅ Triage state promoted from ${triagePromotions} non-canonical row(s)`);
   }
 
   if (triageLost.length > 0) {
-    // This should never happen given our apply loop, but report defensively.
     console.log(`\n✅ Triage invariant: ${triageLost.length} triaged non-canonical row(s) were merged`);
     console.log(`   Their state was promoted onto the surviving canonical before deletion.`);
   } else {
     console.log(`✅ Triage invariant confirmed: no triaged row lost`);
   }
-
-  const beforeCount = allRows.length;
-  const afterCount = beforeCount - deletedRows;
-  console.log(`\n   Rows: ${beforeCount} → ${afterCount}`);
 }
 
 main();

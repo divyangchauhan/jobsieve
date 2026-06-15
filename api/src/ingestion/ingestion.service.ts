@@ -21,6 +21,9 @@ function pickCanonical(jobs: NormalizedJob[]): NormalizedJob {
     const jp = sourcePriority(job.source);
     if (jp < bp) return job;
     if (jp > bp) return best;
+    // Prefer remote member so multi-location roles aren't hidden by the remote filter.
+    if (job.remote && !best.remote) return job;
+    if (!job.remote && best.remote) return best;
     const bd = best.postedAt?.getTime() ?? Infinity;
     const jd = job.postedAt?.getTime() ?? Infinity;
     return jd < bd ? job : best;
@@ -69,15 +72,17 @@ export class IngestionService {
       ck: string;
       dk: string;
       batchAlts: AltSource[];
+      groupRemote: boolean;
     }> = [];
 
     for (const [ck, group] of batchByContentKey) {
       const canonical = pickCanonical(group);
       const dk = dedupKey(canonical);
+      const groupRemote = group.some((j) => j.remote);
       const batchAlts = group
         .filter((j) => j !== canonical)
         .map((j) => ({ source: j.source, url: j.url }));
-      canonicals.push({ job: canonical, ck, dk, batchAlts });
+      canonicals.push({ job: canonical, ck, dk, batchAlts, groupRemote });
     }
 
     // Step 2: DB lookups — content_key for cross-source dedup, dedup_key for new-row tracking.
@@ -89,13 +94,13 @@ export class IngestionService {
     const now = new Date();
     const newDedupKeys: string[] = [];
 
-    for (const { job, ck, dk, batchAlts } of canonicals) {
+    for (const { job, ck, dk, batchAlts, groupRemote } of canonicals) {
       const dbByContent = byContentKey.get(ck);
       const isCrossSourceDup = dbByContent !== undefined && dbByContent.dedup_key !== dk;
 
       if (isCrossSourceDup) {
         // Don't insert a second row — merge incoming data into the existing canonical.
-        await this.mergeContentDuplicate(dbByContent, job, batchAlts, now);
+        await this.mergeContentDuplicate(dbByContent, job, batchAlts, groupRemote, now);
         continue;
       }
 
@@ -119,6 +124,7 @@ export class IngestionService {
            url          = excluded.url,
            tags         = excluded.tags,
            salary       = excluded.salary,
+           remote       = MAX(jobs.remote, excluded.remote),
            content_key  = excluded.content_key,
            alt_sources  = excluded.alt_sources,
            last_seen_at = excluded.last_seen_at`,
@@ -132,7 +138,7 @@ export class IngestionService {
           job.url,
           job.postedAt?.toISOString() ?? null,
           tagsJson,
-          job.remote ? 1 : 0,
+          groupRemote ? 1 : 0,
           job.salary ?? null,
           job.description ?? null,
           allAlts.length > 0 ? JSON.stringify(allAlts) : null,
@@ -172,6 +178,7 @@ export class IngestionService {
     canonical: Job,
     incoming: NormalizedJob,
     batchAlts: AltSource[],
+    groupRemote: boolean,
     now: Date,
   ): Promise<void> {
     const currentAlts = canonical.alt_sources ?? [];
@@ -189,15 +196,20 @@ export class IngestionService {
       }
     }
 
+    // OR the remote flag: if any member of the group (existing or incoming) is remote, mark canonical remote.
+    const mergedRemote = canonical.remote || groupRemote;
+
     await this.jobRepo.query(
       `UPDATE jobs SET
          alt_sources  = ?,
          posted_at    = ?,
+         remote       = ?,
          last_seen_at = ?
        WHERE id = ?`,
       [
         newAlts.length > 0 ? JSON.stringify(newAlts) : null,
         mergedPostedAt,
+        mergedRemote ? 1 : 0,
         now.toISOString(),
         canonical.id,
       ],
