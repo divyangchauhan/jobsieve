@@ -11,7 +11,8 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 // Title text padded with spaces so a `% term %` LIKE approximates word-boundary.
 const PADDED_TITLE = "(' ' || lower(job.title) || ' ')";
-const TITLE_AND_DESC = "lower(job.title || ' ' || coalesce(job.description, ''))";
+const TITLE_AND_DESC =
+  "lower(job.title || ' ' || coalesce(job.description, ''))";
 
 type Qb = SelectQueryBuilder<Job>;
 

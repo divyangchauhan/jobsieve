@@ -1,7 +1,4 @@
-import {
-  DEFAULT_EXCLUDES,
-  DEFAULT_STACK,
-} from '../scoring/taxonomy.js';
+import { DEFAULT_EXCLUDES, DEFAULT_STACK } from '../scoring/taxonomy.js';
 import { PROFILE_ID, Profile } from './profile.entity.js';
 
 // Seed profile matching the current target so the app ranks sensibly out of the box.

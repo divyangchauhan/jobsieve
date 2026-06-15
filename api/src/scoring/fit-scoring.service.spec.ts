@@ -1,8 +1,5 @@
 import { NormalizedJob } from '../ingestion/normalized-job.interface.js';
-import {
-  FitScoringService,
-  ScoringProfile,
-} from './fit-scoring.service.js';
+import { FitScoringService, ScoringProfile } from './fit-scoring.service.js';
 
 function makeJob(overrides: Partial<NormalizedJob> = {}): NormalizedJob {
   return {

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { matchesAny, matchesPhrase } from './phrase-match.js';
-import {
-  resolveRoleKeywords,
-  resolveSeniorityKeywords,
-} from './taxonomy.js';
+import { resolveRoleKeywords, resolveSeniorityKeywords } from './taxonomy.js';
 
 // Title is the strongest signal, so title matches always outweigh description.
 const ROLE_TITLE_SCORE = 5;

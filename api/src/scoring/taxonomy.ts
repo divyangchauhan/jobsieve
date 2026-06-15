@@ -33,12 +33,7 @@ export const ROLE_FAMILIES = {
     'platform engineer',
     'infrastructure',
   ],
-  Security: [
-    'security',
-    'appsec',
-    'application security',
-    'security engineer',
-  ],
+  Security: ['security', 'appsec', 'application security', 'security engineer'],
   'Data Engineering': [
     'data engineer',
     'data engineering',

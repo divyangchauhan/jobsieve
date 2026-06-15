@@ -77,10 +77,7 @@ export class JobsService {
   }
 
   // Query param overrides the profile, which overrides the env default.
-  private resolveMinFitScore(
-    query: GetJobsQueryDto,
-    profile: Profile,
-  ): number {
+  private resolveMinFitScore(query: GetJobsQueryDto, profile: Profile): number {
     return (
       query.minFitScore ??
       profile.minFitScore ??
