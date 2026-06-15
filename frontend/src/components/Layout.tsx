@@ -1,3 +1,4 @@
+import { Settings as SettingsIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -24,6 +25,13 @@ export function Layout({ children }: Props) {
           </Link>
           <div className="flex items-center gap-2">
             <SyncButton />
+            <Link
+              to="/settings"
+              className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              title="Relevance profile settings"
+            >
+              <SettingsIcon size={16} />
+            </Link>
             <DarkModeToggle isDark={isDark} onToggle={toggle} />
           </div>
         </div>

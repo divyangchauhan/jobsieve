@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { JobBoard } from './pages/JobBoard';
 import { JobDetail } from './pages/JobDetail';
+import { Settings } from './pages/Settings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ export function App() {
             <Routes>
               <Route path="/" element={<JobBoard />} />
               <Route path="/jobs/:id" element={<JobDetail />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </ErrorBoundary>
         </Layout>
