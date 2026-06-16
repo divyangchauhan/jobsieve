@@ -21,7 +21,8 @@
     "lint": "pnpm --filter jobsieve-api lint",
     "format": "pnpm --filter jobsieve-api format",
     "ingest": "pnpm --filter jobsieve-api ingest",
-    "dedup": "pnpm --filter jobsieve-api dedup"
+    "dedup": "pnpm --filter jobsieve-api dedup",
+    "score-audit": "pnpm --filter jobsieve-api score-audit"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["better-sqlite3", "@nestjs/core", "unrs-resolver", "esbuild"]
