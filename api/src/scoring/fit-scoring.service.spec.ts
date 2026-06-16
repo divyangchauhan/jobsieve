@@ -87,6 +87,90 @@ describe('FitScoringService', () => {
     });
   });
 
+  describe('expanded taxonomy — multi-word phrases', () => {
+    it('matches "Distributed Systems Engineer" under Backend', () => {
+      const job = makeJob({ title: 'Distributed Systems Engineer' });
+      expect(
+        svc.score(job, makeProfile({ roleFamilies: ['Backend'] })),
+      ).toBeGreaterThan(0);
+    });
+
+    it('matches "Site Reliability Engineer" under DevOps/SRE/Platform', () => {
+      const job = makeJob({ title: 'Site Reliability Engineer' });
+      expect(
+        svc.score(job, makeProfile({ roleFamilies: ['DevOps/SRE/Platform'] })),
+      ).toBeGreaterThan(0);
+    });
+
+    it('matches "Smart Contract Engineer (Solidity)" under Backend (web3 folded in)', () => {
+      const job = makeJob({ title: 'Smart Contract Engineer (Solidity)' });
+      expect(
+        svc.score(job, makeProfile({ roleFamilies: ['Backend'] })),
+      ).toBeGreaterThan(0);
+    });
+
+    it('matches "Smart Contract Auditor" under Security', () => {
+      const job = makeJob({ title: 'Smart Contract Auditor' });
+      expect(
+        svc.score(job, makeProfile({ roleFamilies: ['Security'] })),
+      ).toBeGreaterThan(0);
+    });
+  });
+
+  describe('expanded taxonomy — short tokens match as whole words', () => {
+    const cases: ReadonlyArray<{
+      token: string;
+      family: string;
+      matching: string;
+      nonMatching: string;
+    }> = [
+      {
+        token: 'evm',
+        family: 'Backend',
+        matching: 'EVM Engineer',
+        nonMatching: 'Devmode Engineer',
+      },
+      {
+        token: 'sre',
+        family: 'DevOps/SRE/Platform',
+        matching: 'SRE Engineer',
+        nonMatching: 'Software Sreliability Engineer',
+      },
+      {
+        token: 'appsec',
+        family: 'Security',
+        matching: 'AppSec Engineer',
+        nonMatching: 'Appseconds Engineer',
+      },
+      {
+        token: 'etl',
+        family: 'Data Engineering',
+        matching: 'ETL Engineer',
+        nonMatching: 'Metlife Engineer',
+      },
+      {
+        token: 'sdet',
+        family: 'QA',
+        matching: 'SDET Engineer',
+        nonMatching: 'Sdetective Engineer',
+      },
+    ];
+
+    for (const { token, family, matching, nonMatching } of cases) {
+      it(`matches "${token}" as a whole word but not as a substring`, () => {
+        const profile = makeProfile({
+          roleFamilies: [family],
+          seniorities: [],
+          stack: [],
+        });
+        expect(
+          svc.score(makeJob({ title: matching }), profile),
+        ).toBeGreaterThan(0);
+        expect(svc.score(makeJob({ title: nonMatching }), profile)).toBe(0);
+      });
+    }
+  });
+
   describe('graceful degradation', () => {
     it('with no role families, ranks by stack instead of hiding everything', () => {
       const job = makeJob({ title: 'Rust Engineer' });

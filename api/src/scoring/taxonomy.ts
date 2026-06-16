@@ -3,16 +3,93 @@
 
 // Role family → keyword phrases matched (word-boundary, case-insensitive) against
 // job title and description. A family is the primary relevance gate in scoring.
-export const ROLE_FAMILIES = {
+export const ROLE_FAMILIES: Record<string, string[]> = {
   Backend: [
     'backend',
     'back-end',
     'back end',
-    'server-side',
-    'software engineer',
     'backend engineer',
     'backend developer',
-    'api',
+    'backend software engineer',
+    'software engineer',
+    'software developer',
+    'server-side',
+    'server side',
+    'api engineer',
+    'api developer',
+    'distributed systems',
+    'distributed systems engineer',
+    'systems engineer',
+    'core engineer',
+    'core backend',
+    'protocol engineer',
+    'blockchain engineer',
+    'smart contract engineer',
+    'smart contract',
+    'solidity',
+    'evm',
+    'web3 engineer',
+    'consensus engineer',
+    'crypto engineer',
+    'defi engineer',
+  ],
+  'DevOps/SRE/Platform': [
+    'devops',
+    'dev ops',
+    'devops engineer',
+    'sre',
+    'site reliability',
+    'site reliability engineer',
+    'platform engineer',
+    'platform engineering',
+    'infrastructure engineer',
+    'cloud engineer',
+    'cloud infrastructure',
+    'production engineer',
+    'reliability engineer',
+    'kubernetes engineer',
+  ],
+  Security: [
+    'security engineer',
+    'application security',
+    'appsec',
+    'product security',
+    'infrastructure security',
+    'cloud security',
+    'security researcher',
+    'offensive security',
+    'penetration tester',
+    'pentest',
+    'smart contract auditor',
+    'smart contract security',
+    'blockchain security',
+    'security audit',
+    'security architect',
+  ],
+  Fullstack: [
+    'fullstack',
+    'full-stack',
+    'full stack',
+    'fullstack engineer',
+    'full stack engineer',
+    'full stack developer',
+  ],
+  'Data Engineering': [
+    'data engineer',
+    'data engineering',
+    'data platform',
+    'data pipeline',
+    'data infrastructure',
+    'etl',
+  ],
+  'ML/AI': [
+    'machine learning engineer',
+    'ml engineer',
+    'mlops',
+    'ai engineer',
+    'applied ai',
+    'ml infrastructure',
+    'ai infrastructure',
   ],
   Frontend: [
     'frontend',
@@ -21,37 +98,24 @@ export const ROLE_FAMILIES = {
     'frontend engineer',
     'frontend developer',
     'ui engineer',
-    'react',
-    'vue',
-    'angular',
+    'web engineer',
   ],
-  Fullstack: ['fullstack', 'full-stack', 'full stack', 'full stack engineer'],
-  'DevOps/SRE/Platform': [
-    'devops',
-    'sre',
-    'site reliability',
-    'platform engineer',
-    'infrastructure',
+  Mobile: [
+    'mobile engineer',
+    'ios engineer',
+    'android engineer',
+    'ios developer',
+    'android developer',
+    'react native',
   ],
-  Security: ['security', 'appsec', 'application security', 'security engineer'],
-  'Data Engineering': [
-    'data engineer',
-    'data engineering',
-    'etl',
-    'data pipeline',
-    'data platform',
+  QA: [
+    'qa engineer',
+    'quality assurance',
+    'test engineer',
+    'sdet',
+    'automation engineer',
   ],
-  'ML/AI': [
-    'machine learning',
-    'ml engineer',
-    'ai engineer',
-    'deep learning',
-    'mlops',
-  ],
-  Mobile: ['mobile', 'ios', 'android', 'react native', 'flutter'],
-  QA: ['qa', 'quality assurance', 'test engineer', 'sdet'],
-  Embedded: ['embedded', 'firmware', 'rtos'],
-} as const;
+};
 
 export type RoleFamily = keyof typeof ROLE_FAMILIES;
 
@@ -146,7 +210,7 @@ export function resolveRoleKeywords(
 ): readonly string[] {
   const phrases: string[] = [];
   for (const family of families) {
-    const keywords = ROLE_FAMILIES[family as RoleFamily];
+    const keywords = ROLE_FAMILIES[family];
     if (keywords !== undefined) phrases.push(...keywords);
   }
   return phrases;
