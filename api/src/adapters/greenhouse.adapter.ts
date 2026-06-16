@@ -57,31 +57,34 @@ export class GreenhouseAdapter implements SourceAdapter {
 
   async fetchJobs(): Promise<NormalizedJob[]> {
     const companies = COMPANIES.filter((c) => c.ats === 'greenhouse');
-    const tasks = companies.map((company) => async (): Promise<NormalizedJob[]> => {
-      try {
-        const { data } = await withRetry(() =>
-          axios.get<GreenhouseResponse>(
-            `${API_BASE}/${company.slug}/jobs`,
-            {
+    const tasks = companies.map(
+      (company) => async (): Promise<NormalizedJob[]> => {
+        try {
+          const { data } = await withRetry(() =>
+            axios.get<GreenhouseResponse>(`${API_BASE}/${company.slug}/jobs`, {
               timeout: TIMEOUT_MS,
               params: { content: true },
               headers: { 'User-Agent': 'jobsieve/1.0' },
-            },
-          ),
-        );
-        return data.jobs.flatMap((job) => {
-          const normalized = this.normalize(job, company.slug, company.name);
-          return normalized !== null ? [normalized] : [];
-        });
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 404) {
-          this.logger.debug(`greenhouse/${company.slug} not found — slug may have changed`);
-        } else {
-          this.logger.warn(`greenhouse/${company.slug} fetch failed: ${String(err)}`);
+            }),
+          );
+          return data.jobs.flatMap((job) => {
+            const normalized = this.normalize(job, company.slug, company.name);
+            return normalized !== null ? [normalized] : [];
+          });
+        } catch (err) {
+          if (axios.isAxiosError(err) && err.response?.status === 404) {
+            this.logger.debug(
+              `greenhouse/${company.slug} not found — slug may have changed`,
+            );
+          } else {
+            this.logger.warn(
+              `greenhouse/${company.slug} fetch failed: ${String(err)}`,
+            );
+          }
+          return [];
         }
-        return [];
-      }
-    });
+      },
+    );
 
     const nested = await runBatched(tasks, CONCURRENCY);
     return nested.flat();
@@ -98,7 +101,8 @@ export class GreenhouseAdapter implements SourceAdapter {
     const locationName = job.location?.name ?? '';
     const remote = /remote/i.test(locationName);
     const rawContent = job.content ?? '';
-    const description = rawContent.length > 0 ? decodeHtmlEntities(rawContent) : undefined;
+    const description =
+      rawContent.length > 0 ? decodeHtmlEntities(rawContent) : undefined;
     const tags = job.departments?.map((d) => d.name) ?? [];
 
     return {
@@ -107,7 +111,9 @@ export class GreenhouseAdapter implements SourceAdapter {
       title: job.title,
       company: companyName,
       url: job.absolute_url,
-      ...(job.updated_at !== undefined ? { postedAt: new Date(job.updated_at) } : {}),
+      ...(job.updated_at !== undefined
+        ? { postedAt: new Date(job.updated_at) }
+        : {}),
       tags,
       remote,
       ...(description !== undefined ? { description } : {}),

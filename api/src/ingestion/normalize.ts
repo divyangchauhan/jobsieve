@@ -3,20 +3,59 @@ import { createHash } from 'crypto';
 // Words stripped when normalizing a company name.
 export const COMPANY_STOPWORDS: ReadonlySet<string> = new Set([
   // English articles / prepositions
-  'the', 'of', 'and', 'for', 'in', 'on', 'at', 'by', 'to', 'or', 'a', 'an',
+  'the',
+  'of',
+  'and',
+  'for',
+  'in',
+  'on',
+  'at',
+  'by',
+  'to',
+  'or',
+  'a',
+  'an',
   // Legal suffixes
-  'inc', 'corp', 'llc', 'ltd', 'co',
+  'inc',
+  'corp',
+  'llc',
+  'ltd',
+  'co',
   // Org-type suffixes
-  'labs', 'lab', 'foundation', 'protocol', 'network', 'networks',
-  'finance', 'trading', 'digital', 'group', 'capital',
-  'technologies', 'technology', 'tech', 'solutions', 'internet', 'financial',
+  'labs',
+  'lab',
+  'foundation',
+  'protocol',
+  'network',
+  'networks',
+  'finance',
+  'trading',
+  'digital',
+  'group',
+  'capital',
+  'technologies',
+  'technology',
+  'tech',
+  'solutions',
+  'internet',
+  'financial',
   'software',
   // Role/industry generic — too common as standalone tokens
-  'security', 'services', 'management', 'systems', 'data',
+  'security',
+  'services',
+  'management',
+  'systems',
+  'data',
   // Industry noise
-  'web3', 'blockchain', 'crypto', 'defi', 'dao',
+  'web3',
+  'blockchain',
+  'crypto',
+  'defi',
+  'dao',
   // Financial sector generics
-  'bank', 'exchange', 'wallet',
+  'bank',
+  'exchange',
+  'wallet',
   // "prime" matches unrelated company names when used as standalone token
   'prime',
 ]);
@@ -24,10 +63,19 @@ export const COMPANY_STOPWORDS: ReadonlySet<string> = new Set([
 // Location/modality noise stripped from job titles.
 // Does NOT include tech qualifiers — "rust", "go", "solidity" must survive.
 const TITLE_NOISE: ReadonlySet<string> = new Set([
-  'remote', 'hybrid', 'onsite', 'contract',
-  'fulltime', 'parttime', 'permanent', 'temporary',
+  'remote',
+  'hybrid',
+  'onsite',
+  'contract',
+  'fulltime',
+  'parttime',
+  'permanent',
+  'temporary',
   // German gender-suffix markers (normalised form after hyphen removal)
-  'mfd', 'wmd', 'fmx', 'hf',
+  'mfd',
+  'wmd',
+  'fmx',
+  'hf',
 ]);
 
 // Tokenize one part of a company name into distinctive words.
@@ -85,17 +133,19 @@ export function normalizeCompany(name: string): string {
 // Drops location/modality noise; preserves tech qualifiers like "rust" or "go".
 // Tokens are kept in order — "Engineer Manager" ≠ "Manager Engineer".
 export function normalizeTitle(title: string): string {
-  return title
-    .toLowerCase()
-    // Collapse hyphenated noise compounds before stripping punctuation
-    .replace(/\bon-site\b/g, 'onsite')
-    .replace(/\bfull-time\b/g, 'fulltime')
-    .replace(/\bpart-time\b/g, 'parttime')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .filter((w) => w.length > 0 && !TITLE_NOISE.has(w))
-    .join(' ');
+  return (
+    title
+      .toLowerCase()
+      // Collapse hyphenated noise compounds before stripping punctuation
+      .replace(/\bon-site\b/g, 'onsite')
+      .replace(/\bfull-time\b/g, 'fulltime')
+      .replace(/\bpart-time\b/g, 'parttime')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0 && !TITLE_NOISE.has(w))
+      .join(' ')
+  );
 }
 
 // SHA-1 of normCompany + '|' + normTitle.
