@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { matchesAny, matchesPhrase } from './phrase-match.js';
-import { resolveRoleKeywords, resolveSeniorityKeywords } from './taxonomy.js';
+import {
+  AMBIGUOUS_STACK_TERMS,
+  resolveRoleKeywords,
+  resolveSeniorityKeywords,
+} from './taxonomy.js';
 
 // Title is the strongest signal, so title matches always outweigh description.
 const ROLE_TITLE_SCORE = 5;
@@ -17,6 +21,7 @@ const LOCATION_BOOST = 1;
 export interface ScorableJob {
   readonly title: string;
   readonly description?: string | null;
+  readonly tags: readonly string[];
   readonly remote: boolean;
 }
 
@@ -34,6 +39,7 @@ export class FitScoringService {
   score(job: ScorableJob, profile: ScoringProfile): number {
     const title = job.title.toLowerCase();
     const description = (job.description ?? '').toLowerCase();
+    const tagsText = job.tags.join(' ').toLowerCase();
 
     const roleScore = this.scoreRoleFamily(title, description, profile);
     // Role family is the primary gate: no selected family matched → score ~0,
@@ -42,7 +48,7 @@ export class FitScoringService {
 
     let total = roleScore;
     total += this.scoreSeniority(title, description, profile);
-    total += this.scoreStack(title, description, profile);
+    total += this.scoreStack(title, tagsText, description, profile);
     total += this.scoreLocation(job, profile);
     return total;
   }
@@ -78,13 +84,23 @@ export class FitScoringService {
 
   private scoreStack(
     title: string,
+    tagsText: string,
     description: string,
     profile: ScoringProfile,
   ): number {
     let total = 0;
     for (const term of profile.stack) {
-      if (matchesPhrase(title, term)) total += STACK_TITLE_SCORE;
-      else if (matchesPhrase(description, term)) total += STACK_DESC_SCORE;
+      const lc = term.toLowerCase();
+      if (matchesPhrase(title, lc)) {
+        total += STACK_TITLE_SCORE;
+      } else if (matchesPhrase(tagsText, lc)) {
+        total += STACK_TITLE_SCORE;
+      } else if (!AMBIGUOUS_STACK_TERMS.has(lc) && matchesPhrase(description, lc)) {
+        // Ambiguous single-word terms (e.g. "go", "r") are matched against
+        // structured fields only (title + tags) to avoid false positives from
+        // description prose ("we move fast and go to market…").
+        total += STACK_DESC_SCORE;
+      }
     }
     return total;
   }

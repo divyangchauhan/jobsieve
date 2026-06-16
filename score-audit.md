@@ -1,6 +1,6 @@
 # Score Audit — roles the role-family gate may be burying at 0
 
-Generated: 2026-06-16 02:37:24 UTC
+Generated: 2026-06-16 13:21:32 UTC
 Read-only diagnostic: scores recomputed live (stored `fit_score` ignored).
 
 **Current profile**
@@ -13,17 +13,17 @@ Read-only diagnostic: scores recomputed live (stored `fit_score` ignored).
 
 | Metric | Count |
 |--------|-------|
-| Jobs total | 5768 |
-| Scoring > 0 | 1719 |
-| Scoring 0 | 4049 |
+| Jobs total | 6093 |
+| Scoring > 0 | 1834 |
+| Scoring 0 | 4259 |
 
 ## Buckets (a row can land in several)
 
 | Bucket | Meaning | Count |
 |--------|---------|-------|
-| A | Watchlist board (greenhouse/lever/ashby) | 2261 |
-| B | Generic engineering title the family phrases miss | 51 |
-| C (raw) | Stack-implied, ≥2 terms in title+desc+tags | 384 |
+| A | Watchlist board (greenhouse/lever/ashby) | 2245 |
+| B | Generic engineering title the family phrases miss | 0 |
+| C (raw) | Stack-implied, ≥2 terms in title+desc+tags | 389 |
 | C (structured) | Stack-implied, ≥2 terms in title+tags only | 22 |
 
 > **Precision note on Bucket C.** The raw count (title+desc+tags) is
@@ -32,7 +32,7 @@ Read-only diagnostic: scores recomputed live (stored `fit_score` ignored).
 > The **structured** count (title+tags only) is the trustworthy soft-gate
 > signal and is the one the verdict relies on.
 
-## Bucket A — watchlist board — 2261 rows
+## Bucket A — watchlist board — 2245 rows
 
 - Assistant Controller  @ LayerZero Labs [greenhouse]
 - Business Development Lead - Hong Kong @ LayerZero Labs [greenhouse]
@@ -45,20 +45,11 @@ Read-only diagnostic: scores recomputed live (stored `fit_score` ignored).
 - Product Manager, API @ LayerZero Labs [greenhouse]
 - Vertical Marketing Manager - Institutions @ LayerZero Labs [greenhouse]
 
-## Bucket B — generic engineering title — 51 rows
+## Bucket B — generic engineering title — 0 rows
 
-- Principal Engineer, Agent Infrastructure & Memory Architecture @ OKX [greenhouse]
-- Principal / Staff Engineer - Compliance @ OKX [greenhouse]
-- Senior Staff Engineer, AI Platform @ OKX [greenhouse]
-- Senior Staff Engineer, AI Platform and Infrastructure @ OKX [greenhouse]
-- Senior/Staff Engineer, Liquidity Platform, Private Data Engineer @ OKX [greenhouse]
-- Senior/Staff Engineer, Liquidity Platform, Trading Service @ OKX [greenhouse]
-- Staff/Senior Staff Engineer, Kubernetes @ OKX [greenhouse]
-- Staff Engineer, Distributed Storage and HPC & AI Infrastructure @ Together AI [greenhouse]
-- Staff Engineer, Account Engineering @ Stripe [greenhouse]
-- Staff Engineer - Production Eng @ Stripe [greenhouse]
+_(empty)_
 
-## Bucket C (raw) — stack-implied, title+desc+tags — 384 rows
+## Bucket C (raw) — stack-implied, title+desc+tags — 389 rows
 
 - Senior ML Engineer @ Clutch [remoteok]
 - Implementation Specialist @ Dossier - Digital Competency Management [remoteok]
@@ -86,32 +77,20 @@ Read-only diagnostic: scores recomputed live (stored `fit_score` ignored).
 
 ## Residual sample (0-scored, in NONE of the buckets)
 
-1674 rows are 0-scored and unbucketed. Random sample to confirm
+1887 rows are 0-scored and unbucketed. Random sample to confirm
 they're genuinely non-relevant:
 
-- Crypto Quantitative Researcher @ Alexander Chapman [web3career]
-- Lead Business Analyst @ Exadel [himalayas]
-- Director Account Management @ Pharmacy Data Management, Inc. [himalayas]
-- Accounts Payable Clerk @ Remote Recruitment [himalayas]
-- Investment Expert - Fully Remote @ mercor [himalayas]
-- Associate Manager, CX Incident Response @ Coinbase [hireweb3]
-- Assamese Language Expert - Fully Remote | Upto $20/hr Part-time @ mercor [himalayas]
-- Web Developer (Remote) @ thehivecareers.co [weworkremotely]
-- Admissions Representative @ South University [himalayas]
-- Clinical Project Manager- IVD @ Lifelancer [himalayas]
+- Enterprise Account Executive - Public & Private Sector @ Chainalysis [web3career]
+- TEAM MEMBER COLD END @ Saint-Gobain Group in India [remoteok]
+- Cybersecurity GRC Evaluator - Expert @ mercor [himalayas]
+- Events &amp; Marketing Manager @ MoonPay [web3career]
+- Trade Marketing &amp; Brand Activation Manager @ Cloetta [remoteok]
+- ServiceNow Developer/Application Programmer @ Prosync [himalayas]
+- Logistics Coordinator @ Remote Recruitment [himalayas]
+- Assistant Instructor (Part-Time), Bachelor Psychology, Technology Assisted Teach @ Capella University [himalayas]
+- Senior Managing Editor, Journals @ American Cancer Society [himalayas]
+- Analytical Chemistry Specialist - AI Trainer @ Invisible Technologies [himalayas]
 
-## Verdict — title gaps
+## Verdict — gate is clean
 
-Bucket B holds 51 real engineering roles with generic titles the family phrases miss (Staff/Principal/Founding/Senior Engineer, Member of Technical Staff). Recommend adding these title patterns to the taxonomy rather than softening the gate. Bucket A (2261) is mostly genuine non-eng roles at watchlist companies (Controller, BD, Customer Success) — correctly 0. Bucket C raw is 384 but its structured (title+tags) signal is only 22: the raw count is inflated by the English word "go" matching the "Go" stack term in HTML descriptions, so it is NOT reliable soft-gate evidence.
-
-### Suggested title patterns (do not implement here)
-
-- `staff engineer`
-- `staff software engineer`
-- `senior staff engineer`
-- `principal engineer`
-- `senior engineer`
-- `founding engineer`
-- `lead engineer`
-- `member of technical staff`
-- `mts`
+Precise signals are near-empty (B=0 generic eng titles, C-structured=22 stack-in-title/tags) and the residual sample is non-relevant. Raw Bucket C (389) is inflated by free-text "go" matches, not real signal. No fix needed — the precision gain from the rescore stands.

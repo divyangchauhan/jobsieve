@@ -184,6 +184,7 @@ function main(): void {
     const job: ScorableJob = {
       title: row.title,
       description: row.description,
+      tags: parseTags(row.tags),
       remote: row.remote !== 0,
     };
     if (scorer.score(job, profile) > 0) positive += 1;

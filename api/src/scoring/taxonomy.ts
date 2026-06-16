@@ -32,6 +32,13 @@ export const ROLE_FAMILIES: Record<string, string[]> = {
     'consensus engineer',
     'crypto engineer',
     'defi engineer',
+    'staff engineer',
+    'principal engineer',
+    'senior engineer',
+    'lead engineer',
+    'founding engineer',
+    'distinguished engineer',
+    'member of technical staff',
   ],
   'DevOps/SRE/Platform': [
     'devops',
@@ -131,6 +138,15 @@ export const SENIORITIES = {
 } as const;
 
 export type Seniority = keyof typeof SENIORITIES;
+
+// Single-word/letter stack terms that also appear as common English words.
+// For these, stack matching is restricted to title + tags only (skips description).
+export const AMBIGUOUS_STACK_TERMS: ReadonlySet<string> = new Set([
+  'go',
+  'r',
+  'c',
+  'd',
+]);
 
 export const DEFAULT_STACK = [
   'TypeScript',
