@@ -80,6 +80,10 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   NOTION_COL_TAGS?: string;
+
+  @IsString()
+  @IsOptional()
+  TITLE_ALLOWLIST_ENABLED?: string;
 }
 
 export function validate(
