@@ -38,9 +38,7 @@ export class JobsController {
   }
 
   @Post(':id/notion-sync')
-  syncToNotion(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<JobResponseDto> {
+  syncToNotion(@Param('id', ParseIntPipe) id: number): Promise<JobResponseDto> {
     return this.jobsService.syncToNotion(id);
   }
 }

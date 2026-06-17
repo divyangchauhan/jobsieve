@@ -38,7 +38,10 @@ export class NotionSyncService {
     this.databaseId = dbId;
     this.columns = {
       name: this.config.get('NOTION_COL_NAME', DEFAULT_COLUMN_MAP.name),
-      position: this.config.get('NOTION_COL_POSITION', DEFAULT_COLUMN_MAP.position),
+      position: this.config.get(
+        'NOTION_COL_POSITION',
+        DEFAULT_COLUMN_MAP.position,
+      ),
       link: this.config.get('NOTION_COL_LINK', DEFAULT_COLUMN_MAP.link),
       stage: this.config.get('NOTION_COL_STAGE', DEFAULT_COLUMN_MAP.stage),
     };

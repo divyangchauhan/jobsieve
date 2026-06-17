@@ -74,7 +74,9 @@ export class RemotiveAdapter implements SourceAdapter {
       tags,
       remote: true,
       ...(salary !== undefined ? { salary } : {}),
-      ...(job.description !== undefined ? { description: job.description } : {}),
+      ...(job.description !== undefined
+        ? { description: job.description }
+        : {}),
     };
   }
 }

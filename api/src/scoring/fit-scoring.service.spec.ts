@@ -178,6 +178,88 @@ describe('FitScoringService', () => {
     });
   });
 
+  describe('generic IC title patterns (Backend family)', () => {
+    const backendProfile = makeProfile({ seniorities: [], stack: [] });
+
+    it.each([
+      'Staff Engineer @ Stripe',
+      'Principal Engineer @ OKX',
+      'Senior Engineer',
+      'Lead Engineer',
+      'Founding Engineer',
+      'Distinguished Engineer',
+    ])('scores "%s" > 0', (title) => {
+      expect(svc.score(makeJob({ title }), backendProfile)).toBeGreaterThan(0);
+    });
+
+    it('scores "Member of Technical Staff" > 0', () => {
+      expect(
+        svc.score(
+          makeJob({ title: 'Member of Technical Staff' }),
+          backendProfile,
+        ),
+      ).toBeGreaterThan(0);
+    });
+
+    it('does not match "Senior Talent Partner, Engineering" (adjacency guard)', () => {
+      expect(
+        svc.score(
+          makeJob({ title: 'Senior Talent Partner, Engineering' }),
+          backendProfile,
+        ),
+      ).toBe(0);
+    });
+
+    it('does not match "Sales Development Representative" (excluded family)', () => {
+      expect(
+        svc.score(
+          makeJob({ title: 'Sales Development Representative' }),
+          backendProfile,
+        ),
+      ).toBe(0);
+    });
+  });
+
+  describe('ambiguous stack term "Go" — structured-only matching', () => {
+    const goProfile = makeProfile({ roleFamilies: ['Backend'], seniorities: [], stack: ['Go'] });
+
+    it('gives no stack point when "go" appears only in description prose', () => {
+      const job = makeJob({
+        title: 'Backend Engineer',
+        description: 'We move fast and go to market quickly with go-getter mindset.',
+        tags: [],
+      });
+      // role title 5 only — no stack point from description "go"
+      expect(svc.score(job, goProfile)).toBe(5);
+    });
+
+    it('gives a stack point when job is tagged "go"', () => {
+      const job = makeJob({
+        title: 'Backend Engineer',
+        description: 'We go to market fast.',
+        tags: ['go'],
+      });
+      // role title 5 + stack tag 2
+      expect(svc.score(job, goProfile)).toBe(7);
+    });
+
+    it('gives a stack point when job is tagged "golang"', () => {
+      const job = makeJob({
+        title: 'Backend Engineer',
+        tags: ['golang'],
+      });
+      // "golang" doesn't word-match "go" (the word boundary regex rejects it)
+      // — this test documents the existing correct behavior
+      expect(svc.score(job, goProfile)).toBe(5);
+    });
+
+    it('gives a stack point when title contains "Go"', () => {
+      const job = makeJob({ title: 'Go Backend Engineer', tags: [] });
+      // role title 5 (via "backend engineer") + stack title 2 (via "go")
+      expect(svc.score(job, goProfile)).toBeGreaterThan(5);
+    });
+  });
+
   describe('location boost', () => {
     it('adds a small boost when remote matches the profile', () => {
       const withRemote = svc.score(

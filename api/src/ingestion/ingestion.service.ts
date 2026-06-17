@@ -96,11 +96,18 @@ export class IngestionService {
 
     for (const { job, ck, dk, batchAlts, groupRemote } of canonicals) {
       const dbByContent = byContentKey.get(ck);
-      const isCrossSourceDup = dbByContent !== undefined && dbByContent.dedup_key !== dk;
+      const isCrossSourceDup =
+        dbByContent !== undefined && dbByContent.dedup_key !== dk;
 
       if (isCrossSourceDup) {
         // Don't insert a second row — merge incoming data into the existing canonical.
-        await this.mergeContentDuplicate(dbByContent, job, batchAlts, groupRemote, now);
+        await this.mergeContentDuplicate(
+          dbByContent,
+          job,
+          batchAlts,
+          groupRemote,
+          now,
+        );
         continue;
       }
 
@@ -156,7 +163,9 @@ export class IngestionService {
       .getMany();
   }
 
-  private async findByContentKeys(contentKeys: string[]): Promise<Map<string, Job>> {
+  private async findByContentKeys(
+    contentKeys: string[],
+  ): Promise<Map<string, Job>> {
     if (contentKeys.length === 0) return new Map();
     const rows = await this.jobRepo
       .createQueryBuilder('job')
@@ -165,7 +174,9 @@ export class IngestionService {
     return new Map(rows.map((r) => [r.content_key as string, r]));
   }
 
-  private async findByDedupKeys(dedupKeys: string[]): Promise<Map<string, Job>> {
+  private async findByDedupKeys(
+    dedupKeys: string[],
+  ): Promise<Map<string, Job>> {
     if (dedupKeys.length === 0) return new Map();
     const rows = await this.jobRepo
       .createQueryBuilder('job')
