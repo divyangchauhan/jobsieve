@@ -22,18 +22,21 @@ class EnvironmentVariables {
   @IsNotEmpty()
   WEB3CAREER_TOKEN!: string;
 
+  // Retired: scoring now sources stack/seniority from the relevance profile +
+  // taxonomy. Kept optional so existing .env files still validate.
   @IsString()
-  @IsNotEmpty()
-  STACK_KEYWORDS!: string;
+  @IsOptional()
+  STACK_KEYWORDS?: string;
 
   @IsString()
-  @IsNotEmpty()
-  SENIORITY_KEYWORDS!: string;
+  @IsOptional()
+  SENIORITY_KEYWORDS?: string;
 
   @IsInt()
   @Min(0)
   @Max(100)
-  MIN_FIT_SCORE!: number;
+  @IsOptional()
+  MIN_FIT_SCORE?: number;
 
   @IsInt()
   @Min(1)

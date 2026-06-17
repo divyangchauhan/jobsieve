@@ -13,6 +13,8 @@ import { IngestionModule } from './ingestion/ingestion.module.js';
 import { Job } from './jobs/job.entity.js';
 import { JobsModule } from './jobs/jobs.module.js';
 import { NotionModule } from './notion/notion.module.js';
+import { Profile } from './profile/profile.entity.js';
+import { ProfileModule } from './profile/profile.module.js';
 
 @Module({
   imports: [
@@ -26,12 +28,13 @@ import { NotionModule } from './notion/notion.module.js';
       useFactory: () => ({
         type: 'better-sqlite3' as const,
         database: process.env['DATABASE_PATH'] ?? './data/jobsieve.sqlite',
-        entities: [Job],
+        entities: [Job, Profile],
         synchronize: true,
         logging: false,
       }),
     }),
     JobsModule,
+    ProfileModule,
     AdminModule,
     AdaptersModule,
     IngestionModule,

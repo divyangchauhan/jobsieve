@@ -11,6 +11,7 @@ import { IngestionService } from '../ingestion/ingestion.service.js';
 import { NormalizedJob } from '../ingestion/normalized-job.interface.js';
 import { SourceAdapter } from '../ingestion/source-adapter.interface.js';
 import { Job } from '../jobs/job.entity.js';
+import { ProfileService } from '../profile/profile.service.js';
 import { FitScoringService } from '../scoring/fit-scoring.service.js';
 
 const DEFAULT_CRON = '0 */4 * * *';
@@ -23,6 +24,7 @@ export class CronOrchestratorService implements OnModuleInit {
     @Inject(ADAPTER_PROVIDERS) private readonly adapters: SourceAdapter[],
     private readonly ingestion: IngestionService,
     private readonly scoring: FitScoringService,
+    private readonly profileService: ProfileService,
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
     private readonly config: ConfigService,
     private readonly schedulerRegistry: SchedulerRegistry,
@@ -39,6 +41,9 @@ export class CronOrchestratorService implements OnModuleInit {
   }
 
   async runIngestion(): Promise<void> {
+    // The ingest scorer reads the current profile, not hardcoded lists.
+    const profile = await this.profileService.getProfile();
+
     for (const adapter of this.adapters) {
       try {
         const jobs = await adapter.fetchJobs();
@@ -51,7 +56,7 @@ export class CronOrchestratorService implements OnModuleInit {
           const normalized = keyMap.get(newJob.dedup_key);
           if (normalized !== undefined) {
             await this.jobRepo.update(newJob.id, {
-              fit_score: this.scoring.score(normalized),
+              fit_score: this.scoring.score(normalized, profile),
             });
           }
         }
