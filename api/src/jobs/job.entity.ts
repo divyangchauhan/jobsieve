@@ -55,6 +55,13 @@ export class Job {
   @Column({ type: 'text', nullable: true })
   notion_page_id!: string | null;
 
+  @Index()
+  @Column({ type: 'text', nullable: true })
+  content_key!: string | null;
+
+  @Column({ type: 'simple-json', nullable: true })
+  alt_sources!: Array<{ source: string; url: string }> | null;
+
   @CreateDateColumn()
   first_seen_at!: Date;
 

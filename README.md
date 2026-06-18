@@ -1,204 +1,220 @@
 # jobsieve
 
-A self-hosted job aggregation service that pulls listings from multiple sources on a cron schedule, deduplicates and fit-scores them against your stack keywords, and surfaces them in one focused inbox — via a REST API and a React web UI.
+A self-hosted job-aggregation service. It pulls listings from eight job boards on a
+cron schedule, deduplicates them across sources, fit-scores each one against an
+editable relevance profile, and surfaces the survivors in a single focused inbox —
+through a REST API and a React web UI, with optional one-way sync to Notion.
+
+Built to cut the noise out of searching for senior backend / Web3 roles across a dozen
+boards, and to make "add another source" a one-file change.
 
 ---
+
+## Why it exists
+
+Job seekers in specialized niches (Web3, senior backend, infra) check the same boards
+every day. The same role shows up on three of them, quality varies wildly, and there's
+nowhere to track what you've already triaged. jobsieve aggregates, deduplicates, scores,
+and presents everything in one place — and keeps your own state (status, Notion page)
+intact across every re-sync.
 
 ## What it does
 
-- Pulls jobs from RemoteOK (JSON), web3.career (API), and HireWeb3 (RSS) every 4 hours (configurable).
-- Deduplicates across sources using a deterministic key (source ID or SHA-1 of normalized URL).
-- Scores each listing against configurable stack and seniority keywords.
-- Exposes a filterable REST API at `GET /jobs`.
-- Serves a React UI for browsing, filtering, and tracking application status.
-- Optionally syncs new listings to a Notion database.
+- **Aggregates** from 8 sources: RemoteOK, web3.career, Greenhouse, Lever, Ashby,
+  Remotive, Himalayas, and We Work Remotely — JSON APIs, ATS board APIs, and RSS feeds,
+  behind one `SourceAdapter` interface.
+- **Deduplicates** across sources with a deterministic key (`source:id`, or a SHA-1 of
+  the normalized URL when no source ID exists), so the same job never appears twice.
+- **Fit-scores** each listing against an editable **relevance profile** (role families,
+  seniorities, stack, location/region, exclude terms) rather than hard-coded keyword
+  lists. The profile is edited live from the Settings page.
+- **Filters at the source**: the profile's excludes, location, region, and freshness are
+  applied as SQL hard filters; survivors are scored at read time.
+- **Serves** a filterable REST API and a React UI for browsing, filtering, and tracking
+  application status.
+- **Syncs** new listings to a Notion database (optional, one-way, rate-limited).
 
 ---
 
-## Setup
+## Architecture
+
+```
+        React UI (Vite)                     NestJS API (port 3000)
+        port 5173 (dev) ──/api proxy──►  ┌───────────────────────────────┐
+                                         │  JobsController   AdminController
+                                         │  ProfileController              │
+                                         │        │                        │
+   Cron (every 4h, configurable) ──────► │  CronOrchestratorService        │
+                                         │        │                        │
+                                         │   8 × SourceAdapter  (try/catch  │
+                                         │        │             per source)│
+                                         │   IngestionService  (upsert+dedup)
+                                         │        │                        │
+                                         │   FitScoringService (profile-driven)
+                                         │        │                        │
+                                         │   TypeORM / SQLite (better-sqlite3)
+                                         │        │                        │
+                                         │   NotionSyncService (optional)  │
+                                         └───────────────────────────────┘
+```
+
+The backend is a pnpm monorepo: `api/` (NestJS) and `frontend/` (Vite + React). In
+production NestJS serves the built frontend as static assets and the API under `/api`.
+
+See [architecture.md](architecture.md) for module wiring, data flows, the upsert
+invariant, and the design decisions behind each choice. See [prd.md](prd.md) for the
+product spec and milestone breakdown.
+
+**Adding a source** is one file implementing `SourceAdapter` plus one line in
+`AdaptersModule` — the orchestrator picks it up automatically.
+
+---
+
+## Tech stack
+
+| Layer    | Choices |
+|----------|---------|
+| Backend  | NestJS, TypeScript (strict, `nodenext`), TypeORM |
+| Storage  | SQLite via `better-sqlite3` (zero-infra, single-user) |
+| Frontend | Vite, React 18, TanStack Query v5, Tailwind CSS |
+| Tooling  | pnpm workspaces, Jest, ESLint (flat config), Prettier |
+
+---
+
+## Quick start
 
 ### Prerequisites
 
 - Node.js 20+
-- npm 10+
+- pnpm 10+ (`corepack enable` will provide it) — this project is pnpm-only
 
-### Install
+### Install & configure
 
 ```bash
-git clone <repo-url> jobsieve
+git clone https://github.com/divyangchauhan/jobsieve.git
 cd jobsieve
 pnpm install
-```
 
-### Configure
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and fill in the required values. At minimum:
-
-| Variable | Description |
-|---|---|
-| `DATABASE_PATH` | Path to the SQLite file, e.g. `./data/jobsieve.sqlite` |
-| `CRON_SCHEDULE` | Cron expression, e.g. `0 */4 * * *` |
-| `WEB3CAREER_TOKEN` | Free API token from [web3.career](https://web3.career/api-docs) |
-| `MIN_FIT_SCORE` | Integer threshold; jobs below this are hidden from default view |
-| `STACK_KEYWORDS` | Comma-separated, e.g. `typescript,nestjs,node,python,aws` |
-| `SENIORITY_KEYWORDS` | Comma-separated, e.g. `senior,lead,staff,principal` |
-
-Create the data directory:
-
-```bash
+cp .env.example .env   # then fill in the values below
 mkdir -p data
 ```
 
+At minimum set these in `.env`:
+
+| Variable           | Required | Description |
+|--------------------|----------|-------------|
+| `DATABASE_PATH`    | yes      | SQLite file path, relative to `api/` (default `../data/jobsieve.sqlite`) |
+| `WEB3CAREER_TOKEN` | yes      | Free API token from [web3.career](https://web3.career/api-docs) |
+| `CRON_SCHEDULE`    | no       | Cron expression for ingestion (default `0 */4 * * *` — every 4h) |
+| `MIN_FIT_SCORE`    | no       | Fallback score floor when the profile leaves it unset; lower-scoring jobs are stored but hidden from the default view |
+| `API_PORT`         | no       | HTTP port (default `3000`) |
+
+> Scoring and filtering are driven by the editable **relevance profile** (Settings page →
+> `PUT /api/profile`), **not** by env vars. `STACK_KEYWORDS` / `SENIORITY_KEYWORDS` are
+> retired; they remain optional in validation only so older `.env` files still load.
+
 ### Run
 
-**Development (with watch):**
 ```bash
-pnpm run start:dev
+# Backend (watch mode)
+pnpm run dev:api          # NestJS on http://localhost:3000
+
+# Frontend (separate terminal)
+pnpm run dev:ui           # Vite on http://localhost:5173, proxies /api → :3000
 ```
 
-**Production:**
+### Production
+
 ```bash
-pnpm run build
-pnpm run start:prod
+pnpm run build            # builds frontend then backend
+pnpm run start            # NestJS serves the API and the built UI on one port
 ```
 
-The API starts on `http://localhost:3000` (or `API_PORT`).
+### Trigger ingestion manually
 
----
-
-## Triggering ingestion manually
-
-For testing without waiting for the cron, hit the admin endpoint:
+Without waiting for the cron:
 
 ```bash
-curl -X POST http://localhost:3000/admin/ingest
-```
-
-Or via npm script:
-
-```bash
-pnpm run ingest
+curl -X POST http://localhost:3000/api/admin/ingest    # or: pnpm run ingest
 ```
 
 ---
 
 ## REST API
 
-### `GET /jobs`
+All routes are under the `/api` prefix.
 
-Returns deduplicated, fit-scored job listings.
+### `GET /api/jobs`
 
-**Query parameters:**
+Returns deduplicated, fit-scored listings. Query params:
 
-| Param | Type | Description |
-|---|---|---|
-| `status` | string | Filter by status: `New`, `Reviewing`, `Applied`, `Skipped` |
-| `source` | string | Filter by adapter name: `remoteok`, `web3career`, `hireweb3` |
-| `minFitScore` | number | Only jobs with `fit_score >=` this value |
-| `remote` | boolean | `true` for remote-only |
-| `search` | string | LIKE match on title and company |
-| `page` | number | Page number (default `1`) |
-| `limit` | number | Results per page (default `20`) |
+| Param         | Type    | Description |
+|---------------|---------|-------------|
+| `status`      | string  | `New` · `Reviewing` · `Applied` · `Skipped` |
+| `source`      | string  | Adapter name, e.g. `remoteOK`, `web3career`, `greenhouse` |
+| `minFitScore` | number  | Only jobs scoring `>=` this value |
+| `remote`      | boolean | `true` for remote-only |
+| `search`      | string  | LIKE match on title and company |
+| `page`        | number  | Page number (default `1`) |
+| `limit`       | number  | Results per page (default `20`) |
 
-Default response excludes `Skipped` jobs and jobs below `MIN_FIT_SCORE`.
+The default view excludes `Skipped` jobs and jobs below the effective fit-score floor.
 
-### `PATCH /jobs/:id`
+### `GET /api/jobs/:id` · `PATCH /api/jobs/:id`
 
-Update a job's status.
+Fetch one job, or update its status:
 
 ```json
-{ "status": "Applied" }
+{ "status": "Applied" }   // New | Reviewing | Applied | Skipped
 ```
 
-Valid values: `New` | `Reviewing` | `Applied` | `Skipped`
+### `GET /api/profile` · `GET /api/profile/options` · `PUT /api/profile`
 
-### `POST /admin/ingest`
+Read the relevance profile, read the taxonomy of selectable options, or update the
+profile. Saving the profile rescores every stored job so `fit_score` stays truthful.
 
-Manually trigger a full ingestion run across all adapters. Returns counts per source.
+### `POST /api/admin/ingest`
+
+Trigger a full ingestion run across all adapters. Returns per-source counts.
 
 ---
 
-## React UI
+## Notion sync (optional)
 
-**Development:**
+Set both `NOTION_TOKEN` and `NOTION_DATABASE_ID` in `.env` to push newly-inserted jobs to
+a Notion database after each run. Leave either blank to disable it entirely.
 
-```bash
-cd frontend
-pnpm install
-pnpm run dev   # starts on http://localhost:5173
-```
-
-The dev server proxies `/api` to `http://localhost:3000`.
-
-**Production (served by NestJS):**
-
-```bash
-cd frontend && pnpm run build
-cd ..
-pnpm run start:prod   # NestJS serves frontend/dist at /
-```
-
----
-
-## Notion Sync (optional)
-
-If you want new jobs pushed to a Notion database after each cron run, set both Notion env vars in `.env`:
-
-```
-NOTION_TOKEN=secret_...
-NOTION_DATABASE_ID=<your-database-id>
-```
-
-### Expected Notion database schema
-
-Create a database with these properties:
-
-| Property | Type |
-|---|---|
-| Name | Title |
-| Company | Text |
-| URL | URL |
-| Status | Select — options: New, Reviewing, Applied, Skipped |
-| Fit Score | Number |
-| Source | Select |
-| Remote | Checkbox |
-| Posted At | Date |
-| Tags | Multi-select |
-| First Seen | Date |
-
-The service syncs only newly-inserted jobs after each cron run. Re-runs update the existing Notion page via the stored `notion_page_id` — no duplicates.
-
-> **Rate limiting:** Notion's API limit is ~3 requests/sec. jobsieve enforces this automatically with a token bucket and exponential backoff on 429 responses.
-
----
-
-## Production secrets
-
-Never commit `.env` to version control. In production, source all secrets from a secrets manager:
-- AWS Secrets Manager
-- HashiCorp Vault
-- Doppler
-- GCP Secret Manager
-
----
-
-## Adding a new job source
-
-1. Create `src/adapters/mysource.adapter.ts` implementing the `SourceAdapter` interface.
-2. Register it in `src/adapters/adapters.module.ts` by adding it to `ADAPTER_PROVIDERS`.
-3. Done — the orchestrator picks it up on the next run.
+By default the sync writes to columns named **Company**, **Position**, **Link**, and
+**Stage**; override them with the `NOTION_COL_*` env vars (see `.env.example`). Sync is
+one-way and idempotent — re-runs update the existing page via the stored `notion_page_id`,
+never creating duplicates. A token bucket holds requests to Notion's ~3 req/s limit with
+exponential backoff on 429s.
 
 ---
 
 ## Development
 
 ```bash
-pnpm run test        # unit tests
-pnpm run test:cov    # with coverage
-pnpm run lint        # eslint
-pnpm run format      # prettier
+pnpm test          # Jest unit tests (api/src/**/*.spec.ts)
+pnpm run test:cov  # with coverage
+pnpm run test:e2e  # e2e tests
+pnpm run lint      # eslint --fix
+pnpm run format    # prettier
 ```
+
+Run a single test file:
+
+```bash
+pnpm --filter jobsieve-api test -- src/ingestion/dedup-key.spec.ts
+```
+
+---
+
+## Production secrets
+
+Never commit a real `.env`. In production, source secrets from a secrets manager
+(AWS Secrets Manager, HashiCorp Vault, Doppler, GCP Secret Manager).
+
+## License
+
+[MIT](LICENSE) © Divyang Chauhan

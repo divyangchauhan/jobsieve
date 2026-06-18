@@ -50,31 +50,34 @@ export class AshbyAdapter implements SourceAdapter {
 
   async fetchJobs(): Promise<NormalizedJob[]> {
     const companies = COMPANIES.filter((c) => c.ats === 'ashby');
-    const tasks = companies.map((company) => async (): Promise<NormalizedJob[]> => {
-      try {
-        const { data } = await withRetry(() =>
-          axios.get<AshbyResponse>(
-            `${API_BASE}/${company.slug}`,
-            {
+    const tasks = companies.map(
+      (company) => async (): Promise<NormalizedJob[]> => {
+        try {
+          const { data } = await withRetry(() =>
+            axios.get<AshbyResponse>(`${API_BASE}/${company.slug}`, {
               timeout: TIMEOUT_MS,
               params: { includeCompensation: true },
               headers: { 'User-Agent': 'jobsieve/1.0' },
-            },
-          ),
-        );
-        return (data.jobs ?? []).flatMap((job) => {
-          const normalized = this.normalize(job, company.slug, company.name);
-          return normalized !== null ? [normalized] : [];
-        });
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 404) {
-          this.logger.debug(`ashby/${company.slug} not found — slug may have changed`);
-        } else {
-          this.logger.warn(`ashby/${company.slug} fetch failed: ${String(err)}`);
+            }),
+          );
+          return (data.jobs ?? []).flatMap((job) => {
+            const normalized = this.normalize(job, company.slug, company.name);
+            return normalized !== null ? [normalized] : [];
+          });
+        } catch (err) {
+          if (axios.isAxiosError(err) && err.response?.status === 404) {
+            this.logger.debug(
+              `ashby/${company.slug} not found — slug may have changed`,
+            );
+          } else {
+            this.logger.warn(
+              `ashby/${company.slug} fetch failed: ${String(err)}`,
+            );
+          }
+          return [];
         }
-        return [];
-      }
-    });
+      },
+    );
 
     const nested = await runBatched(tasks, CONCURRENCY);
     return nested.flat();
@@ -97,7 +100,8 @@ export class AshbyAdapter implements SourceAdapter {
     if (job.employmentType) tags.push(job.employmentType);
     if (location) tags.push(location);
 
-    const salary = job.compensation?.scrapeableCompensationSalarySummary ?? undefined;
+    const salary =
+      job.compensation?.scrapeableCompensationSalarySummary ?? undefined;
 
     return {
       source: this.name,
@@ -105,11 +109,15 @@ export class AshbyAdapter implements SourceAdapter {
       title: job.title,
       company: companyName,
       url: job.jobUrl,
-      ...(job.publishedAt !== undefined ? { postedAt: new Date(job.publishedAt) } : {}),
+      ...(job.publishedAt !== undefined
+        ? { postedAt: new Date(job.publishedAt) }
+        : {}),
       tags,
       remote,
       ...(salary != null && salary.length > 0 ? { salary } : {}),
-      ...(job.descriptionPlain !== undefined ? { description: job.descriptionPlain } : {}),
+      ...(job.descriptionPlain !== undefined
+        ? { description: job.descriptionPlain }
+        : {}),
     };
   }
 }

@@ -22,18 +22,21 @@ class EnvironmentVariables {
   @IsNotEmpty()
   WEB3CAREER_TOKEN!: string;
 
+  // Retired: scoring now sources stack/seniority from the relevance profile +
+  // taxonomy. Kept optional so existing .env files still validate.
   @IsString()
-  @IsNotEmpty()
-  STACK_KEYWORDS!: string;
+  @IsOptional()
+  STACK_KEYWORDS?: string;
 
   @IsString()
-  @IsNotEmpty()
-  SENIORITY_KEYWORDS!: string;
+  @IsOptional()
+  SENIORITY_KEYWORDS?: string;
 
   @IsInt()
   @Min(0)
   @Max(100)
-  MIN_FIT_SCORE!: number;
+  @IsOptional()
+  MIN_FIT_SCORE?: number;
 
   @IsInt()
   @Min(1)
@@ -49,37 +52,23 @@ class EnvironmentVariables {
   @IsOptional()
   NOTION_DATABASE_ID?: string;
 
+  // Notion column-name overrides. These are the only NOTION_COL_* vars the sync
+  // service reads (see notion-column-map.ts). Defaults: Company, Position, Link, Stage.
   @IsString()
   @IsOptional()
-  NOTION_COL_TITLE?: string;
+  NOTION_COL_NAME?: string;
 
   @IsString()
   @IsOptional()
-  NOTION_COL_COMPANY?: string;
+  NOTION_COL_POSITION?: string;
 
   @IsString()
   @IsOptional()
-  NOTION_COL_URL?: string;
+  NOTION_COL_LINK?: string;
 
   @IsString()
   @IsOptional()
-  NOTION_COL_STATUS?: string;
-
-  @IsString()
-  @IsOptional()
-  NOTION_COL_FIT_SCORE?: string;
-
-  @IsString()
-  @IsOptional()
-  NOTION_COL_SOURCE?: string;
-
-  @IsString()
-  @IsOptional()
-  NOTION_COL_POSTED_AT?: string;
-
-  @IsString()
-  @IsOptional()
-  NOTION_COL_TAGS?: string;
+  NOTION_COL_STAGE?: string;
 
   @IsString()
   @IsOptional()

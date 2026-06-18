@@ -52,7 +52,8 @@ function buildSalary(
 ): string | undefined {
   if (!min && !max) return undefined;
   const sym = currency ?? 'USD';
-  if (min && max) return `${sym} ${min.toLocaleString()}–${max.toLocaleString()}`;
+  if (min && max)
+    return `${sym} ${min.toLocaleString()}–${max.toLocaleString()}`;
   if (min) return `${sym} ${min.toLocaleString()}+`;
   return undefined;
 }
@@ -89,7 +90,9 @@ export class HimalayasAdapter implements SourceAdapter {
 
         if (jobs.length < PAGE_SIZE) break; // last page
       } catch (err) {
-        this.logger.error(`himalayas fetch failed at offset=${offset}: ${String(err)}`);
+        this.logger.error(
+          `himalayas fetch failed at offset=${offset}: ${String(err)}`,
+        );
         break; // return what was collected so far
       }
     }
@@ -105,7 +108,8 @@ export class HimalayasAdapter implements SourceAdapter {
     if (!passesTitleFilter(job.title)) return null;
 
     const restrictions = job.locationRestrictions ?? [];
-    const remote = restrictions.length === 0 || restrictions.some((r) => /remote/i.test(r));
+    const remote =
+      restrictions.length === 0 || restrictions.some((r) => /remote/i.test(r));
 
     const tags: string[] = [...(job.categories ?? [])];
     if (job.employmentType) tags.push(job.employmentType);
@@ -122,11 +126,15 @@ export class HimalayasAdapter implements SourceAdapter {
       title: job.title,
       company: job.companyName,
       url,
-      ...(job.pubDate !== undefined ? { postedAt: new Date(job.pubDate * 1000) } : {}),
+      ...(job.pubDate !== undefined
+        ? { postedAt: new Date(job.pubDate * 1000) }
+        : {}),
       tags,
       remote,
       ...(salary !== undefined ? { salary } : {}),
-      ...(job.description !== undefined ? { description: job.description } : {}),
+      ...(job.description !== undefined
+        ? { description: job.description }
+        : {}),
     };
   }
 }

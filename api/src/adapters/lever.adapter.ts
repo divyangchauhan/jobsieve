@@ -40,7 +40,9 @@ interface LeverPosting {
   readonly workplaceType?: string;
 }
 
-type LeverResponse = LeverPosting[] | { readonly ok: false; readonly error: string };
+type LeverResponse =
+  | LeverPosting[]
+  | { readonly ok: false; readonly error: string };
 
 @Injectable()
 export class LeverAdapter implements SourceAdapter {
@@ -49,35 +51,40 @@ export class LeverAdapter implements SourceAdapter {
 
   async fetchJobs(): Promise<NormalizedJob[]> {
     const companies = COMPANIES.filter((c) => c.ats === 'lever');
-    const tasks = companies.map((company) => async (): Promise<NormalizedJob[]> => {
-      try {
-        const { data } = await withRetry(() =>
-          axios.get<LeverResponse>(
-            `${API_BASE}/${company.slug}`,
-            {
+    const tasks = companies.map(
+      (company) => async (): Promise<NormalizedJob[]> => {
+        try {
+          const { data } = await withRetry(() =>
+            axios.get<LeverResponse>(`${API_BASE}/${company.slug}`, {
               timeout: TIMEOUT_MS,
               params: { mode: 'json' },
               headers: { 'User-Agent': 'jobsieve/1.0' },
-            },
-          ),
-        );
-        if (!Array.isArray(data)) {
-          this.logger.debug(`lever/${company.slug} not found — slug may have changed`);
+            }),
+          );
+          if (!Array.isArray(data)) {
+            this.logger.debug(
+              `lever/${company.slug} not found — slug may have changed`,
+            );
+            return [];
+          }
+          return data.flatMap((posting) => {
+            const job = this.normalize(posting, company.slug, company.name);
+            return job !== null ? [job] : [];
+          });
+        } catch (err) {
+          if (axios.isAxiosError(err) && err.response?.status === 404) {
+            this.logger.debug(
+              `lever/${company.slug} not found — slug may have changed`,
+            );
+          } else {
+            this.logger.warn(
+              `lever/${company.slug} fetch failed: ${String(err)}`,
+            );
+          }
           return [];
         }
-        return (data as LeverPosting[]).flatMap((posting) => {
-          const job = this.normalize(posting, company.slug, company.name);
-          return job !== null ? [job] : [];
-        });
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 404) {
-          this.logger.debug(`lever/${company.slug} not found — slug may have changed`);
-        } else {
-          this.logger.warn(`lever/${company.slug} fetch failed: ${String(err)}`);
-        }
-        return [];
-      }
-    });
+      },
+    );
 
     const nested = await runBatched(tasks, CONCURRENCY);
     return nested.flat();
@@ -93,12 +100,12 @@ export class LeverAdapter implements SourceAdapter {
 
     const location = posting.categories?.location ?? '';
     const workplaceType = posting.workplaceType ?? '';
-    const remote =
-      /remote/i.test(location) || /remote/i.test(workplaceType);
+    const remote = /remote/i.test(location) || /remote/i.test(workplaceType);
 
     const tags: string[] = [];
     if (posting.categories?.team) tags.push(posting.categories.team);
-    if (posting.categories?.commitment) tags.push(posting.categories.commitment);
+    if (posting.categories?.commitment)
+      tags.push(posting.categories.commitment);
     if (location) tags.push(location);
 
     return {

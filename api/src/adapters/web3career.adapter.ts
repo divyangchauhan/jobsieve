@@ -118,7 +118,9 @@ export class Web3CareerAdapter implements SourceAdapter {
           if (job !== null) seen.set(entry.id, job);
         }
       } catch (err) {
-        this.logger.warn(`web3career fetch failed (tag=${tag ?? 'none'}): ${String(err)}`);
+        this.logger.warn(
+          `web3career fetch failed (tag=${tag ?? 'none'}): ${String(err)}`,
+        );
       }
     };
 
@@ -129,7 +131,9 @@ export class Web3CareerAdapter implements SourceAdapter {
       await fetchTag(tag);
     }
 
-    this.logger.log(`web3career fetched ${seen.size} unique jobs across ${FETCH_TAGS.length + 1} queries`);
+    this.logger.log(
+      `web3career fetched ${seen.size} unique jobs across ${FETCH_TAGS.length + 1} queries`,
+    );
     return [...seen.values()];
   }
 

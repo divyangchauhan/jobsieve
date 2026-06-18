@@ -41,7 +41,9 @@ export class WwrAdapter implements SourceAdapter {
             return job !== null ? [job] : [];
           });
         } catch (err) {
-          this.logger.error(`weworkremotely feed ${feedUrl} failed: ${String(err)}`);
+          this.logger.error(
+            `weworkremotely feed ${feedUrl} failed: ${String(err)}`,
+          );
           return [];
         }
       }),
@@ -66,7 +68,9 @@ export class WwrAdapter implements SourceAdapter {
       title,
       company,
       url,
-      ...(item.pubDate !== undefined ? { postedAt: new Date(item.pubDate) } : {}),
+      ...(item.pubDate !== undefined
+        ? { postedAt: new Date(item.pubDate) }
+        : {}),
       tags: [],
       remote: true,
       ...(item.content !== undefined ? { description: item.content } : {}),

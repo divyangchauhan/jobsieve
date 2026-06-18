@@ -30,6 +30,9 @@ api/coverage/
 .idea/
 *.swp
 
+# local Claude Code settings (personal; shared settings.json may be committed)
+.claude/settings.local.json
+
 # OS
 .DS_Store
 Thumbs.db
@@ -37,3 +40,4 @@ Thumbs.db
 # NestJS
 .nest/
 api/.nest/
+dist-scripts/

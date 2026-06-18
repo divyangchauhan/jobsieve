@@ -2,7 +2,7 @@
 
 ## Overview
 
-**jobsieve** is a self-hosted job aggregation service that pulls listings from multiple sources on a cron schedule, deduplicates and fit-scores them, stores them in a local SQLite database, and exposes them through both a REST API and a React web UI. The goal is to eliminate the noise of job-hunting across multiple platforms and surface only the listings that match your specific stack and seniority.
+**jobsieve** is a self-hosted job aggregation service that pulls listings from multiple sources on a cron schedule, deduplicates and fit-scores them, stores them in a local SQLite database, and exposes them through both a REST API and a React web UI. The goal is to eliminate the noise of job-hunting across multiple platforms and surface only the listings that match an editable **relevance profile** — role families, seniorities, stack, and location/region — that the user tunes from the Settings page.
 
 ---
 
@@ -16,7 +16,7 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 - Aggregate job listings from heterogeneous sources (JSON APIs, RSS feeds) on a schedule.
 - Deduplicate across sources using a deterministic key so the same job never appears twice.
-- Score each listing against configurable keyword lists so the inbox stays signal-heavy.
+- Score each listing against an editable relevance profile (role families, seniorities, stack, location/region, exclude terms) so the inbox stays signal-heavy.
 - Preserve user-owned state (status, Notion page ID) across re-syncs.
 - Expose a minimal REST API and a React UI for browsing, filtering, and tracking applications.
 - Optionally sync new listings to a Notion database for users who manage tasks there.
@@ -34,18 +34,20 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 ## Environment Variables (.env.example)
 
-| Variable             | Required                      | Description                                                                        |
-| -------------------- | ----------------------------- | ---------------------------------------------------------------------------------- |
-| `DATABASE_PATH`      | Yes                           | Path to the SQLite file, e.g. `./data/jobsieve.sqlite`                             |
-| `CRON_SCHEDULE`      | Yes                           | Cron expression for ingestion, e.g. `0 */4 * * *` (every 4h)                       |
-| `WEB3CAREER_TOKEN`   | Yes (for web3.career adapter) | Free API token from web3.career                                                    |
-| `MIN_FIT_SCORE`      | Yes                           | Integer; jobs below this score are stored but hidden from default view             |
-| `STACK_KEYWORDS`     | Yes                           | Comma-separated list, e.g. `typescript,nestjs,node,python,aws,kafka,web3,solidity` |
-| `SENIORITY_KEYWORDS` | Yes                           | Comma-separated list, e.g. `senior,lead,staff,principal`                           |
-| `NOTION_TOKEN`       | Optional                      | Notion integration token; Notion sync only activates if both Notion vars are set   |
-| `NOTION_DATABASE_ID` | Optional                      | ID of the target Notion database                                                   |
-| `API_PORT`           | Optional                      | Port for the NestJS HTTP server, default `3000`                                    |
-| `FRONTEND_PORT`      | Optional                      | Port for the Vite dev server, default `5173`                                       |
+| Variable             | Required | Description                                                                       |
+| -------------------- | -------- | --------------------------------------------------------------------------------- |
+| `DATABASE_PATH`      | Yes      | Path to the SQLite file, relative to `api/`, e.g. `../data/jobsieve.sqlite`        |
+| `WEB3CAREER_TOKEN`   | Yes      | Free API token from web3.career                                                   |
+| `CRON_SCHEDULE`      | Optional | Cron expression for ingestion (default `0 */4 * * *`, every 4h)                    |
+| `MIN_FIT_SCORE`      | Optional | Fallback score floor when the profile leaves `minFitScore` unset; lower-scoring jobs are stored but hidden from the default view |
+| `API_PORT`           | Optional | Port for the NestJS HTTP server, default `3000`                                    |
+| `NOTION_TOKEN`       | Optional | Notion integration token; Notion sync activates only if both Notion vars are set   |
+| `NOTION_DATABASE_ID` | Optional | ID of the target Notion database                                                   |
+
+> **Scoring is profile-driven, not env-driven.** Stack/seniority/role/region come from the
+> editable relevance profile (Settings page → `PUT /api/profile`) plus the taxonomy in
+> `api/src/scoring/taxonomy.ts`. The legacy `STACK_KEYWORDS` / `SENIORITY_KEYWORDS` env
+> vars are **retired** (kept optional in validation only for backwards compatibility).
 
 > **Production note:** Source all secrets from a secrets manager (AWS Secrets Manager, Vault, etc.). Never commit `.env` to version control.
 
@@ -114,20 +116,24 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 ---
 
-### Milestone 4 — Source adapters (v1)
+### Milestone 4 — Source adapters
 
-**Goal:** Three isolated, failure-safe source adapters producing `NormalizedJob[]`.
+**Goal:** Isolated, failure-safe source adapters, each producing `NormalizedJob[]` behind
+the `SourceAdapter` interface.
 
 **Deliverables:**
 
 - `RemoteOKAdapter`: GET `https://remoteok.com/api`; drop element 0; set `User-Agent`
 - `Web3CareerAdapter`: web3.career API (env-gated on `WEB3CAREER_TOKEN`)
-- `HireWeb3Adapter`: RSS at `https://hireweb3.io/job/rss` via `rss-parser`
-- Each adapter: isolated try/catch, logs failure, returns `[]` on error, 10s HTTP timeout
+- Each adapter: isolated try/catch, logs failure, returns `[]` on error, request timeout
 - Sample payload documented in adapter source comment
 - Unit tests for `RemoteOKAdapter` normalize step using captured fixture
 
-**Commit:** `feat: add RemoteOK, web3.career, and HireWeb3 source adapters`
+**As built:** the adapter set grew to eight — RemoteOK, web3.career, Greenhouse, Lever,
+Ashby, Remotive, Himalayas, and We Work Remotely — spanning JSON APIs, ATS board APIs, and
+RSS feeds. Shared helpers (`rss-helper`, `retry`, `concurrency`, `title-filter`) back them.
+
+**Commit:** `feat: add RemoteOK, web3.career, and additional source adapters`
 
 ---
 
@@ -156,11 +162,11 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 
 **Deliverables:**
 
-- `FitScoringService.score(job: NormalizedJob): number`:
-  - +2 per matching `STACK_KEYWORDS` term (in title + description)
-  - +3 per matching `SENIORITY_KEYWORDS` term
-  - +2 if `remote === true`
-  - Score stored in `fit_score`
+- `FitScoringService.score(job, profile): number` — scores the job against the active
+  relevance profile (role families, seniorities, stack) using phrase matching, with the
+  profile's exclude/location/region/freshness applied as hard filters. Score stored in
+  `fit_score`. *(The original v1 used fixed `STACK_KEYWORDS`/`SENIORITY_KEYWORDS` env
+  lists; this was superseded by the editable profile + `taxonomy.ts` — see Milestone 10.)*
 - `CronOrchestratorService`:
   - `@Cron(process.env.CRON_SCHEDULE)` (default `0 */4 * * *`)
   - Iterates adapters in `try/catch` each; continues past failures
@@ -243,6 +249,29 @@ Job seekers in specialized tech niches (Web3, senior backend, etc.) must manuall
 | Icons | lucide-react |
 
 **Commit:** `feat: add React frontend with job board, filters, and status management`
+
+---
+
+### Milestone 10 — Relevance profile & profile-driven scoring
+
+**Goal:** Replace fixed env keyword lists with an editable, persisted relevance profile
+that drives both scoring and hard filtering.
+
+**Deliverables:**
+
+- `Profile` entity (singleton): `roleFamilies`, `seniorities`, `stack`, `locationTypes`,
+  `regionEligibility`, `excludeTerms`, `freshnessDays`, `minFitScore`
+- `ProfileService` — get/update plus a rescore-all that recomputes `fit_score` for every
+  stored job on each save, so scores stay truthful
+- REST: `GET /api/profile`, `GET /api/profile/options` (taxonomy), `PUT /api/profile`
+- Taxonomy of role families, seniorities, default stack/excludes, locations, and regions
+  in `api/src/scoring/taxonomy.ts`
+- `JobsService` applies the profile's exclude/location/region/freshness as SQL hard
+  filters, then scores survivors at read time
+- **Settings page** in the frontend to edit and save the profile live
+- `STACK_KEYWORDS` / `SENIORITY_KEYWORDS` retired (kept optional in env validation only)
+
+**Commit:** `feat: add editable relevance profile and profile-driven scoring`
 
 ---
 

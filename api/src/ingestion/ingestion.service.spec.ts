@@ -112,4 +112,80 @@ describe('IngestionService', () => {
     const result = await service.upsert([]);
     expect(result).toEqual([]);
   });
+
+  it('cross-source duplicate does not create a second row', async () => {
+    const web3Job: NormalizedJob = {
+      source: 'web3career',
+      sourceJobId: 'w1',
+      title: 'Senior Engineer (Rust)',
+      company: 'Acme',
+      url: 'https://web3career.io/jobs/w1',
+      tags: [],
+      remote: true,
+    };
+    const ghJob: NormalizedJob = {
+      source: 'greenhouse',
+      sourceJobId: 'gh1',
+      title: 'Senior Engineer - Rust',
+      company: 'Acme Labs',
+      url: 'https://boards.greenhouse.io/acme/jobs/gh1',
+      tags: [],
+      remote: true,
+    };
+
+    // Insert web3career job first
+    await service.upsert([web3Job]);
+    const countAfterFirst = await repo.count();
+    expect(countAfterFirst).toBe(1);
+
+    // Greenhouse job has the same content_key → must not create a second row
+    const newJobs = await service.upsert([ghJob]);
+    const countAfterSecond = await repo.count();
+    expect(countAfterSecond).toBe(1);
+    expect(newJobs).toHaveLength(0);
+
+    // Existing row should have greenhouse recorded in alt_sources
+    const stored = await repo.findOneByOrFail({ dedup_key: 'web3career:w1' });
+    expect(stored.alt_sources).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ source: 'greenhouse' }),
+      ]),
+    );
+  });
+
+  it('same batch with cross-source duplicates inserts only the canonical', async () => {
+    const web3Job: NormalizedJob = {
+      source: 'web3career',
+      sourceJobId: 'w2',
+      title: 'Staff Engineer (Go)',
+      company: 'Acme',
+      url: 'https://web3career.io/jobs/w2',
+      tags: [],
+      remote: false,
+    };
+    const ghJob: NormalizedJob = {
+      source: 'greenhouse',
+      sourceJobId: 'gh2',
+      title: 'Staff Engineer - Go',
+      company: 'Acme Inc',
+      url: 'https://boards.greenhouse.io/acme/jobs/gh2',
+      tags: [],
+      remote: false,
+    };
+
+    // Both arrive in the same batch — only one row should be inserted (greenhouse, higher priority)
+    const newJobs = await service.upsert([web3Job, ghJob]);
+    const count = await repo.count();
+    expect(count).toBe(1);
+    expect(newJobs).toHaveLength(1);
+    expect(newJobs[0]?.dedup_key).toBe('greenhouse:gh2');
+
+    // web3career should appear in alt_sources
+    const stored = await repo.findOneByOrFail({ dedup_key: 'greenhouse:gh2' });
+    expect(stored.alt_sources).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ source: 'web3career' }),
+      ]),
+    );
+  });
 });
