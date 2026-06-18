@@ -1,234 +1,202 @@
 # jobsieve — Architecture
 
-## System Overview
+## System overview
+
+jobsieve is a pnpm monorepo with two workspaces — `api/` (NestJS) and `frontend/`
+(Vite + React). A cron schedule drives eight source adapters through a single
+orchestrator; results are deduplicated, upserted into SQLite, and fit-scored against an
+editable relevance profile. A REST API and a React UI read that data; an optional module
+syncs new jobs to Notion.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                          jobsieve                               │
-│                                                                 │
-│  ┌──────────────┐   ┌──────────────────────────────────────┐   │
-│  │  React UI    │   │         NestJS Application           │   │
-│  │  (Vite)      │◄──┤                                      │   │
-│  │  port 5173   │   │  ┌─────────────┐  ┌───────────────┐ │   │
-│  │  (dev)       │   │  │  REST API   │  │  Cron Module  │ │   │
-│  └──────────────┘   │  │  /jobs      │  │  @Cron(4h)    │ │   │
-│         │           │  │  /admin/... │  └──────┬────────┘ │   │
-│    /api proxy       │  └──────┬──────┘         │          │   │
-│         │           │         │           ┌────▼────────┐ │   │
-│         └───────────┼─────────┘           │ Orchestrator│ │   │
-│                     │                     │  Service    │ │   │
-│                     │              ┌──────┴──────────┐  │ │   │
-│                     │              │  Adapter Array  │  │ │   │
-│                     │              │  ┌───────────┐  │  │ │   │
-│                     │              │  │ RemoteOK  │  │  │ │   │
-│                     │              │  ├───────────┤  │  │ │   │
-│                     │              │  │ Web3Career│  │  │ │   │
-│                     │              │  ├───────────┤  │  │ │   │
-│                     │              │  │ HireWeb3  │  │  │ │   │
-│                     │              │  └───────────┘  │  │ │   │
-│                     │              └────────┬────────┘  │ │   │
-│                     │                       │           │ │   │
-│                     │              ┌────────▼────────┐  │ │   │
-│                     │              │ IngestionService│  │ │   │
-│                     │              │ (upsert + dedup)│  │ │   │
-│                     │              └────────┬────────┘  │ │   │
-│                     │                       │           │ │   │
-│                     │              ┌────────▼────────┐  │ │   │
-│                     │              │ FitScoring      │  │ │   │
-│                     │              │ Service         │  │ │   │
-│                     │              └────────┬────────┘  │ │   │
-│                     │                       │           │ │   │
-│                     │         ┌─────────────▼─────────┐ │ │   │
-│                     └─────────►   TypeORM / SQLite    ◄─┘ │   │
-│                               │   (better-sqlite3)    │   │   │
-│                               └───────────────────────┘   │   │
-│                                                            │   │
-│                    ┌───────────────────────────────────┐   │   │
-│                    │  NotionSyncModule (optional)      │   │   │
-│                    │  Only loads if NOTION_TOKEN set   │   │   │
-│                    └───────────────────────────────────┘   │   │
-└─────────────────────────────────────────────────────────────────┘
+        React UI (Vite)                      NestJS application (port 3000)
+        port 5173 (dev)                   ┌────────────────────────────────────┐
+              │                           │  REST API                          │
+              │  /api proxy (dev)         │   JobsController   /api/jobs        │
+              └──────────────────────────►│   ProfileController /api/profile    │
+                                          │   AdminController  /api/admin/...   │
+   @Cron (every 4h, configurable) ───────►│            │                        │
+                                          │   CronOrchestratorService           │
+                                          │            │                        │
+                                          │   ADAPTER_PROVIDERS  (8 adapters,    │
+                                          │            │          try/catch each)│
+                                          │   IngestionService   (upsert + dedup)│
+                                          │            │                        │
+                                          │   FitScoringService  (profile-driven)│
+                                          │            │                        │
+                                          │   TypeORM / SQLite (better-sqlite3)  │
+                                          │            │                        │
+                                          │   NotionSyncService (optional)       │
+                                          └────────────────────────────────────┘
 ```
+
+In production NestJS serves the built frontend (`frontend/dist`) as static assets and
+falls back to `index.html` for non-`/api`, non-asset GET requests (SPA routing). The API
+lives under the global `/api` prefix.
 
 ---
 
-## Repository Layout
+## Repository layout
 
 ```
 jobsieve/
-├── src/                          # NestJS backend
-│   ├── app.module.ts
-│   ├── main.ts
-│   ├── config/
-│   │   └── configuration.ts      # typed env config via @nestjs/config
-│   ├── jobs/
-│   │   ├── job.entity.ts         # TypeORM entity
-│   │   ├── jobs.module.ts
-│   │   ├── jobs.service.ts       # DB queries for REST API
-│   │   └── jobs.controller.ts    # GET /jobs, PATCH /jobs/:id
-│   ├── ingestion/
-│   │   ├── ingestion.module.ts
-│   │   ├── ingestion.service.ts  # upsert logic
-│   │   ├── normalized-job.interface.ts
-│   │   ├── source-adapter.interface.ts
-│   │   └── dedup-key.ts          # dedupKey() + tests
-│   ├── adapters/
-│   │   ├── adapters.module.ts
-│   │   ├── remoteok.adapter.ts
-│   │   ├── web3career.adapter.ts
-│   │   └── hireweb3.adapter.ts
-│   ├── scoring/
-│   │   ├── scoring.module.ts
-│   │   └── fit-scoring.service.ts
-│   ├── cron/
-│   │   ├── cron.module.ts
-│   │   └── cron-orchestrator.service.ts
-│   ├── admin/
-│   │   └── admin.controller.ts   # POST /admin/ingest
-│   └── notion/
-│       ├── notion.module.ts      # conditionally registered
-│       └── notion-sync.service.ts
-├── frontend/                     # React app
-│   ├── index.html
-│   ├── vite.config.ts            # proxies /api → localhost:3000
-│   ├── tailwind.config.ts
+├── api/                              # NestJS backend (workspace: jobsieve-api)
 │   ├── src/
-│   │   ├── main.tsx
-│   │   ├── App.tsx
-│   │   ├── api/
-│   │   │   └── jobs.ts           # Axios + TanStack Query hooks
-│   │   ├── components/
-│   │   │   ├── JobCard.tsx
-│   │   │   ├── JobDetail.tsx
-│   │   │   ├── FilterBar.tsx
-│   │   │   ├── StatusBadge.tsx
-│   │   │   ├── FitScoreBar.tsx
-│   │   │   └── SyncButton.tsx
-│   │   └── pages/
-│   │       ├── JobBoard.tsx
-│   │       └── JobDetailPage.tsx
-│   └── package.json
-├── test/                         # integration / e2e tests (Jest)
-├── .env.example
-├── .gitignore
-├── .npmrc                        # shamefully-hoist=true for NestJS/better-sqlite3
-├── nest-cli.json
-├── tsconfig.json
-├── tsconfig.build.json
-├── package.json                  # packageManager: pnpm@10.x
-├── pnpm-lock.yaml
-├── prd.md
-├── architecture.md
-└── README.md
+│   │   ├── app.module.ts
+│   │   ├── main.ts                   # global /api prefix, static serve + SPA fallback
+│   │   ├── config/
+│   │   │   └── env.validation.ts     # class-validator env schema
+│   │   ├── jobs/
+│   │   │   ├── job.entity.ts         # TypeORM entity
+│   │   │   ├── jobs.controller.ts    # GET /jobs, GET/PATCH /jobs/:id, POST /jobs/:id/notion-sync
+│   │   │   ├── jobs.service.ts       # profile-aware SQL filtering + read-time scoring
+│   │   │   └── dto/
+│   │   ├── profile/
+│   │   │   ├── profile.entity.ts     # singleton relevance profile
+│   │   │   ├── profile.controller.ts # GET /profile, GET /profile/options, PUT /profile
+│   │   │   └── profile.service.ts    # get/update + rescore-all
+│   │   ├── ingestion/
+│   │   │   ├── ingestion.service.ts  # status-preserving upsert
+│   │   │   ├── normalize.ts
+│   │   │   ├── normalized-job.interface.ts
+│   │   │   ├── source-adapter.interface.ts
+│   │   │   └── dedup-key.ts          # dedupKey() (+ spec)
+│   │   ├── adapters/                 # one file per source + shared helpers
+│   │   │   ├── adapters.module.ts    # ADAPTER_PROVIDERS injection token
+│   │   │   ├── remote-ok.adapter.ts
+│   │   │   ├── web3career.adapter.ts
+│   │   │   ├── greenhouse.adapter.ts
+│   │   │   ├── lever.adapter.ts
+│   │   │   ├── ashby.adapter.ts
+│   │   │   ├── remotive.adapter.ts
+│   │   │   ├── himalayas.adapter.ts
+│   │   │   ├── wwr.adapter.ts
+│   │   │   ├── rss-helper.ts · retry.ts · concurrency.ts · title-filter.ts
+│   │   ├── scoring/
+│   │   │   ├── fit-scoring.service.ts
+│   │   │   ├── taxonomy.ts           # role families, seniorities, stack, regions
+│   │   │   └── phrase-match.ts
+│   │   ├── cron/cron-orchestrator.service.ts
+│   │   ├── admin/admin.controller.ts # POST /admin/ingest
+│   │   └── notion/                   # conditionally registered
+│   │       ├── notion-sync.service.ts
+│   │       └── notion-column-map.ts
+│   ├── scripts/                      # read-only diagnostics (smoke, resolve, audits)
+│   └── test/                         # Jest e2e
+├── frontend/                         # React app (workspace: jobsieve-frontend)
+│   ├── vite.config.ts                # proxies /api → localhost:3000
+│   └── src/
+│       ├── pages/                    # JobBoard, JobDetail, Settings
+│       ├── components/               # JobCard, FilterBar, FitScoreBar, MultiSelect, …
+│       ├── hooks/useProfile.ts
+│       └── api/                      # jobs.ts, profile.ts (Axios + TanStack Query)
+├── .env.example · .gitignore · .npmrc   # shamefully-hoist=true (NestJS / better-sqlite3)
+├── package.json                      # workspace root; packageManager: pnpm@10.x
+├── prd.md · architecture.md · README.md
 ```
 
 ---
 
-## Module Dependency Graph
+## Module dependency graph
 
 ```
 AppModule
- ├── ConfigModule (global)
- ├── TypeOrmModule (SQLite, global)
+ ├── ConfigModule (global)            # env.validation.ts
+ ├── TypeOrmModule (SQLite, global)   # entities: Job, Profile
  ├── JobsModule
- │    └── JobsController → JobsService → TypeORM JobRepository
+ │    └── JobsController → JobsService → Job repository + ProfileService
+ ├── ProfileModule
+ │    └── ProfileController → ProfileService (get/update + rescore-all)
  ├── AdminModule
  │    └── AdminController → CronOrchestratorService
  ├── AdaptersModule
- │    └── provides ADAPTER_PROVIDERS token
- │         ├── RemoteOKAdapter
- │         ├── Web3CareerAdapter
- │         └── HireWeb3Adapter
+ │    └── provides ADAPTER_PROVIDERS token (array of 8 adapters):
+ │         RemoteOK · Web3Career · Greenhouse · Lever · Ashby · Remotive · Himalayas · WWR
  ├── IngestionModule
- │    └── IngestionService → TypeORM JobRepository
+ │    └── IngestionService → Job repository
  ├── ScoringModule
- │    └── FitScoringService
+ │    └── FitScoringService (consumes the profile + taxonomy)
  ├── CronModule
  │    └── CronOrchestratorService
  │         ├── inject ADAPTER_PROVIDERS
- │         ├── inject IngestionService
- │         ├── inject FitScoringService
+ │         ├── inject IngestionService, FitScoringService, ProfileService
  │         └── inject NotionSyncService (optional)
- └── NotionModule (conditional)
+ └── NotionModule (conditional — only when NOTION_TOKEN + NOTION_DATABASE_ID are set)
       └── NotionSyncService
 ```
 
 ---
 
-## Data Flow: Cron Run
+## Data flow: cron run
 
 ```
-@Cron fires
+@Cron fires (CRON_SCHEDULE, default 0 */4 * * *)
   │
   ▼
 CronOrchestratorService.runIngestion()
   │
-  ├── for each adapter (try/catch):
+  ├── for each adapter (isolated try/catch):
   │     adapter.fetchJobs() → NormalizedJob[]
-  │     FitScoringService.score(job) → fit_score applied
   │     IngestionService.upsert(jobs) → newJobs: Job[]
   │     log: "<source>: N fetched, M new"
   │
-  └── (if NotionSyncModule active)
+  ├── FitScoringService scores against the active relevance profile
+  │
+  └── if NotionSyncModule active:
         NotionSyncService.syncNew(allNewJobs)
-          ├── batch into groups of 3
-          ├── POST pages.create per job (rate ≤ 3/s)
-          ├── on 429: exponential backoff, retry ≤5
-          └── store notion_page_id on each Job
+          ├── token bucket ≤ 3 req/s
+          ├── pages.create per new job; store notion_page_id
+          └── on 429: exponential backoff (≤ 5 retries)
 ```
+
+One broken source never blocks the others — each adapter runs in its own try/catch,
+logs the failure, and returns `[]`.
 
 ---
 
-## Data Flow: REST API Request
+## Data flow: REST API request
 
 ```
 Client
-  │  GET /jobs?status=New&minFitScore=5&remote=true&search=nestjs&page=1
+  │  GET /api/jobs?status=New&remote=true&search=nestjs&page=1
   ▼
-JobsController
-  │
+JobsController → JobsService.findAll(filters, pagination)
+  │  Hard filters applied in SQL from the active profile:
+  │    exclude terms · location types · region eligibility · freshness window
+  │  plus request filters: status · source · remote · search
+  │  ORDER BY first_seen_at DESC, LIMIT/OFFSET
+  │  survivors fit-scored at read time; default view drops status='Skipped'
+  │  and jobs below the effective fit-score floor (profile.minFitScore ?? MIN_FIT_SCORE)
   ▼
-JobsService.findAll(filters, pagination)
-  │  SELECT * FROM jobs
-  │  WHERE status != 'Skipped'
-  │    AND fit_score >= MIN_FIT_SCORE   ← default
-  │    AND status = 'New'              ← from query
-  │    AND remote = true               ← from query
-  │    AND fit_score >= 5              ← from query
-  │    AND (title LIKE '%nestjs%' OR company LIKE '%nestjs%')
-  │  ORDER BY first_seen_at DESC
-  │  LIMIT 20 OFFSET 0
-  ▼
-JobsController → JSON response
+JSON response (paginated)
 ```
+
+`fit_score` is also kept truthful on writes: ProfileService rescores every stored job on
+each profile save, and scoring runs at ingest.
 
 ---
 
-## Dedup Key Strategy
+## Dedup key strategy
 
 ```
 NormalizedJob
-  │
   ├─ sourceJobId present?
-  │     YES → key = "${source}:${sourceJobId}"      e.g. "remoteok:123456"
-  │     NO  → normalize URL:
-  │              lowercase host
-  │              strip ?query and #hash
-  │              strip trailing slash
+  │     YES → key = "${source}:${sourceJobId}"      e.g. "remoteOK:123456"
+  │     NO  → normalize URL (lowercase host, strip ?query and #hash, drop trailing slash)
   │           key = sha1(normalizedUrl)
-  │
-  └─ stored in dedup_key column (UNIQUE constraint)
-       → INSERT OR IGNORE / ON CONFLICT DO UPDATE
+  └─ stored in dedup_key (UNIQUE) → INSERT ... ON CONFLICT(dedup_key) DO UPDATE
 ```
+
+A secondary `content_key` and `alt_sources` support cross-source consolidation of the
+same role surfaced under different URLs.
 
 ---
 
-## Upsert Strategy (Status Preservation)
+## Upsert strategy (status preservation)
 
 ```sql
-INSERT INTO jobs (dedup_key, source, title, company, url, tags,
-                  remote, salary, fit_score, status,
-                  first_seen_at, last_seen_at)
+INSERT INTO jobs (dedup_key, source, title, company, url, tags, remote, salary,
+                  fit_score, status, first_seen_at, last_seen_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'New', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (dedup_key) DO UPDATE SET
   title        = excluded.title,
@@ -236,121 +204,74 @@ ON CONFLICT (dedup_key) DO UPDATE SET
   url          = excluded.url,
   tags         = excluded.tags,
   salary       = excluded.salary,
-  last_seen_at = CURRENT_TIMESTAMP
-  -- status, notion_page_id, first_seen_at are NEVER updated
+  last_seen_at = CURRENT_TIMESTAMP;
+  -- status, notion_page_id, first_seen_at are NEVER overwritten
 ```
 
-New rows identified via `RETURNING id` (or pre-check existence before batch).
+The invariant: re-ingesting a known job refreshes its mutable fields and `last_seen_at`,
+but never clobbers user-owned state.
 
 ---
 
-## Fit Scoring Algorithm
+## Fit scoring
 
-```
-score = 0
+Scoring is **profile-driven**, not based on env keyword lists. The editable relevance
+profile (`Profile` entity, edited via the Settings page → `PUT /api/profile`) holds:
 
-for each keyword in STACK_KEYWORDS:
-  if keyword in (job.title + ' ' + job.description).toLowerCase():
-    score += 2
+- `roleFamilies`, `seniorities`, `stack` — positive signal
+- `excludeTerms` — hard-filter terms
+- `locationTypes`, `regionEligibility`, `freshnessDays` — hard filters
+- `minFitScore` — per-profile floor (falls back to the `MIN_FIT_SCORE` env var)
 
-for each keyword in SENIORITY_KEYWORDS:
-  if keyword in job.title.toLowerCase():
-    score += 3
+The taxonomy of selectable role families, seniorities, default stack/excludes, locations,
+and regions lives in `api/src/scoring/taxonomy.ts` and is extended there.
+`FitScoringService` combines title/description phrase matches (`phrase-match.ts`) against
+the profile to produce `fit_score`. Profiles are saved through the Settings UI, and every
+save triggers a rescore-all so stored scores stay consistent with the current profile.
 
-if job.remote === true:
-  score += 2
-
-job.fit_score = score
-
-if score < MIN_FIT_SCORE:
-  job is stored but excluded from default GET /jobs response
-```
+> `STACK_KEYWORDS` / `SENIORITY_KEYWORDS` env vars are **retired**. They remain optional
+> in env validation only so older `.env` files still load.
 
 ---
 
-## Frontend Architecture
-
-```
-frontend/src/
-  │
-  ├── api/jobs.ts
-  │     Axios instance (baseURL = /api)
-  │     TanStack Query hooks:
-  │       useJobs(filters)      → GET /jobs
-  │       useJob(id)            → GET /jobs/:id
-  │       useUpdateStatus()     → PATCH /jobs/:id (mutation + cache invalidate)
-  │       useIngest()           → POST /admin/ingest
-  │
-  ├── pages/JobBoard.tsx
-  │     QueryClientProvider
-  │     FilterBar (controlled state → passed to useJobs)
-  │     SyncButton
-  │     Paginated list of JobCard components
-  │
-  ├── pages/JobDetailPage.tsx
-  │     useJob(id)
-  │     Full description render
-  │     StatusBadge with click-to-update
-  │     FitScoreBar
-  │
-  └── components/
-        StatusBadge.tsx   — color-coded; onClick → useUpdateStatus mutation
-        FitScoreBar.tsx   — score / maxPossibleScore as a styled bar
-        FilterBar.tsx     — source, status, remote, minFitScore, search inputs
-        SyncButton.tsx    — calls useIngest, shows spinner + toast
-```
-
-**Dev proxy** (`vite.config.ts`):
-```ts
-server: {
-  proxy: {
-    '/api': 'http://localhost:3000'
-  }
-}
-```
-
-**Production serve**: NestJS `ServeStaticModule` serves `frontend/dist` at `/`; API remains at `/jobs`, `/admin/ingest`.
-
----
-
-## Key Design Decisions
+## Key design decisions
 
 | Decision | Choice | Rationale |
 |---|---|---|
 | Database | SQLite via `better-sqlite3` | Zero-infra, single-user tool; synchronous driver avoids async complexity |
-| ORM upsert | Raw `INSERT ... ON CONFLICT DO UPDATE` via QueryBuilder | TypeORM `.save()` does not reliably skip untouched columns on conflict |
-| Adapter isolation | Each adapter in its own `try/catch` inside the cron | One broken source must never block others; logged and skipped |
-| Adapter registration | `ADAPTER_PROVIDERS` injection token (array) | Adding a new source = one file + push to the array; zero changes to orchestrator |
-| Notion module gating | `registerAsync` with `useFactory` returning null if env vars absent | Clean no-op with no startup errors; avoids `@notionhq/client` crashing on missing token |
-| Fit scoring | In-process, env-configurable keyword lists | Zero deps, trivially tunable, fast |
-| Frontend state | TanStack Query | Handles caching, background refetch, and optimistic updates; fits the read-heavy pattern |
-| Frontend build → backend serve | `ServeStaticModule` | Single process, no separate static server needed for self-hosted use |
-| HTTP timeouts | 10s on all adapter requests | Prevents a slow upstream from blocking the entire cron window |
-| Rate limiting (Notion) | Token bucket at ≤3 req/s + exponential backoff on 429 | Notion API limit is ~3 req/s per integration; backoff prevents thundering herd |
+| Upsert | Raw `INSERT ... ON CONFLICT DO UPDATE` (QueryBuilder) | TypeORM `.save()` does not reliably skip untouched columns on conflict |
+| Adapter isolation | Each adapter in its own try/catch inside the cron | One broken source must never block the others; it is logged and skipped |
+| Adapter registration | `ADAPTER_PROVIDERS` injection token (array) | Adding a source = one file + one line; zero orchestrator changes |
+| Scoring model | Editable relevance profile + taxonomy, rescore-on-save | Tunable from the UI without redeploys; keeps `fit_score` truthful |
+| Source-side filtering | Profile excludes/location/region/freshness as SQL hard filters | Cheap to apply in SQL; only survivors get scored at read time |
+| Notion gating | `registerAsync` factory returns a no-op when env vars are absent | Clean startup with no errors when Notion is unconfigured |
+| Frontend state | TanStack Query | Caching, background refetch, optimistic updates — fits the read-heavy pattern |
+| Frontend serve | NestJS static assets + SPA fallback in `main.ts` | Single process; no separate static server for self-hosted use |
+| HTTP timeouts / retries | Per-adapter timeout + bounded retry/concurrency helpers | A slow upstream can't block the cron window |
+| Notion rate limiting | Token bucket ≤ 3 req/s + exponential backoff on 429 | Respects Notion's ~3 req/s integration limit |
 
 ---
 
-## Notion Database Schema
+## Notion sync (optional)
 
-If using Notion sync, create a database with these properties:
+When `NOTION_TOKEN` and `NOTION_DATABASE_ID` are both set, new jobs are pushed to a Notion
+database after each run. The default column map (`notion-column-map.ts`) targets:
 
-| Property | Type | Notes |
+| Field | Default column | Env override |
 |---|---|---|
-| Name | Title | Job title |
-| Company | Text | |
-| URL | URL | Job listing URL |
-| Status | Select | Options: New, Reviewing, Applied, Skipped |
-| Fit Score | Number | |
-| Source | Select | Adapter name |
-| Remote | Checkbox | |
-| Posted At | Date | |
-| Tags | Multi-select | |
-| First Seen | Date | |
+| Company | `Company` | `NOTION_COL_NAME` |
+| Position | `Position` | `NOTION_COL_POSITION` |
+| Link | `Link` | `NOTION_COL_LINK` |
+| Stage | `Stage` | `NOTION_COL_STAGE` |
+
+Sync is one-way and idempotent — re-runs call `pages.update` via the stored
+`notion_page_id` rather than creating duplicates.
 
 ---
 
-## Adding a New Source Adapter
+## Adding a new source adapter
 
-1. Create `src/adapters/mysource.adapter.ts` implementing `SourceAdapter`.
-2. Register it in `src/adapters/adapters.module.ts` by pushing to `ADAPTER_PROVIDERS`.
-3. Done — the orchestrator picks it up automatically.
+1. Create `api/src/adapters/mysource.adapter.ts` implementing `SourceAdapter`
+   (`{ name: string; fetchJobs(): Promise<NormalizedJob[]> }`).
+2. Register it in `api/src/adapters/adapters.module.ts` by adding it to `ADAPTER_PROVIDERS`.
+3. Done — the orchestrator picks it up on the next run.
