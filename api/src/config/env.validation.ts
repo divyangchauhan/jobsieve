@@ -18,9 +18,11 @@ class EnvironmentVariables {
   @IsOptional()
   CRON_SCHEDULE?: string;
 
+  // Optional: a fresh desktop install has no .env. The web3career adapter
+  // no-ops (returns []) when the token is absent; all other sources still run.
   @IsString()
-  @IsNotEmpty()
-  WEB3CAREER_TOKEN!: string;
+  @IsOptional()
+  WEB3CAREER_TOKEN?: string;
 
   // Retired: scoring now sources stack/seniority from the relevance profile +
   // taxonomy. Kept optional so existing .env files still validate.

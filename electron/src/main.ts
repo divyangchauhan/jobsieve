@@ -1,6 +1,11 @@
 import path from 'node:path';
 import { app, BrowserWindow, shell } from 'electron';
 
+// Set early (before any getPath('userData')) so app data lands in a stable,
+// app-specific dir (e.g. %APPDATA%/jobsieve, ~/.config/jobsieve) instead of the
+// generic "Electron" default used in development.
+app.setName('jobsieve');
+
 const WINDOW_WIDTH = 1200;
 const WINDOW_HEIGHT = 820;
 const LOOPBACK_HOST = '127.0.0.1';
