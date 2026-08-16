@@ -21,6 +21,7 @@
     "resolve": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/resolve-boards.js",
     "coverage": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/coverage-check.js",
     "ats-discover": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/ats-discovery.js",
+    "ai-import": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/import-ai-companies.js",
     "dedup": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/dedup-cleanup.js",
     "score-audit": "tsc --project tsconfig.scripts.json && node dist-scripts/scripts/score-audit.js"
   },

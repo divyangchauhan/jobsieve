@@ -15,6 +15,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 import { ConfigService } from '@nestjs/config';
 
 import { AshbyAdapter } from '../src/adapters/ashby.adapter';
+import { CompanyCareersAdapter } from '../src/adapters/company-careers.adapter';
 import { GreenhouseAdapter } from '../src/adapters/greenhouse.adapter';
 import { HimalayasAdapter } from '../src/adapters/himalayas.adapter';
 import { LeverAdapter } from '../src/adapters/lever.adapter';
@@ -22,6 +23,7 @@ import { RemoteOKAdapter } from '../src/adapters/remote-ok.adapter';
 import { RemotiveAdapter } from '../src/adapters/remotive.adapter';
 import { Web3CareerAdapter } from '../src/adapters/web3career.adapter';
 import { WwrAdapter } from '../src/adapters/wwr.adapter';
+import { YCombinatorAdapter } from '../src/adapters/ycombinator.adapter';
 import { COMPANIES } from '../src/registry/company-registry';
 import { NormalizedJob } from '../src/ingestion/normalized-job.interface';
 import { SourceAdapter } from '../src/ingestion/source-adapter.interface';
@@ -131,6 +133,8 @@ async function main(): Promise<void> {
     new RemotiveAdapter(),
     new HimalayasAdapter(),
     new WwrAdapter(),
+    new YCombinatorAdapter(),
+    new CompanyCareersAdapter(),
   ];
 
   console.log(`\nAdapter smoke test (${perCompany ? 'post-probe totals' : 'full fetch'}):`);

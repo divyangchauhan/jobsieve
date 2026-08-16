@@ -41,3 +41,8 @@ Thumbs.db
 .nest/
 api/.nest/
 dist-scripts/
+
+# local AI-company import inputs and audit output
+/actual_ai_companies.csv
+/ai_funding_last_3_months.csv
+/api/src/registry/ai-company-catalog.json

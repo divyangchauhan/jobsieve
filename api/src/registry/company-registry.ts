@@ -1,3 +1,5 @@
+import { AI_COMPANY_ATS_BOARDS } from './ai-company-ats.generated.js';
+
 export type AtsType =
   | 'greenhouse'
   | 'lever'
@@ -14,7 +16,7 @@ export interface WatchlistCompany {
   readonly domain: string;
 }
 
-export const COMPANIES: readonly WatchlistCompany[] = [
+const BASE_COMPANIES: readonly WatchlistCompany[] = [
   // ── Lever ────────────────────────────────────────────────────────────────────
   {
     name: 'Celestia',
@@ -678,3 +680,10 @@ export const COMPANIES: readonly WatchlistCompany[] = [
     domain: 'web3-bridge',
   },
 ] as const;
+
+// Generated AI boards supersede older hand-maintained AI entries. The generated
+// list is validated by the full-corpus importer before it reaches runtime.
+export const COMPANIES: readonly WatchlistCompany[] = [
+  ...BASE_COMPANIES.filter((company) => company.domain !== 'ai-infra'),
+  ...AI_COMPANY_ATS_BOARDS,
+];

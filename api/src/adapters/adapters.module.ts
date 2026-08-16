@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { AshbyAdapter } from './ashby.adapter.js';
+import { CompanyCareersAdapter } from './company-careers.adapter.js';
 import { GreenhouseAdapter } from './greenhouse.adapter.js';
 import { HimalayasAdapter } from './himalayas.adapter.js';
 import { LeverAdapter } from './lever.adapter.js';
@@ -8,6 +9,7 @@ import { RemoteOKAdapter } from './remote-ok.adapter.js';
 import { RemotiveAdapter } from './remotive.adapter.js';
 import { Web3CareerAdapter } from './web3career.adapter.js';
 import { WwrAdapter } from './wwr.adapter.js';
+import { YCombinatorAdapter } from './ycombinator.adapter.js';
 
 export const ADAPTER_PROVIDERS = 'ADAPTER_PROVIDERS';
 
@@ -20,6 +22,8 @@ type AllAdapters = [
   RemotiveAdapter,
   HimalayasAdapter,
   WwrAdapter,
+  YCombinatorAdapter,
+  CompanyCareersAdapter,
 ];
 
 @Module({
@@ -32,6 +36,8 @@ type AllAdapters = [
     RemotiveAdapter,
     HimalayasAdapter,
     WwrAdapter,
+    YCombinatorAdapter,
+    CompanyCareersAdapter,
     {
       provide: ADAPTER_PROVIDERS,
       useFactory: (
@@ -43,6 +49,8 @@ type AllAdapters = [
         remotive: RemotiveAdapter,
         himalayas: HimalayasAdapter,
         wwr: WwrAdapter,
+        ycombinator: YCombinatorAdapter,
+        companyCareers: CompanyCareersAdapter,
       ): AllAdapters => [
         remoteOK,
         web3career,
@@ -52,6 +60,8 @@ type AllAdapters = [
         remotive,
         himalayas,
         wwr,
+        ycombinator,
+        companyCareers,
       ],
       inject: [
         RemoteOKAdapter,
@@ -62,6 +72,8 @@ type AllAdapters = [
         RemotiveAdapter,
         HimalayasAdapter,
         WwrAdapter,
+        YCombinatorAdapter,
+        CompanyCareersAdapter,
       ],
     },
   ],
