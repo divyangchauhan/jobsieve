@@ -3,7 +3,7 @@
 ## System overview
 
 jobsieve is a pnpm monorepo with two workspaces — `api/` (NestJS) and `frontend/`
-(Vite + React). A cron schedule drives eight source adapters through a single
+(Vite + React). A cron schedule drives ten source adapters through a single
 orchestrator; results are deduplicated, upserted into SQLite, and fit-scored against an
 editable relevance profile. A REST API and a React UI read that data; an optional module
 syncs new jobs to Notion.
@@ -18,7 +18,7 @@ syncs new jobs to Notion.
    @Cron (every 4h, configurable) ───────►│            │                        │
                                           │   CronOrchestratorService           │
                                           │            │                        │
-                                          │   ADAPTER_PROVIDERS  (8 adapters,    │
+                                          │   ADAPTER_PROVIDERS  (10 adapters,   │
                                           │            │          try/catch each)│
                                           │   IngestionService   (upsert + dedup)│
                                           │            │                        │
@@ -71,6 +71,8 @@ jobsieve/
 │   │   │   ├── remotive.adapter.ts
 │   │   │   ├── himalayas.adapter.ts
 │   │   │   ├── wwr.adapter.ts
+│   │   │   ├── ycombinator.adapter.ts
+│   │   │   ├── company-careers.adapter.ts
 │   │   │   ├── rss-helper.ts · retry.ts · concurrency.ts · title-filter.ts
 │   │   ├── scoring/
 │   │   │   ├── fit-scoring.service.ts
@@ -110,8 +112,9 @@ AppModule
  ├── AdminModule
  │    └── AdminController → CronOrchestratorService
  ├── AdaptersModule
- │    └── provides ADAPTER_PROVIDERS token (array of 8 adapters):
+ │    └── provides ADAPTER_PROVIDERS token (array of 10 adapters):
  │         RemoteOK · Web3Career · Greenhouse · Lever · Ashby · Remotive · Himalayas · WWR
+ │         · YCombinator · CompanyCareers
  ├── IngestionModule
  │    └── IngestionService → Job repository
  ├── ScoringModule

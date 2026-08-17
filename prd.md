@@ -129,9 +129,11 @@ the `SourceAdapter` interface.
 - Sample payload documented in adapter source comment
 - Unit tests for `RemoteOKAdapter` normalize step using captured fixture
 
-**As built:** the adapter set grew to eight — RemoteOK, web3.career, Greenhouse, Lever,
-Ashby, Remotive, Himalayas, and We Work Remotely — spanning JSON APIs, ATS board APIs, and
-RSS feeds. Shared helpers (`rss-helper`, `retry`, `concurrency`, `title-filter`) back them.
+**As built:** the adapter set grew to ten — RemoteOK, web3.career, Greenhouse, Lever,
+Ashby, Remotive, Himalayas, We Work Remotely, Y Combinator, and CompanyCareers — spanning
+JSON APIs, ATS board APIs, and RSS feeds. CompanyCareers covers Workable, Recruitee,
+BambooHR, Teamtailor, Workday, and SmartRecruiters boards. Shared helpers (`rss-helper`,
+`retry`, `concurrency`, `title-filter`) back them.
 
 **Commit:** `feat: add RemoteOK, web3.career, and additional source adapters`
 

@@ -1,6 +1,6 @@
 # jobsieve
 
-A self-hosted job-aggregation service. It pulls listings from eight job boards on a
+A self-hosted job-aggregation service. It pulls listings through ten source adapters on a
 cron schedule, deduplicates them across sources, fit-scores each one against an
 editable relevance profile, and surfaces the survivors in a single focused inbox —
 through a REST API and a React web UI, with optional one-way sync to Notion.
@@ -20,9 +20,10 @@ intact across every re-sync.
 
 ## What it does
 
-- **Aggregates** from 8 sources: RemoteOK, web3.career, Greenhouse, Lever, Ashby,
-  Remotive, Himalayas, and We Work Remotely — JSON APIs, ATS board APIs, and RSS feeds,
-  behind one `SourceAdapter` interface.
+- **Aggregates** through 10 adapters: RemoteOK, web3.career, Greenhouse, Lever, Ashby,
+  Remotive, Himalayas, We Work Remotely, Y Combinator, and additional company ATS
+  providers (Workable, Recruitee, BambooHR, Teamtailor, Workday, and SmartRecruiters) —
+  all behind one `SourceAdapter` interface.
 - **Deduplicates** across sources with a deterministic key (`source:id`, or a SHA-1 of
   the normalized URL when no source ID exists), so the same job never appears twice.
 - **Fit-scores** each listing against an editable **relevance profile** (role families,
@@ -46,7 +47,7 @@ intact across every re-sync.
                                          │        │                        │
    Cron (every 4h, configurable) ──────► │  CronOrchestratorService        │
                                          │        │                        │
-                                         │   8 × SourceAdapter  (try/catch  │
+                                         │  10 × SourceAdapter  (try/catch  │
                                          │        │             per source)│
                                          │   IngestionService  (upsert+dedup)
                                          │        │                        │
@@ -137,6 +138,22 @@ Without waiting for the cron:
 ```bash
 curl -X POST http://localhost:3000/api/admin/ingest    # or: pnpm run ingest
 ```
+
+### Refresh the AI-company registry
+
+The two local repository-root CSVs are reconciled into committed runtime registries and
+a local one-row-per-company audit catalog:
+
+```bash
+pnpm run ai-import -- --discover --probe # first run/full scan; creates the local audit catalog
+pnpm run ai-import              # later rebuilds from CSV evidence + cached discoveries
+```
+
+The cron automatically consumes the generated Greenhouse/Lever/Ashby registry, the YC
+company registry, and the additional-provider registry. Companies without a public,
+validated source remain in the ignored local
+`api/src/registry/ai-company-catalog.json` with an explicit resolution status instead of
+being silently omitted.
 
 ---
 
