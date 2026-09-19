@@ -1,0 +1,13 @@
+.git
+node_modules
+.next
+.env*
+!.env.example
+actual_ai_companies.csv
+ai_funding_last_3_months.csv
+/api/
+/frontend/
+tests
+test-results
+playwright-report
+*.sqlite*

@@ -41,3 +41,11 @@ Thumbs.db
 .nest/
 api/.nest/
 dist-scripts/
+
+# Next.js, hosting and browser test artifacts
+.next/
+.vercel/
+next-env.d.ts
+*.tsbuildinfo
+playwright-report/
+test-results/
