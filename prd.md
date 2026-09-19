@@ -275,6 +275,66 @@ that drives both scoring and hard filtering.
 
 ---
 
+### Future milestone — Company ATS and application-review intelligence
+
+**Request summary:** Surface which applicant tracking system (ATS) a company uses and,
+where reliable public evidence exists, whether applications can be rejected automatically
+or receive human involvement before rejection. This context should help the user tailor an
+application and interpret a rejection without presenting speculation as fact.
+
+**Feasibility and evidence boundaries:**
+
+- An ATS provider is usually discoverable with high confidence from the final application
+  URL, a public job-board API, embedded page metadata, or the company source registry.
+- Public application forms can expose screening questions such as work authorization,
+  sponsorship, location, or security-clearance requirements. These may be labelled only as
+  **potential knockout questions** because the employer's private automation rules are not
+  publicly visible.
+- Provider capability is not company behavior. For example, both
+  [Greenhouse](https://support.greenhouse.io/hc/en-us/articles/360000653472-Auto-reject)
+  and [Ashby](https://docs.ashbyhq.com/auto-reject-applications) support rule-based
+  auto-rejection, but use of that feature cannot be inferred merely from the provider.
+- Human involvement is recorded only when a company applicant-privacy notice, hiring guide,
+  application disclosure, or similarly authoritative source states it. A statement such as
+  "no solely automated hiring decisions" does not prove that a human reads every resume
+  before an initial rejection.
+- Rejection timing and email wording may be retained as user-observed signals, but never as
+  proof of human or automated review; ATS products can delay automated rejection messages.
+- ATS use and hiring policies can change and can differ by role, subsidiary, or geography,
+  so every assertion needs a source, confidence level, scope, and last-verified date.
+
+**Proposed deliverables:**
+
+- Persist job-level ATS metadata separately from the ingestion source:
+  `atsProvider`, `atsConfidence`, `atsEvidenceUrl`, and `atsVerifiedAt`.
+- Add a company-intelligence record for review policy with a constrained value such as
+  `explicit-human-review`, `human-in-the-loop`, `automation-disclosed`, or `unknown`, plus
+  evidence URL, quotation-free summary, scope, confidence, and verification date.
+- Derive ATS identity from known board URLs and the company registry, including jobs arriving
+  through an aggregator whose `source` is not the underlying ATS.
+- Optionally inspect public application forms and list potential knockout questions without
+  claiming that an auto-reject rule is enabled.
+- Show an evidence-backed panel on the job detail page: ATS badge, possible automation,
+  human-involvement statement, potential knockout questions, evidence links, confidence, and
+  last checked date. Unknown values must remain visibly unknown.
+- Keep company-level evidence reusable across jobs while allowing a job-level observation to
+  override it when a role uses a different provider or disclosure.
+
+**Acceptance criteria:**
+
+- A direct Greenhouse, Lever, Ashby, Workday, Workable, Recruitee, BambooHR, Teamtailor, or
+  SmartRecruiters application URL is classified with tests covering aliases, redirects, and
+  unknown/custom hosts.
+- Aggregated listings can receive ATS metadata without changing their original source or
+  deduplication identity.
+- The API and frontend distinguish `unknown` from a negative assertion such as "no automated
+  rejection".
+- No UI copy states that a resume was read by a human unless the evidence specifically supports
+  that claim; weaker evidence is described using narrower language.
+- Stale or conflicting evidence is surfaced rather than silently overwritten.
+
+---
+
 ## Done Criteria
 
 - `pnpm run start` in repo root launches the NestJS API.
