@@ -15,121 +15,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Encapsulate related primitives into types/interfaces rather than passing them individually
 - Validation belongs in class constructors or dedicated validator classes (`class-validator` is wired up)
 
-## Package manager
+## Current application
 
-This project uses **pnpm** exclusively. Never use `npm` or `yarn`.
+JobSieve is now a Next.js App Router application with Clerk accounts and Neon Postgres. Use pnpm exclusively.
 
-```bash
-pnpm install           # install all workspace deps (backend + frontend)
+- `app/`: authenticated routes, API handlers, Server Actions, cron endpoints.
+- `lib/`: source adapters, pure scoring, Postgres access, user isolation, alert matching and durable delivery.
+- `ui/`: existing React inbox, detail and settings components, plus alert configuration.
+- `migrations/`: versioned SQL; no automatic runtime schema synchronization.
+- `tests/`: real Postgres integration tests and browser regression tests.
 
-# Development
-pnpm run dev:api       # NestJS in watch mode (backend only)
-pnpm run dev:ui        # Vite dev server — proxies /api → localhost:3000 (frontend only)
+Commands: `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`, `pnpm test:e2e:live`, `pnpm db:migrate`, `pnpm db:import`.
 
-# Build
-pnpm run build         # build frontend then backend (production-ready)
-pnpm run build:api     # compile NestJS only → api/dist/
-pnpm run build:ui      # compile React only → frontend/dist/
+Every API operation and Server Action must derive the user ID from Clerk on the server. Jobs are shared; profiles, statuses, push subscriptions and notification history are private. Ingestion must never overwrite user state. Queries and mutations touching private records must include the authenticated owner.
 
-# Run
-pnpm run start         # run compiled api/dist/main.js (serves API + static frontend)
+Read README.md and architecture.md for deployment and notification semantics. Do not treat source update timestamps as publication times. Do not send real notifications from tests. Preserve the original source adapters' normalization and scoring regression tests.
 
-# Test
-pnpm test              # jest unit tests (api/src/**/*.spec.ts)
-pnpm run test:watch    # jest in watch mode
-pnpm run test:cov      # jest with coverage
-pnpm run test:e2e      # jest e2e (api/test/**/*.e2e-spec.ts)
+Use environment files for credentials; never print secrets, store them in tracked files, or use NEXT_PUBLIC_ for secret keys. `scripts/legacy` contains retained SQLite-era diagnostics for local snapshots only; it is not deployed.
 
-# Utilities
-pnpm run lint          # eslint --fix across api/src/ and api/test/
-pnpm run format        # prettier --write
-pnpm run ingest        # POST /api/admin/ingest against a running server
-```
+<!-- BEGIN:nextjs-agent-rules -->
 
-Run a single test file (from repo root):
+# This is NOT the Next.js you know
 
-```bash
-pnpm --filter jobsieve-api test -- src/ingestion/dedup-key.spec.ts
-```
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
-Or from within `api/`:
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
-```bash
-pnpm test -- src/ingestion/dedup-key.spec.ts
-```
-
-Run a single test by name pattern:
-
-```bash
-pnpm --filter jobsieve-api test -- --testNamePattern "dedupKey"
-```
-
-After installing new native addons, run:
-
-```bash
-pnpm rebuild <package-name>
-```
-
-## TypeScript
-
-Strict mode is fully enabled: `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`. The module system is `nodenext` — use `.js` extensions on relative imports in source files (TypeScript resolves them to `.ts` at compile time). `no-explicit-any` is an ESLint **error**; never use `any` in domain code.
-
-## Architecture
-
-This is a pnpm monorepo with two workspace packages:
-
-| Package | Path | Purpose |
-|---------|------|---------|
-| `jobsieve-api` | `api/` | NestJS backend |
-| `jobsieve-frontend` | `frontend/` | Vite + React frontend |
-
-**Backend module layout (planned):**
-
-| Module                   | Responsibility                                                                   |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| `ConfigModule` (global)  | Typed env config via `@nestjs/config`                                            |
-| `TypeOrmModule` (global) | SQLite via `better-sqlite3`; entity: `Job`                                       |
-| `AdaptersModule`         | Registers `ADAPTER_PROVIDERS` token — array of `SourceAdapter` implementations   |
-| `IngestionModule`        | `IngestionService.upsert()` — status-preserving SQLite upsert                    |
-| `ScoringModule`          | `FitScoringService.score(job, profile)` — pure, profile-driven fit scoring       |
-| `ProfileModule`          | `ProfileService` — singleton relevance profile (get/update + rescore-all)        |
-| `CronModule`             | `CronOrchestratorService` — drives adapters on schedule                          |
-| `JobsModule`             | REST API: `GET /jobs`, `PATCH /jobs/:id`                                         |
-| `AdminModule`            | `POST /admin/ingest` — manual trigger                                            |
-| `NotionModule`           | Optional; only registers when both `NOTION_TOKEN` + `NOTION_DATABASE_ID` are set |
-
-**Key interfaces** (in `api/src/ingestion/`):
-
-- `NormalizedJob` — shared DTO all adapters must produce
-- `SourceAdapter` — `{ name: string; fetchJobs(): Promise<NormalizedJob[]> }`
-
-**Adding a source adapter** = one file implementing `SourceAdapter` + one line in `AdaptersModule`.
-
-**Dedup key logic** (in `api/src/ingestion/dedup-key.ts`):
-
-- If `sourceJobId` is set: `"${source}:${sourceJobId}"`
-- Otherwise: SHA-1 of the normalized URL (lowercase host, no query/hash, no trailing slash)
-
-**Upsert invariant**: `ON CONFLICT(dedup_key) DO UPDATE` only touches `title`, `company`, `url`, `tags`, `salary`, `last_seen_at`. It **never** overwrites `status`, `notion_page_id`, or `first_seen_at`.
-
-**Frontend** lives in `frontend/` (Vite + React 18 + TanStack Query v5 + Tailwind CSS). Its dev server proxies `/api` → `localhost:3000`. Production: `pnpm run build` builds both; NestJS serves `frontend/dist` as static assets at `/` and all API routes under `/api`.
-
-**Build output**: `api/dist/` (NestJS compiled output), `frontend/dist/` (Vite static assets).
-
-## Environment
-
-`.env` lives at the repo root and is loaded by `ConfigModule` via `envFilePath: '../.env'`. Copy `.env.example` to `.env` and create `data/` before first run:
-
-```bash
-cp .env.example .env && mkdir -p data
-```
-
-`DATABASE_PATH` in `.env` is relative to `api/` (where NestJS runs), so the default `../data/jobsieve.sqlite` puts the database at `data/jobsieve.sqlite` in the repo root.
-
-Required vars: `DATABASE_PATH`, `CRON_SCHEDULE`, `WEB3CAREER_TOKEN`, `MIN_FIT_SCORE`. Notion sync is opt-in and only activates when both `NOTION_TOKEN` and `NOTION_DATABASE_ID` are present.
-
-**Scoring & filtering** are driven by an editable singleton **relevance profile** (`Profile` entity, edited via the `/settings` page → `PUT /api/profile`), not by env keys. The taxonomy of role families, seniorities, default stack/excludes, locations, and regions lives in `api/src/scoring/taxonomy.ts` — extend it there. `STACK_KEYWORDS`/`SENIORITY_KEYWORDS` are **retired** (kept optional in env validation for backwards compatibility). The jobs query applies the profile's exclude/location/region/freshness as SQL hard filters, then scores survivors at read time; `fit_score` is also kept truthful via a rescore-all on every profile save and at ingest.
-
-## pnpm quirks
-
-`.npmrc` sets `shamefully-hoist=true` — required for NestJS decorator metadata and `better-sqlite3` native bindings to resolve. `pnpm.onlyBuiltDependencies` in the root `package.json` approves native build scripts non-interactively for `better-sqlite3`, `@nestjs/core`, `unrs-resolver`, and `esbuild` (used by Vite). This field must live at the workspace root, not inside `api/package.json`.
+<!-- END:nextjs-agent-rules -->

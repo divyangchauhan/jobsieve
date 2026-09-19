@@ -1,3 +1,5 @@
-packages:
-  - 'api'
-  - 'frontend'
+packages: []
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - better-sqlite3

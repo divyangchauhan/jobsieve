@@ -1,0 +1,76 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "crons": [
+    {
+      "path": "/api/cron/ingest?source=remoteok",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=web3career",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=remotive",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=himalayas",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=wwr",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=greenhouse%3A0",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=greenhouse%3A10",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=greenhouse%3A20",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=lever%3A0",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A0",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A10",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A20",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A30",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A40",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A50",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/ingest?source=ashby%3A60",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/notifications",
+      "schedule": "5 0 * * *"
+    }
+  ],
+  "regions": ["syd1"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "JobSieve",
+  "short_name": "JobSieve",
+  "description": "Your personal job inbox and early-job alerts",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
